@@ -3,7 +3,7 @@ import React from 'react'
 import { Form, Formik } from "formik";
 
 // Importar el context de tareas
-import { useTasks } from "../context/TasksProvider";
+import { useGlobalContext } from "../context/ContextProvider";
 
 
 // cuando se envia el id de una tarea para editarla
@@ -25,7 +25,7 @@ export default function TaskForm() {
     createTask, // Fn de crear tareas
     getTask, // Fn para obtener una tarea mediante el id
     updateTask // Fn para modificar una tarea mediante su id y los nuevos valores
-  } = useTasks();
+  } = useGlobalContext();
 
   // Definir el useState para setear valores en el formulario
   const [task, setTask] = useState({

@@ -30,7 +30,7 @@ export const createTask = async (req, res) => {
 export const getTasks = async (req, res) => {
     try {
         //res.send('Obteniendo tareas')
-        const [result] = await pool.query("SELECT * FROM tasks ORDER BY createAt ASC");
+        const [result] = await pool.query("SELECT * FROM tasks ORDER BY createAt DESC");
         // Devuelve un arreglo con todas las tareas
         //console.log(result);
         console.log("Obteniendo tareas...")

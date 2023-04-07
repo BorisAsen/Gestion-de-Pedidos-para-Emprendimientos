@@ -16,13 +16,15 @@ module.exports = {
         blackBase: '#2b2d2e',
         details_1: '#ffd500',
         details_2: '#4f46e5',
+        details_3: '#6366f1',
       },
 
       // Sombra personalizada
       boxShadow: {
-        'navBar': '-0.5em 0 2em rgba(0, 0, 0, 0.9)',
-        'icon': '0 0 0.5em rgba(0, 0, 0, 0.3)',
-        'icon2': '0 0.2em 0.7em rgba(0, 0, 0, 0.3)',
+        'navBar': '0 0 0.6em rgba(0, 0, 0, 0.9)',
+        'navBarIcon': '0 0 0.5em rgba(0, 0, 0, 0.3)',
+        'navBarIconHover': '0 0.2em 0.7em rgba(0, 0, 0, 0.3)',
+        'taskCardIcon': '0 0.1em 0.2em rgba(0, 0, 0, 0.3)',
         'container': '0 0.3em 0.5em rgba(0, 0, 0, 0.5)',
       }
 

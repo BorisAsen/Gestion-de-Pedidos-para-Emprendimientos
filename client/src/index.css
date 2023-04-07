@@ -10,12 +10,11 @@
         @apply
         relative flex items-center justify-center
         h-10 w-10 mt-2.5 mb-2.5 mx-auto rounded-2xl
-        bg-secondary text-white shadow-icon
+        bg-secondary text-white shadow-navBarIcon
        
         hover:scale-110
-        hover:rounded-2xl
         hover:bg-indigo-600
-        hover:shadow-icon2
+        hover:shadow-navBarIconHover
 
         transition-all duration-150 ease-linear
         ;
@@ -34,16 +33,46 @@
     /* Titulos de paginas */
     .PageTitle{
         @apply
-        text-lg text-white font-bold text-center
+        text-lg text-secondary font-bold text-center
         uppercase
         ;
     }
 
     /* Tarjeta de Tareas */
-    .TarjetaTarea{
+    .Tarjeta{
         @apply
         bg-slate-200 rounded-md p-3.5
         shadow-container
+        ;
+    }
+    .Tarjeta_field{
+        @apply
+        p-1 mb-1
+        text-sm
+        ;
+    }
+
+    /* TaskCard Icons */
+    .TaskCard-icon{
+        @apply
+        relative flex items-center justify-center
+        h-6 w-6 rounded-md
+        bg-details_3 text-white 
+
+        hover:bg-indigo-600
+
+        transition-all duration-100 ease-linear
+        ;
+    }
+
+    /* Main Button */
+    .MainButton{
+        @apply
+        bg-details_2 rounded-md px-2 h-8
+        text-base text-white
+
+        hover:bg-details_3
+        transition-all duration-100 ease-linear
         ;
     }
 }
