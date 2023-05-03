@@ -2,61 +2,55 @@ import React from 'react'
 // Importar el componente de Formik para crear y manejar el formulario de alta de tareas
 import { Form, Formik } from "formik";
 
-// Importar el context de tareas
+// Importar el context global
 import { useGlobalContext } from "../context/ContextProvider";
 
-
-// cuando se envia el id de una tarea para editarla
-
-
 // Importar los hooks necesarios
-// useEffect para obtener los datos de la tarea a editar al cargar la pagina
-// useState para setear los campos del form con los datos de la tarea a modificar
+// useEffect para obtener los datos del pedido a editar al cargar la pagina
+// useState para setear los campos del form con los datos del pedido a modificar
 // useParams para extraer los parametros dinamicos de la ruta
-// useNavigate para redireccionar a la pagina principal con el listado de tareas una vez creada o modificada la tarea
+// useNavigate para redireccionar a la pagina principal con el listado de pedidos una vez creado o modificado el pedido
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 
-export default function TaskForm() {
+export default function PedidosForm() {
 
   // Extraigo del context las funciones necesarias
   const {
-    createTask, // Fn de crear tareas
-    getTask, // Fn para obtener una tarea mediante el id
-    updateTask // Fn para modificar una tarea mediante su id y los nuevos valores
+    createPedido, // Fn de crear pedidos
+    getPedido, // Fn para obtener un pedido mediante el id
+    updatePedido // Fn para modificar un pedido mediante su id y los nuevos valores
   } = useGlobalContext();
 
   // Definir el useState para setear valores en el formulario
-  const [task, setTask] = useState({
+  const [pedido, setPedido] = useState({
     title: "",
     decription: "",
   });
 
   // Creo la constante para disponer del useParams
   const params = useParams();
-  console.log(params); // Mustro el id de la tarea en consola
+  console.log(params); // Mustro el id del pedido en consola
 
   // Creo la constante para disponer del useNavigate
   const navigate = useNavigate();
 
-  // Utilizar el useEfect para traer los datos de la tarea en el caso de
-  // que ya exista y se la quiera editar
+  // Utilizar el useEfect para traer los datos del pedido en el caso de que ya exista y se lo quiera editar
   useEffect(() => {
-    // Es necesario colocar el llamado a getTask con el await dentro de otra
-    // funcion sino arroja un error
-    const loadTask = async () => {
+    // Es necesario colocar el llamado a getPedido con el await dentro de otra funcion sino arroja un error
+    const loadPedido = async () => {
       if (params.id) {
-        const task = await getTask(params.id);
-        // Muestro por consola los datos de la tarea para corroborar
-        // console.log(task);
-        setTask({
-          title: task.title,
-          description: task.description,
+        const pedido = await getPedido(params.id);
+        // Muestro por consola los datos del pedido para corroborar
+        // console.log(pedido);
+        setPedido({
+          title: pedido.title,
+          description: pedido.description,
         }) 
       }
     };
-    loadTask();
+    loadPedido();
   }, [])
   
 
@@ -65,9 +59,9 @@ export default function TaskForm() {
     <div className='p-6'>
       <Formik
         // Defino los valores iniciales que tendran los campos
-        // Si se quiere editar una tarea se corresponderan con los
-        // valores obtenidos de la db, sino estaran vacios al momento de crear una nueva
-        initialValues={task}
+        // Si se quiere editar un pedido se corresponderan con los
+        // valores obtenidos de la db, sino estaran vacios al momento de crear uno nuevo
+        initialValues={pedido}
         enableReinitialize={true}
 
         // Evento que se activa cuando el formuilario es enviado
@@ -75,18 +69,18 @@ export default function TaskForm() {
         onSubmit={async (values, actions) => {
           // Muestro los valores por consola
           console.log(values);
-          // Corroboro si la tarea ya existe para modificarla o crearla segun corresponda
+          // Corroboro si el pedido ya existe para modificarlo o crearlo segun corresponda
           if (params.id) {
-            // Llamo a la funcion para modificar una tarea
-            await updateTask(params.id, values)
+            // Llamo a la funcion para modificar un pedido
+            await updatePedido(params.id, values)
           } else {
-            // Llamo a la funcion para crear una tarea
-            await createTask(values);
+            // Llamo a la funcion para crear un pedido
+            await createPedido(values);
           }
-          // Redireccionar a la pagina principal una vez actualizada o creada la tarea
+          // Redireccionar a la pagina principal una vez actualizado o creado el pedido
           navigate("/");
-          // Limpio el formulario una vez que se crea o modifica una tarea
-          setTask({
+          // Limpio el formulario una vez que se crea o modifica un pedido
+          setPedido({
             title: "",
             description: "",
           });
@@ -99,10 +93,10 @@ export default function TaskForm() {
         {({handleChange, handleSubmit, values, isSubmitting}) => (
           <Form onSubmit={handleSubmit} className='mx-auto bg-slate-300 max-w-sm rounded-md p-4'>
             {/* Crear un titulo condicional para el formulario segun se quiera crear
-            o actualizar una tarea. Si ya existe el id de la tarea el titulo sera Editar
+            o actualizar un pedido. Si ya existe el id del pedido el titulo sera Editar,
             de caso contrario sera Crear. */}
-            <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Tarea" : "Crear Tarea" }</h1>
-            <label className='block'>Title</label>
+            <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Pedido" : "Crear Pedido" }</h1>
+            <label className='block'>Titulo</label>
             <input
               className='p-1 my-2 rounded-md w-full'
               type="text"
@@ -112,12 +106,12 @@ export default function TaskForm() {
               value={values.title} // Resetea al valor inicial despues de enviar el form
             />
 
-            <label className='block'>Description</label>
+            <label className='block'>Descripcion</label>
             <textarea
               className='p-1 my-2 rounded-md w-full'
               name="description"
               rows="10"
-              placeholder='Escribe una descripcion de la tarea'
+              placeholder='Escribe la descripcion del pedido'
               onChange={handleChange}
               value={values.description} // Resetea al valor inicial despues de enviar el form
             ></textarea>

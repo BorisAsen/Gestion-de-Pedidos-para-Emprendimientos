@@ -13,10 +13,10 @@ import { PORT } from "./config.js";
 import indexRoutes from './routes/index.routes.js';
 
 // Importar el enrutador de tareas
-import taskRoutes from "./routes/tasks.routes.js";
+import pedidoRoutes from "./routes/pedidos.routes.js";
 
 // Importar el enrutador de productos
-import productRoutes from "./routes/products.routes.js";
+import productoRoutes from "./routes/productos.routes.js";
 
 // Importar el modulo de cors
 import cors from "cors";
@@ -50,11 +50,11 @@ console.log(`Sever corriendo en el puerto ${PORT}`);
 // Indicar que app haga uso de las rutas de indexRoutes
 app.use(indexRoutes);
 
-// Indicar que app haga uso de las rutas definidas en tasks.routes.js
-app.use(taskRoutes);
+// Indicar que app haga uso de las rutas definidas en pedidos.routes.js
+app.use(pedidoRoutes);
 
 // Indicar que app haga uso de las rutas definidas en products.routes.js
-app.use(productRoutes);
+app.use(productoRoutes);
 
 // ***** BUILD *****//
 // Distribuir los archivos estaticos de la carpeta dist

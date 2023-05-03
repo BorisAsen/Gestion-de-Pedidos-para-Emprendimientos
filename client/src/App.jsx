@@ -4,9 +4,9 @@ import { Route, Routes } from "react-router-dom";
 
 /********** PAGINAS **********/
 // Importo el componente de la pagina principal
-import TareasPage from "./pages/TareasPage";
+import PedidosPage from "./pages/PedidosPage";
 // Importo el componente de la pagina para crear tareas
-import TaskForm from "./pages/TaskForm";
+import PedidosForm from "./pages/PedidosForm";
 
 // Importo el componente de la pagina de Productos
 import ProductosPage from "./pages/ProductosPage";
@@ -33,18 +33,18 @@ import { GlobalContextProvider } from "./context/ContextProvider";
 
 export default function App() {
   return (
-    <div className="bg-primary h-screen">
+    <div className="bg-primary">
       <div>
         <NavBar/>
-        <div className= 'h-screen ml-14'>
+        <div className= 'ml-14'>
           <GlobalContextProvider>
             <Routes>
-              {/* Ruta de la pag principal */}
-              <Route path='/' element={<TareasPage/>} />
+              {/* Ruta de la pag principal de Pedidos*/}
+              <Route path='/' element={<PedidosPage/>} />
               {/* Ruta de la pagina para crear tareas */}
-              <Route path='/nuevaTarea' element={<TaskForm/>} />
+              <Route path='/nuevaTarea' element={<PedidosForm/>} />
               {/* Ruta de la pagina para modificar tareas */}
-              <Route path='/editTarea/:id' element={<TaskForm/>} />
+              <Route path='/editTarea/:id' element={<PedidosForm/>} />
 
               {/* Ruta de la pagina de Productos */}
               <Route path='/productos' element={<ProductosPage/>} />

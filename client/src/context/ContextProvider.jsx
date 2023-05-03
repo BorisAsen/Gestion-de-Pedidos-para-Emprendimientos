@@ -1,8 +1,3 @@
-// Importo el context de tareas
-// import { TaskContext } from "./TareasContext";
-// // Importo el context de productos
-// import { ProductContext } from "./ProductosContext";
-
 // Importo el createContext de react
 import { createContext } from "react";
 // Creo la constante para el contexto
@@ -11,15 +6,15 @@ const GlobalContext = createContext();
 // Importo los hooks de react para utilizar el context
 import { useContext, useState } from "react";
 
-// Importo desde la API las funciones necesarias para manipular las tareas
+// Importo desde la API las funciones necesarias para manipular los pedidos
 import { 
-    getTasksRequest,
-    getTaskRequest,
-    deleteTaskRequest,
-    createTaskRequest,
-    updateTaskRequest,
-    toggleTaskDoneRequest
-} from "../api/tasks.api";
+    getPedidosRequest,
+    getPedidoRequest,
+    deletePedidoRequest,
+    createPedidoRequest,
+    updatePedidoRequest,
+    togglePedidoDoneRequest
+} from "../api/pedidos.api";
 
 // Importo desde la API las funciones necesarias para manipular los productos
 import { 
@@ -28,7 +23,7 @@ import {
     deleteProductRequest,
     createProductRequest,
     updateProductRequest,
-} from "../api/products.api";
+} from "../api/productos.api";
 
 // Hook para usar el contexto global en todos los componentes
 export const useGlobalContext = () => {
@@ -46,83 +41,80 @@ export const useGlobalContext = () => {
 // es decir que pueda tomar el dato de la propiedad value
 export const GlobalContextProvider = ({children}) => {
 
-/**************************** CONTEXT TAREAS ****************************/
-    // Defino el arreglo de tareas
-    const [tasks, setTasks] = useState([]);
+/**************************** CONTEXT PEDIDOS ****************************/
+    // Defino el arreglo de pedidos
+    const [pedidos, setPedidos] = useState([]);
 
-    // Funcion para cargar el arreglo de tareas
-    async function loadTasks() {
-        const response = await getTasksRequest();
-        // Muestro por consola el arreglo de tareas que se encuentra en data
+    // Funcion para cargar el arreglo de pedidos
+    async function loadPedidos() {
+        const response = await getPedidosRequest();
+        // Muestro por consola el arreglo de pedidos que se encuentra en data
         //console.log(response.data);
     
-        // Guardo el arreglo de tareas en la vble tasks
-        setTasks(response.data);
+        // Guardo el arreglo de pedidos en la vble pedidos
+        setPedidos(response.data);
     }
 
-    // Funcion para agregar una tarea
-    const createTask = async (task) => {
+    // Funcion para agregar un pedido
+    const createPedido = async (pedido) => {
         try {
-            const response = await createTaskRequest(task);
+            const response = await createPedidoRequest(pedido);
             console.log(response);
             // Si en la pagina principal no se hubiera configurado mediante el useEfect
             // que cada vez que se recargue la pagina se carguen y se muestre el arreglo
-            // de tareas, otra forma de hacerlo seria seteando el arreglo de tareas con
-            // una copia de su conenido MAS la tarea que se acaba de añadir. 
-            //setTasks(... task, response.data);
+            // de pedidos, otra forma de hacerlo seria seteando el arreglo de tareas con
+            // una copia de su conenido MAS el pedido que se acaba de añadir. 
+            //setPedidos(... pedido, response.data);
           } catch (error) {
             console.log(error);
         }
     }
 
-    // Funcion para eliminar una tarea mediante el id que recibe
+    // Funcion para eliminar un pedido mediante el id que recibe
     // del evento onClick del boton Eliminar
-    const deleteTask = async (id) => {
+    const deletePedido = async (id) => {
         try {
-            // Ejecuto la funcion para eliminar la tarea
-            const response = await deleteTaskRequest(id);
+            // Ejecuto la funcion para eliminar el pedido
+            const response = await deletePedidoRequest(id);
             console.log(response);
-            // Actualizo el arreglo de tareas para que
-            // ya no se muestre la tarea con el id que se acaba de eliminar
-            setTasks(tasks.filter(task => task.id !== id));
-
+            // Actualizo el arreglo de pedidos para que ya no se muestre el pedido con el id que se acaba de eliminar
+            setPedidos(pedidos.filter(pedido => pedido.id !== id));
         } catch (error) {
             console.log(error);
         }
     };
 
-    // Funcion para traer una unica tarea mediante un id
-    const getTask = async (id) => {
+    // Funcion para traer un unico pedido mediante un id
+    const getPedido = async (id) => {
         try {
-            const response = await getTaskRequest(id);
+            const response = await getPedidoRequest(id);
             return response.data;
         } catch (error) {
             console.log(error);   
         }
     };
 
-    // Funcion para modificar una tarea mediante el id que recibe
-    // del evento onClick del boton Guardar
-    const updateTask = async (id, newFields) => {
+    // Funcion para modificar un pedido mediante el id que recibe del evento onClick del boton Guardar
+    const updatePedido = async (id, newFields) => {
         try {
-            const response = await updateTaskRequest(id, newFields);
+            const response = await updatePedidoRequest(id, newFields);
             console.log(response);
         } catch (error) {
             console.log(error);
         }
     };
 
-    // Funcion para cambiar el estado de una tarea (done) 
-    const toggleTaskDone = async (id) => {
+    // Funcion para cambiar el estado de un pedido (done) 
+    const togglePedidoDone = async (id) => {
         try {
-            // Encontrar y obtener la tarea a modificar dentro del arreglo de tareas
-            const taskFound = tasks.find((task) => task.id === id);
-            // Llamar a la funcion para cambiar el estado de la tarea obtenida
-            const response = await toggleTaskDoneRequest(id, taskFound.done === 0 ? true : false);
+            // Encontrar y obtener el pedido a modificar dentro del arreglo de pedidos
+            const pedidoFound = pedidos.find((pedido) => pedido.id === id);
+            // Llamar a la funcion para cambiar el estado del pedido obtenido
+            const response = await togglePedidoDoneRequest(id, pedidoFound.done === 0 ? true : false);
             console.log(response);
-            // Actualizar la tarea modificada para ver el resultado automaticamente en la pantalla
-            setTasks(
-                tasks.map((task) => task.id === id ? { ... task, done: !task.done } : task )
+            // Actualizar el pedido modificado para ver el resultado automaticamente en la pantalla
+            setPedidos(
+                pedidos.map((pedido) => pedido.id === id ? { ... pedido, done: !pedido.done } : pedido )
             )
         } catch (error) {
             console.log(error);
@@ -192,14 +184,14 @@ export const GlobalContextProvider = ({children}) => {
 
 /**************************** DATOS Y FUNCIONES A EXPORTAR ****************************/
     return (<GlobalContext.Provider value={{
-                // Tareas
-                tasks,
-                loadTasks,
-                deleteTask,
-                createTask,
-                getTask,
-                updateTask,
-                toggleTaskDone,
+                // Pedidos
+                pedidos,
+                loadPedidos,
+                deletePedido,
+                createPedido,
+                getPedido,
+                updatePedido,
+                togglePedidoDone,
 
                 // Productos
                 products,

@@ -25,7 +25,7 @@ export default function NavBar() {
             <li>
                 {/* Tareas */}
                 <Link to="/">
-                    <NavBarIcon icon={<AiOutlineProfile size='25'/>} text = 'Listado de Tareas'/>
+                    <NavBarIcon icon={<AiOutlineProfile size='25'/>} text = 'Listado de Pedidos'/>
                 </Link>
             </li>
             <li>

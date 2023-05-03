@@ -143,7 +143,7 @@ export default function ProductForm() {
             <label className='block'>Descripcion: </label>
             <Field
               component="textarea"
-              className='p-1 my-1 mb-2 rounded-md w-full'
+              className='p-1 my-1 mb-2 rounded-md w-full whitespace-pre-wrap'
               name="description"
               rows="3"
               placeholder='Escribe una descripcion para el producto'
