@@ -10,13 +10,36 @@ export const getProductRequest = async (id) =>
     await axios.get(`http://localhost:4000/products/${id}`);
 
 // Funcion para crear un producto, recibe un objeto tipo product y lo guarda
-export const createProductRequest = async (product) =>
-    await axios.post("http://localhost:4000/products", product);
+export const createProductRequest = async (product) => {
+    const form = new FormData();
+
+    for (let key in product) {
+        form.append(key, product[key])
+    }
+    return await axios.post("http://localhost:4000/products", form, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+}
+
+// Funcion para modificar un producto, recibe su id y los nuevos valores
+export const updateProductRequest = async (id, updateProduct) => {
+    const form = new FormData();
+
+    for (let key in updateProduct) {
+        form.append(key, updateProduct[key])
+    }
+    return await axios.put(`http://localhost:4000/products/${id}`, form, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+}
+
 
 // Funcion para enviar una peticion delete mediante el id del producto a borrar
 export const deleteProductRequest = async (id) =>
     await axios.delete(`http://localhost:4000/products/${id}`);
 
-// Funcion para modificar un producto, recibe su id y los nuevos valores
-export const updateProductRequest = async (id, newFields) => 
-    await axios.put(`http://localhost:4000/products/${id}`, newFields);
+

@@ -62,7 +62,7 @@ export default function TaskForm() {
 
 
   return (
-    <div className='mt-3'>
+    <div className='p-6'>
       <Formik
         // Defino los valores iniciales que tendran los campos
         // Si se quiere editar una tarea se corresponderan con los
@@ -116,7 +116,7 @@ export default function TaskForm() {
             <textarea
               className='p-1 my-2 rounded-md w-full'
               name="description"
-              rows="3"
+              rows="10"
               placeholder='Escribe una descripcion de la tarea'
               onChange={handleChange}
               value={values.description} // Resetea al valor inicial despues de enviar el form

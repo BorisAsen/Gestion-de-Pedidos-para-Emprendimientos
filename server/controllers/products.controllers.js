@@ -1,33 +1,54 @@
 // Funciones para el CRUD de productos
 
-import path, { dirname } from 'path';
-import { fileURLToPath } from "url";
-import multer from 'multer';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 // Importar la conexion a la db
 import { pool } from "../db.js"
+
+//Importar la funcion de Cloudinary
+import { uploadImage, deleteImage } from '../libs/cloudinary.js'
+
+//Importar fs-extra
+import fs from 'fs-extra'
 
 // * Funcion para crear un producto
 export const createProduct = async (req, res) => {
     try {
         //res.send('Creando productos');
-        const {productName, imgURL, description, price} = req.body;
-        //const imagen = req.file
-        
-        //var url = `http://localhost:4000/images/${imgURL}`;
-        //var url = path.join(__dirname, '../public/ImgProducts', imgURL);
-        //console.log(imagen.filename);
-        // console.log(path.join(__dirname, '../public/ImgProducts', url));
+        const {productName, description, price} = req.body;
+
+        // Si hay una imagen para subir, se la envia a cloudinary para que la suba
+        let image = {
+            url: null,
+            public_id: null
+        };
+        if (req.files && req.files.imgURL) {
+            const result = await uploadImage(req.files.imgURL.tempFilePath)
+            // Una vez se subio la imagen, se la eliminara de la carpeta temporal
+            await fs.remove(req.files.imgURL.tempFilePath);
+            // De toda la info que brinda el resultado de cloudinary solo se guardan la url de la imagen y su public_id
+            image = {
+                url: result.secure_url,
+                public_id: result.public_id
+            }
+            console.log(image);
+        }
+
+        // Mostrando todos los datos del nuevo producto
+        console.log('Nombre: ', productName);
+        console.log('Ruta Img: ', image.url);
+        console.log('Public_id: ', image.public_id);
+        console.log('Descripcion: ', description);
+        console.log('Precio: ', price);
+
         const [result] = await pool.query(
-            "INSERT INTO products(productName, imgURL, description, price) VALUES (?, ?, ?, ?)",
-            [productName, imgURL, description, price]
+            "INSERT INTO products(productName, imgURL, imgPublic_id, description, price) VALUES (?, ?, ?, ?, ?)",
+            [productName, image.url, image.public_id, description, price]
         );
+        console.log('Producto guardado en DB');
         res.json({
             id: result.insertId,
             productName,
-            imgURL,
+            imgURL: image.url,
+            imgPublic_id: image.public_id,
             description,
             price
         });
@@ -35,8 +56,67 @@ export const createProduct = async (req, res) => {
         /* Devuelve un mensaje de error con estado http 500 que indica
         que se acepto la solicitud pero un error impidio que se cumpliera */
         return res.status(500).json({message: error.message}); 
+    } 
+}
+
+// Funcion para modificar un producto mediante su id
+export const updateProduct = async (req, res) => {
+    //res.send('Modificando un producto')
+
+    // Extraigo el valor de los campos del req.body
+    const {productName, description, price} = req.body;
+
+    // En el caso de no haber deseado modificar la imagen, el input quedo sin ningun archivo seleccionado,
+    // es por eso que se debe controlar esto y ejecutar el UPDATE en la db dependiendo si el req trajo o no una imagen
+
+    // Si hay una imagen para subir, se la envia a cloudinary para que la suba
+    let image = {
+        url: null,
+        public_id: null
+    };
+
+    // Variable para guardar el resultado de la consulta SQL del UPDATE
+    let result = null;
+    
+    if (req.files && req.files.imgURL) {
+        const resultUpload = await uploadImage(req.files.imgURL.tempFilePath)
+        // Una vez se subio la imagen, se la eliminara de la carpeta temporal
+        await fs.remove(req.files.imgURL.tempFilePath);
+        // De toda la info que brinda el resultado de cloudinary solo se guardan la url de la imagen y su public_id
+        image = {
+            url: resultUpload.secure_url,
+            public_id: resultUpload.public_id
+        }
+        console.log(image);
+
+        // Como existe una nueva imagen para subir, se debe eliminar de cloudinary la anterior
+        // Primero se debe encontrar el imgPublic_id de cloudinary que tiene la imagen antigua del producto
+        const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [req.params.id]);
+        let cloudinaryImgPublic_id = product[0].imgPublic_id; // En caso de no tener imagen, la variable tomara el valor de null
+        
+        // Ahora, en el caso de que el producto haya tenido una imagen anteriormente se la eliminara porque ya no es necesaria
+        if (cloudinaryImgPublic_id) {
+            await deleteImage(cloudinaryImgPublic_id);
+        }
+
+        // Ejecutar el UPDATE incluyendo el campo imgURL porque el req SI mando una nueva imagen para el producto
+        result = await pool.query("UPDATE products SET productName = ?, imgURL = ?, imgPublic_id = ?, description = ?, price = ? WHERE id = ?", [productName, image.url, image.public_id, description, price, req.params.id]);
+    } else {
+        // Ejecutar el UPDATE obviando el campo imgURL porque el req NO mando una nueva imagen para el producto
+        result = await pool.query("UPDATE products SET productName = ?, imgPublic_id = ?, description = ?, price = ? WHERE id = ?", [productName, image.public_id, description, price, req.params.id]);
+
     }
     
+    /* 
+       De la misma manera que al eliminar un producto hay que controlar que exista,
+       lo mismo debe suceder al intentar modificarlo
+    */
+    if (result.affectedRows === 0) {
+        return res.status(404).json({message: "Producto no encontrado"});
+    };
+    // En el caso de si haber existido el producto, el estado sera 204 indicando que se
+    // actualizo correctamente pero no devuelve ningun resultado
+    return res.sendStatus(204);
 }
 
 // * Funcion para obtener todos los productos de la db
@@ -79,6 +159,11 @@ export const getProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         //res.send('Eliminando un producto')
+
+        // Primero se debe encontrar el imgPublic_id de cloudinary que tiene la imagen del producto
+        const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [req.params.id]);
+        let cloudinaryImgPublic_id = product[0].imgPublic_id; // En caso de no tener imagen, la variable tomara el valor de null
+
         /* 
         Aca, si bien no es necesario devolver un resultado luego de eliminar un producto,
         Se utilizara el result.affectedRows para saber si el producto que se desea eliminar
@@ -86,32 +171,23 @@ export const deleteProduct = async (req, res) => {
         */
         const [result] = await pool.query("DELETE FROM products WHERE id = ?", [req.params.id]);
         if (result.affectedRows === 0) {
+            // NO EXISTE EL PRODUCTO
             return res.status(404).json({message: "Producto no encontrado"});
-        };
-        // En el caso de si haber existido el producto, el estado sera 204 indicando que se
-        // elimino correctamente pero no devuelve ningun resultado
-        return res.sendStatus(204);
+        } else {
+            // SI EXISTE EL PRODUCTO
+            // Con el public_id de cloudinary se ejecuta la funcion para eliminar la imagen en el caso de tener
+            if (cloudinaryImgPublic_id) {
+                await deleteImage(cloudinaryImgPublic_id);
+            }
+            console.log('Producto Eliminado');
+            // Finalmente el estado sera 204 indicando que se elimino correctamente pero no devuelve ningun resultado
+            return res.sendStatus(204);
+        }
+        
     } catch (error) {
         // Retornar el mensaje de error como respuesta
         return res.status(500).json({message: error.message});
     }
 
 
-}
-
-// Funcion para modificar un producto mediante su id
-export const updateProduct = async (req, res) => {
-    //res.send('Modificando un producto')
-    // Los datos de los campos a modificar se obtienen del req.body
-    const result = await pool.query("UPDATE products SET ? WHERE id = ?", [req.body, req.params.id]);
-    /* 
-       De la misma manera que al eliminar un producto hay que controlar que exista,
-       lo mismo debe suceder al intentar modificarlo
-    */
-    if (result.affectedRows === 0) {
-        return res.status(404).json({message: "Producto no encontrado"});
-    };
-    // En el caso de si haber existido el producto, el estado sera 204 indicando que se
-    // actualizo correctamente pero no devuelve ningun resultado
-    return res.sendStatus(204);
 }

@@ -22,15 +22,16 @@ export default function ProductCard({ product }) {
 
     return (
         <div className='Tarjeta'>
-            <header className='flex justify-between'>
+            <header className='flex justify-between mb-2'>
                 <h2 className='text-xl font-bold'>{product.productName}</h2>
             </header>
-            <img src={product.imgURL} alt="" />
-            <p className='Tarjeta_field'>Img: {product.imgURL}</p>
+            {product.imgURL && <img className='w-100 mb-3' src={product.imgURL}/>}
+            {/* <p className='Tarjeta_field'>URL: {product.imgURL}</p> */}
+            {/* <p className='Tarjeta_field'>Public_id: {product.imgPublic_id}</p> */}
             <p className='Tarjeta_field bg-white rounded-md h-24 overflow-y-auto'>{product.description}</p>
             <p className='Tarjeta_field'>Precio: ${product.price}</p>
-            <p className='Tarjeta_field'><span>C: {product.createdAt}</span></p>
-            <p className='Tarjeta_field'><span>M: {product.updatedAt}</span></p>
+            {/* <p className='Tarjeta_field'><span>C: {product.createdAt}</span></p> */}
+            {/* <p className='Tarjeta_field'><span>M: {product.updatedAt}</span></p> */}
             <footer className='flex flex-wrap gap-x-2 mt-3'>
                 <button className='TaskCard-icon' onClick={() => deleteProduct(product.id)}><MdDelete/></button>
                 <button className='TaskCard-icon' onClick={() => navigate(`/editProducto/${product.id}`)}><AiFillEdit/></button>

@@ -40,11 +40,10 @@ export default function ProductosPage() {
           <button className='MainButton'>
             Nuevo producto
           </button>
-        </Link>
-        
+        </Link> 
       </div>
       
-      <div className='p-8 pt-3 grid grid-cols-2 gap-5'>
+      <div className='p-5 pt-3 grid grid-cols-3 gap-5'>
         {/* Se llama a la funcion que renderiza el contenido de la pagina */}
         {renderMain()}
       </div>

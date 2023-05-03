@@ -1,7 +1,10 @@
-// Importar el modulo express y gaurdarlo en una cte
+// Importar el modulo express y guardarlo en una cte
 //const express = require('express');
 import express from 'express';
 const app = express();
+
+//Importar express-fileupload para el manejo de la subida de imagenes
+import fileUpload from 'express-fileupload';
 
 // Importar el archivo de configuracion
 import { PORT } from "./config.js";
@@ -20,12 +23,12 @@ import cors from "cors";
 
 // Importar las funciones necesarias para generar una constante, extraer la 
 // ruta absoluta de los archivos de la carpeta dist y luego distribuirlos
-import path, { dirname, join } from "path";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 // Extraer la ruta absoluta de los archivos en una constante
 const __dirname = dirname(fileURLToPath(import.meta.url));
-console.log(__dirname);
+//console.log(__dirname);
 
 // Indicar que app utilice el modulo cors para permitir peticiones desde el servidor de desarrollo del frontend
 app.use(cors());
@@ -33,6 +36,12 @@ app.use(cors());
 // Las peticiones antes de llegar a las rutas, se pasaran por una funcion json de express
 // para que el sistema pueda procesarlo y entenderlo
 app.use(express.json());
+
+//Middleware de express-fileupload
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: './upload'
+}))
 
 // Indicar que la aplicacion escucha por el puerto 3000
 app.listen(PORT);

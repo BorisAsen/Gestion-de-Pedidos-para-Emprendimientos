@@ -1,10 +1,9 @@
 import React from 'react'
 // Importar el componente de Formik para crear y manejar el formulario de alta de tareas
-import { Form, Formik } from "formik";
+import { Form, Field, Formik } from "formik";
 
 // Importar el context de productos
  import { useGlobalContext } from "../context/ContextProvider";
-
 
 // Importar los hooks necesarios
 // useEffect para obtener los datos del producto a editar al cargar la pagina
@@ -14,6 +13,10 @@ import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+// Importar iconos
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+
+import Preview_Image from '../components/Form Components/Preview_Image';
 
 export default function ProductForm() {
 
@@ -27,17 +30,19 @@ export default function ProductForm() {
   // Definir el useState para setear valores en el formulario
   const [product, setProduct] = useState({
     productName: "",
-    imgURL: "",
+    imgURL: null,
     description: "",
     price: 0,
   });
 
   // Creo la constante para disponer del useParams
   const params = useParams();
-  console.log(params); // Mustro el id del producto en consola
+  //console.log(params); // Muestro el id del producto en consola
 
   // Creo la constante para disponer del useNavigate
   const navigate = useNavigate();
+
+  const [originalImage, setOriginalImage] = useState({imgURL: null});
 
   // Utilizar el useEfect para traer los datos del producto en el caso de
   // que ya exista y se lo quiera editar
@@ -49,33 +54,35 @@ export default function ProductForm() {
         const product = await getProduct(params.id);
         // Muestro por consola los datos del producto para corroborar
         // console.log(product);
+        setOriginalImage({
+          imgURL: product.imgURL,
+        })
         setProduct({
           productName: product.productName,
-          imgURL: product.imgURL,
+          //imgURL: product.imgURL,
           description: product.description,
           price: product.price,
-        }) 
+        })
       }
     };
     loadProduct();
   }, [])
-  
-
 
   return (
-    <div className='mt-3'>
+    <div className='p-6'>
       <Formik
         // Defino los valores iniciales que tendran los campos
         // Si se quiere editar un producto se corresponderan con los
         // valores obtenidos de la db, sino estaran vacios al momento de crear uno nuevo
         initialValues={product}
         enableReinitialize={true}
+        
 
         // Evento que se activa cuando el formuilario es enviado
         // Con esto se pueden observar por consola los datos que se capturaron
         onSubmit={async (values, actions) => {
           // Muestro los valores por consola
-          console.log(values);
+          console.log('Valores tomados del form: ', values);
           // Corroboro si el producto ya existe para modificarlo o crearlo segun corresponda
           if (params.id) {
             // Llamo a la funcion para modificar un producto
@@ -83,77 +90,75 @@ export default function ProductForm() {
           } else {
             // Llamo a la funcion para crear un producto
             await createProduct(values);
+            //await uploadFile();
           }
-          // Redireccionar a la pagina de productos una vez actualizado o creado el producto
-          navigate("/productos");
+          
           // Limpio el formulario una vez que se crea o modifica un producto
           setProduct({
             productName: "",
-            imgURL: "",
+            imgURL: null,
             description: "",
             price: 0,
           });
+          
+          actions.setSubmitting(false);
+          navigate("/productos");
         }}
-        >
-        {/* Esta funcion permite que los datos capturados por los inputs se correspondan
-        y guarden en los Values definidos anteriormente mediante la propiedad handleChange
-        que se ejecuta con el evento onChange. Con la propiedad handleSubmit y el evento onSubmit
-        se podran observar los datos capturados por el formulario */}
-        {({handleChange, handleSubmit, values, isSubmitting}) => (
-          <Form onSubmit={handleSubmit} encType='multipart/form-data' className='mx-auto bg-slate-300 max-w-sm rounded-md p-4'>
-            {/* Crear un titulo condicional para el formulario segun se quiera crear
-            o actualizar un producto. Si ya existe el id del producto el titulo sera Editar
-            de caso contrario sera Crear. */}
-            <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Producto" : "Crear Producto" }</h1>
-            <label className='block'>Nombre</label>
-            <input
-              className='p-1 my-2 rounded-md w-full'
+      >
+
+        {({ values, setFieldValue, isSubmitting, handleSubmit }) => (
+          <Form onSubmit={handleSubmit} className='mx-auto bg-slate-300 max-w-sm rounded-md p-4'>
+
+            <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Producto" : "Nuevo Producto" }</h1>
+            
+            <label className='block'>Nombre: </label>
+            <Field
+              className='p-1 my-1 mb-2 rounded-md w-full'
               type="text"
               name="productName"
               placeholder='Escribe un nombre'
-              onChange={handleChange}
-              value={values.productName} // Resetea al valor inicial despues de enviar el form
-            />
+            ></Field>
 
-            <label className='block'>Imagen</label>
+            <label className='block'>Imagen: </label>
             <input
-              className='p-1 my-2 rounded-md w-full'
+              className='p-1 my-1 mb-2 rounded-md w-full'
               type="file"
-              accept='.jpg, .jpeg, .png'
               name="imgURL"
-              onChange={handleChange}
-              value={values.imgURL} // Resetea al valor inicial despues de enviar el form
+              accept='.jpg, .jpeg, .png'
+              onChange={(e) => setFieldValue('imgURL', e.target.files[0])}
             />
 
-            {/* {
-              console.log(values.imgURL.split('fakepath\\')[1])
-            } */}
+            {/* Preview de la imagen */}
+            {product.imgURL && <img src={product.imgURL}/>}
+            <div className="flex justify-center items-center w-60 my-4 mx-auto h-60 bg-white">
+              {(values.imgURL) && ( <Preview_Image file={values.imgURL}/> )}
+              {/* En el caso de que se este editando el producto, se debe cargar la imagen original en el preview */}
+              {(!values.imgURL && originalImage.imgURL) && ( 
+                  <div>
+                    {originalImage.imgURL && <img src={originalImage.imgURL}/>}
+                  </div>
+              )}
+            </div>  
 
-            <label className='block'>Description</label>
-            <textarea
-              className='p-1 my-2 rounded-md w-full'
+            <label className='block'>Descripcion: </label>
+            <Field
+              component="textarea"
+              className='p-1 my-1 mb-2 rounded-md w-full'
               name="description"
               rows="3"
-              placeholder='Escribe una descripcion del producto'
-              onChange={handleChange}
-              value={values.description} // Resetea al valor inicial despues de enviar el form
-            ></textarea>
+              placeholder='Escribe una descripcion para el producto'
+            ></Field>
 
-            <label className='block'>Precio</label>
-            <input
-              className='p-1 my-2 rounded-md w-full'
+            <label className='block'>Precio: </label>
+            <Field
+              className='p-1 my-1 mb-2 rounded-md w-full'
               type="number"
               name="price"
               placeholder='Escribe el precio'
-              onChange={handleChange}
-              value={values.price} // Resetea al valor inicial despues de enviar el form
-            />
+            ></Field>
 
-            <button className='bg-green-500 rounded-md px-2 py-0.5 text-white' type='submit' disabled={isSubmitting}>
-              {
-                /* Desabilitar el boton de guardar mientras se almacena el prodcuto */
-                isSubmitting ? "Guardando..." : "Guardar"
-              }
+            <button className='bg-green-500 flex items-center justify-center h-9 w-20 rounded-md text-white' type='submit' disabled={isSubmitting}>
+              {isSubmitting ? ( <AiOutlineLoading3Quarters className="animate-spin" /> ) : 'Guardar'}
             </button>
           </Form>
         )}

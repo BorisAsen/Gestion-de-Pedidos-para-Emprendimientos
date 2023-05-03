@@ -33,7 +33,7 @@ export default function TaskCard({ task }) {
                 <h2 className='text-xl font-bold'>{task.title}</h2>
                 <span>{task.done == 1 ? "✅" : "❌"}</span>
             </header>
-            <p className='bg-white rounded-md p-2 h-20 overflow-y-auto'>{task.description}</p>
+            <p className='bg-white rounded-md p-2 h-30 overflow-y-auto'>{task.description}</p>
             <span>{task.createAt}</span>
             <div className='flex flex-wrap gap-x-2 mt-3'>
                 <button className='TaskCard-icon' onClick={() => deleteTask(task.id)}><MdDelete/></button>

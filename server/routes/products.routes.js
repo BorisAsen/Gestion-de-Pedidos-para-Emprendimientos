@@ -1,11 +1,6 @@
 // Importar el modulo enrutador de express
 import { Router } from "express";
-const router = Router()
-
-// Multer para subir las imagenes de cada producto
-import { storage } from  '../middlewares/multer.js';
-import multer from 'multer';
-const uploader = multer({storage});
+const router = Router();
 
 //Importar las funciones del CRUD de productos
 import { 
@@ -25,9 +20,7 @@ router.get('/products', getProducts);
 router.get('/products/:id', getProduct);
 
 // Crear productos
-// Se utiliza el multer como middleware para guardar la imagen en el sv y luego guardar el producto en la base de datos
-// 'imgURl' debe coincidir con el name del input que toma la imagen en el form de productos
-router.post('/products', uploader.single('imgURL'), createProduct);
+router.post('/products', createProduct); 
 
 // Modificar un producto mediante un id
 router.put('/products/:id', updateProduct);

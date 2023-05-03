@@ -8,7 +8,6 @@ import { createContext } from "react";
 // Creo la constante para el contexto
 const GlobalContext = createContext();
 
-
 // Importo los hooks de react para utilizar el context
 import { useContext, useState } from "react";
 
@@ -41,17 +40,6 @@ export const useGlobalContext = () => {
     // Si existe el contexto se lo retorna para que pueda ser importado
     return context;
 }
-
-// Hook para usar el Context de productos
-// export const useProducts = () => {
-//     const context = useContext(ProductContext);
-//     // Si no existe el contexto significa que no se esta dentro del componente ContextProvider
-//     if (!context) {
-//         throw new Error("useProducts must be used within a ContextProvider");
-//     }
-//     // Si existe el contexto se lo retorna para que pueda ser importado
-//     return context;
-// }
 
 // Esta funcion retorna un componente Context, recibe un children 
 // que es un componente cualquiera que se quiere que acceda al contexto,
@@ -193,15 +181,14 @@ export const GlobalContextProvider = ({children}) => {
 
     // Funcion para modificar un producto mediante el id que recibe
     // del evento onClick del boton Guardar
-    const updateProduct = async (id, newFields) => {
+    const updateProduct = async (id, updateProduct) => {
         try {
-            const response = await updateProductRequest(id, newFields);
+            const response = await updateProductRequest(id, updateProduct);
             console.log(response);
         } catch (error) {
             console.log(error);
         }
     };
-
 
 /**************************** DATOS Y FUNCIONES A EXPORTAR ****************************/
     return (<GlobalContext.Provider value={{

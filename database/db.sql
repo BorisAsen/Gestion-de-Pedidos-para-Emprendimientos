@@ -7,11 +7,12 @@ CREATE TABLE tasks(
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla de Tareas
+-- Tabla de Productos
 CREATE TABLE products(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     productName VARCHAR(200) NOT NULL,
     imgURL VARCHAR(1000),
+    imgPublic_id VARCHAR(1000),
     description VARCHAR(700),
     price DOUBLE NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
