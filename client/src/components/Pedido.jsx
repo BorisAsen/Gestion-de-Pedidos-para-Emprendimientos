@@ -36,9 +36,9 @@ export default function PedidoCard({ pedido }) {
 
             <p className='mb-10 Tarjeta_field bg-white rounded-md h-40 overflow-y-auto whitespace-pre-wrap'>{pedido.description}</p>
             <div className='absolute bottom-3 flex flex-wrap gap-x-2 mt-3'>
-                <button className='PedidoCard-icon' onClick={() => deletePedido(pedido.id)}><MdDelete/></button>
-                <button className='PedidoCard-icon' onClick={() => navigate(`/editTarea/${pedido.id}`)}><AiFillEdit/></button>
-                <button className='PedidoCard-icon' onClick={() => handleDone(pedido.done)}><MdFileDownloadDone/></button>
+                <button className='Card-icon' onClick={() => deletePedido(pedido.id)}><MdDelete/></button>
+                <button className='Card-icon' onClick={() => navigate(`/editTarea/${pedido.id}`)}><AiFillEdit/></button>
+                <button className='Card-icon' onClick={() => handleDone(pedido.done)}><MdFileDownloadDone/></button>
             </div>
         </div>
   )

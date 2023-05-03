@@ -1,11 +1,11 @@
 -- Tabla de Tareas
-CREATE TABLE tasks(
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(200) NOT NULL,
-    description VARCHAR(300),
-    done BOOLEAN NOT NULL DEFAULT 0,
-    createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE tasks(
+--     id INTEGER PRIMARY KEY AUTO_INCREMENT,
+--     title VARCHAR(200) NOT NULL,
+--     description VARCHAR(300),
+--     done BOOLEAN NOT NULL DEFAULT 0,
+--     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+-- );
 
 -- Tabla de Pedidos
 CREATE TABLE orders(
@@ -23,7 +23,6 @@ CREATE TABLE orders(
     total DOUBLE NOT NULL DEFAULT 0,
 );
 
-
 -- Tabla de Productos
 CREATE TABLE products(
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -34,4 +33,14 @@ CREATE TABLE products(
     price DOUBLE NOT NULL,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de relacion entre Pedidos y Productos
+CREATE TABLE orders_products(
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );

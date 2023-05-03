@@ -54,7 +54,7 @@
     }
 
     /* TaskCard Icons */
-    .PedidoCard-icon{
+    .Card-icon{
         @apply
         relative flex items-center justify-center
         h-6 w-6 rounded-md

@@ -33,8 +33,8 @@ export default function ProductCard({ product }) {
             {/* <p className='Tarjeta_field'><span>C: {product.createdAt}</span></p> */}
             {/* <p className='Tarjeta_field'><span>M: {product.updatedAt}</span></p> */}
             <footer className='absolute bottom-3 flex flex-wrap gap-x-2'>
-                <button className='TaskCard-icon' onClick={() => deleteProduct(product.id)}><MdDelete/></button>
-                <button className='TaskCard-icon' onClick={() => navigate(`/editProducto/${product.id}`)}><AiFillEdit/></button>
+                <button className='Card-icon' onClick={() => deleteProduct(product.id)}><MdDelete/></button>
+                <button className='Card-icon' onClick={() => navigate(`/editProducto/${product.id}`)}><AiFillEdit/></button>
             </footer>
 
         </div>
