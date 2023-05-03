@@ -1,0 +1,5 @@
+# Ocultar el archivo .env
+.env
+
+# Ocultar la carpeta "node_modules"
+node_modules/
