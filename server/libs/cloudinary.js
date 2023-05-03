@@ -1,10 +1,13 @@
-import { v2 as cloudinary} from 'cloudinary'
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { v2 as cloudinary} from 'cloudinary';
 
 // Datos para conectarse con la cuenta donde se subiran las imagenes
 cloudinary.config({
-    cloud_name: "dg1dyjyid",
-    api_key: "165162932852235",
-    api_secret: "jHwby9QNrpx8W3VSbegYmL2EZf0"
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
 // Subir una imagen a cloudinary
