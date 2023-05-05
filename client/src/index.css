@@ -48,8 +48,17 @@
     }
     .Tarjeta_field{
         @apply
-        p-1 mb-1
+        p-2 mb-2
         text-sm
+        bg-white
+        rounded-md
+        ;
+    }
+
+    .Tarjeta_field_Overflow{
+        @apply
+        overflow-y-auto
+        whitespace-pre-wrap
         ;
     }
 

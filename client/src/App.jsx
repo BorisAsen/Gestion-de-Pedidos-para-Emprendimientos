@@ -25,6 +25,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 /********** COMPONENTES **********/
 // Importo el componente de la barra de navegacion
 import NavBar from "./components/NavBar";
+// Componente de la vista detallada de un pedido
+import PedidoView from "./pages/PedidoView"
 
 /********** CONTEXT **********/
 // Importar el Contexto de tareas
@@ -33,8 +35,8 @@ import { GlobalContextProvider } from "./context/ContextProvider";
 
 export default function App() {
   return (
-    <div className="bg-primary">
-      <div>
+    <div className="bg-primary h-screen">
+      <div className="bg-primary">
         <NavBar/>
         <div className= 'ml-14'>
           <GlobalContextProvider>
@@ -42,16 +44,18 @@ export default function App() {
               {/* Ruta de la pag principal de Pedidos*/}
               <Route path='/' element={<PedidosPage/>} />
               {/* Ruta de la pagina para crear tareas */}
-              <Route path='/nuevaTarea' element={<PedidosForm/>} />
+              <Route path='/nuevoPedido' element={<PedidosForm/>} />
               {/* Ruta de la pagina para modificar tareas */}
-              <Route path='/editTarea/:id' element={<PedidosForm/>} />
+              <Route path='/editarPedido/:id' element={<PedidosForm/>} />
+              {/* Ruta que muestra la vista completa de un pedido */}
+              <Route path='/vistaPedido/:id' element={<PedidoView/>} />
 
               {/* Ruta de la pagina de Productos */}
               <Route path='/productos' element={<ProductosPage/>} />
               {/* Ruta de la pagina para crear productos */}
                <Route path='/nuevoProducto' element={<ProductosForm/>} />
               {/* Ruta de la pagina para modificar productos */}
-              <Route path='/editProducto/:id' element={<ProductosForm/>} />
+              <Route path='/editarProducto/:id' element={<ProductosForm/>} />
               
               {/* Ruta de la pagina de Ventas */}
               <Route path='/ventas' element={<VentasPage/>} />
@@ -65,7 +69,6 @@ export default function App() {
           </GlobalContextProvider>
         </div>
       </div>
-
     </div>
   )
 }

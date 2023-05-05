@@ -7,16 +7,19 @@ import { pool } from "../db.js"
 export const createPedido = async (req, res) => {
     try {
         //res.send('Creando Pedidos');
-        const {title, description} = req.body;
+        const {title, description, doneAt, address, client} = req.body;
         const [result] = await pool.query(
-            "INSERT INTO tasks(title, description) VALUES (?, ?)",
-            [title, description]
+            "INSERT INTO orders(title, description, doneAt, address, client) VALUES (?, ?, ?, ?, ?)",
+            [title, description, doneAt, address, client]
         );
         console.log(result);
         res.json({
             id: result.insertId,
             title,
             description,
+            doneAt,
+            address,
+            client
         }); 
     } catch (error) {
         /* Devuelve un mensaje de error con estado http 500 que indica
@@ -30,7 +33,7 @@ export const createPedido = async (req, res) => {
 export const getPedidos = async (req, res) => {
     try {
         //res.send('Obteniendo Pedidos')
-        const [result] = await pool.query("SELECT * FROM tasks ORDER BY createAt DESC");
+        const [result] = await pool.query("SELECT * FROM orders ORDER BY createAt DESC");
         // Devuelve un arreglo con todas los pedidos
         //console.log(result);
         console.log("Obteniendo Pedidos...")
@@ -46,7 +49,7 @@ export const getPedidos = async (req, res) => {
 export const getPedido = async (req, res) => {
     try {
         //res.send('Obteniendo un Pedido')
-        const [result] = await pool.query("SELECT * FROM tasks WHERE id = ?", [req.params.id]);
+        const [result] = await pool.query("SELECT * FROM orders WHERE id = ?", [req.params.id]);
         // Devuelve un arreglo de un solo pedido que coincide con el ID solicitado
         console.log(result);
         // Controlar que se devuelva un resultado de error si no existe el id solicitado
@@ -71,7 +74,7 @@ export const deletePedido = async (req, res) => {
         Se utilizara el result.affectedRows para saber si el pedido que se desea eliminar
         realmente existe en la db, en el caso de no hacerlo se devolvera un msg de error
         */
-        const [result] = await pool.query("DELETE FROM tasks WHERE id = ?", [req.params.id]);
+        const [result] = await pool.query("DELETE FROM orders WHERE id = ?", [req.params.id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({message: "Pedido not found"});
         };
@@ -90,7 +93,7 @@ export const deletePedido = async (req, res) => {
 export const updatePedido = async (req, res) => {
     //res.send('Modificando un pedido')
     // Los datos de los campos a modificar se obtienen del req.body
-    const result = await pool.query("UPDATE tasks SET ? WHERE id = ?", [req.body, req.params.id]);
+    const result = await pool.query("UPDATE orders SET ? WHERE id = ?", [req.body, req.params.id]);
     /* 
        De la misma manera que al eliminar un pedido hay que controlar que exista,
        lo mismo debe suceder al intentar modificarlo

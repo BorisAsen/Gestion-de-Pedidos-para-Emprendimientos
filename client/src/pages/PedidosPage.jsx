@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect } from "react";
 
 // Importar el componente para mostrar una tarjeta de pedido
-import Pedido from "../components/Pedido";
+import PedidoShortView from "../components/PedidoShortView";
 
 // Importo el context global
 import { useGlobalContext } from "../context/ContextProvider";
@@ -28,15 +28,15 @@ export default function PedidosPage() {
     if (pedidos.length === 0) {
       return <h1>No hay pedidos que mostrar</h1>
     }else{
-      return pedidos.map ((pedido) => <Pedido pedido={pedido} key={pedido.id}/>)
+      return pedidos.map ((pedido) => <PedidoShortView pedido={pedido} key={pedido.id}/>)
     }
   }
 
   return (
-    <div className= 'h-screen' >
+    <div className= '' >
       <div className='bg-white py-3.5 px-6 flex items-center justify-between mb-4 align-middle'>
         <h1 className='PageTitle'>Listado de Pedidos</h1>
-        <Link to="/nuevaTarea">
+        <Link to="/nuevoPedido">
           <button className='MainButton'>
             Nuevo Pedido
           </button>
@@ -44,7 +44,7 @@ export default function PedidosPage() {
         
       </div>
       
-      <div className='p-8 pt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5'>
+      <div className='p-5 pt-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
         {/* Se llama a la funcion que renderiza el contenido de la pagina */}
         {renderMain()}
       </div>

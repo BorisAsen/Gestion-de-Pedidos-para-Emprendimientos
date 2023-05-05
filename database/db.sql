@@ -21,6 +21,8 @@ CREATE TABLE orders(
     client VARCHAR(100),
     deliveryCost DOUBLE DEFAULT 0,
     total DOUBLE NOT NULL DEFAULT 0,
+    payment ENUM('Efectivo', 'Transferencia', 'Tarjeta') NOT NULL DEFAULT 'Efectivo',
+    shippingDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla de Productos

@@ -28,7 +28,11 @@ module.exports = {
         'container': '0 0.3em 0.5em rgba(0, 0, 0, 0.5)',
       }
 
+      
+
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }
