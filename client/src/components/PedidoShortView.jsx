@@ -6,9 +6,12 @@ import { useGlobalContext } from "../context/ContextProvider";
 //Importar el hook para direccionar al formulario de pedidos cuando se presione el boton editar
 import { useNavigate } from "react-router-dom";
 
-// Importo iconos de React Icons
-import { MdDelete, MdFileDownloadDone } from 'react-icons/md';
+// Importar iconos de React Icons
+import { MdDelete, MdDone } from 'react-icons/md';
 import { AiFillEdit, AiFillEye } from 'react-icons/ai';
+
+// Importar libreria moment para formatear fechas
+import moment from 'moment';
 
 // El componente recibe un elemento del arreglo de pedidos y muestra todas la info del mismo
 export default function PedidoCard({ pedido }) {
@@ -26,6 +29,9 @@ export default function PedidoCard({ pedido }) {
         await togglePedidoDone(pedido.id);
     }
 
+    //Formateo de Fechas
+    const formattedDate = moment(pedido.shippingDate).format('DD/MM/YY - HH:mm');
+
     return (
         <div className='Tarjeta relative'>
             <header className='flex justify-between mb-2'>
@@ -33,7 +39,7 @@ export default function PedidoCard({ pedido }) {
                 <span>{pedido.done == 1 ? "✅" : "❌"}</span>
             </header>
             {/* <p className='Tarjeta_field h-40 Tarjeta_field_Overflow'><b>Descripción:</b> {pedido.description}</p> */}
-            <p className='Tarjeta_field'><b>Fecha de entrega:</b> {pedido.shippingDate}</p>
+            <p className='Tarjeta_field'><b>Fecha de entrega:</b> {formattedDate}</p>
             {/* <p className='Tarjeta_field'><b>Creado el:</b> {pedido.createAt}</p> */}
             {/* <p className='Tarjeta_field'><b>Ultima modificación:</b> {pedido.updatedAt}</p> */}
             {/* <p className='Tarjeta_field'><b>Entregado el:</b> {pedido.doneAt}</p> */}
@@ -47,7 +53,7 @@ export default function PedidoCard({ pedido }) {
             <div className='absolute bottom-3 flex flex-wrap gap-x-2 mt-3'>
                 <button className='Card-icon' onClick={() => deletePedido(pedido.id)}><MdDelete/></button>
                 <button className='Card-icon' onClick={() => navigate(`/editarPedido/${pedido.id}`)}><AiFillEdit/></button>
-                <button className='Card-icon' onClick={() => handleDone(pedido.done)}><MdFileDownloadDone/></button>
+                <button className='Card-icon' onClick={() => handleDone(pedido.done)}><MdDone/></button>
                 <button className='Card-icon' onClick={() => navigate(`/vistaPedido/${pedido.id}`)}><AiFillEye/></button>
             </div>
         </div>

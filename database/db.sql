@@ -13,16 +13,16 @@ CREATE TABLE orders(
     title VARCHAR(300) NOT NULL,
     description VARCHAR(300),
     done BOOLEAN NOT NULL DEFAULT 0,
-    createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    doneAt TIMESTAMP,
-    withdrawOrSend BOOLEAN NOT NULL DEFAULT 0,
+    createAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+    doneAt DATETIME,
+    withdrawOrSend BOOLEAN NOT NULL DEFAULT 0, -- 1 Envio, 0 Retira
     address VARCHAR(200),
     client VARCHAR(100),
     deliveryCost DOUBLE DEFAULT 0,
     total DOUBLE NOT NULL DEFAULT 0,
     payment ENUM('Efectivo', 'Transferencia', 'Tarjeta') NOT NULL DEFAULT 'Efectivo',
-    shippingDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    shippingDate DATETIME NOT NULL DEFAULT NOW()
 );
 
 -- Tabla de Productos
@@ -33,8 +33,8 @@ CREATE TABLE products(
     imgPublic_id VARCHAR(1000),
     description VARCHAR(700),
     price DOUBLE NOT NULL,
-    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    createdAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW()
 );
 
 -- Tabla de relacion entre Pedidos y Productos

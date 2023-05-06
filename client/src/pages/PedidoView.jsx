@@ -15,11 +15,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { MdDelete, MdDone } from 'react-icons/md';
 import { AiFillEdit } from 'react-icons/ai';
 
+// Importar libreria moment para formatear fechas
+import moment from 'moment';
+
 
 export default function PedidosView() {
   // Creo la constante para disponer del useParams
   const params = useParams();
-  console.log('ID rescatado: ',params); // Mustro el id del pedido en consola
+  //console.log('ID rescatado: ',params); // Mustro el id del pedido en consola
 
   // Extraigo del context las funciones necesarias
   const {
@@ -75,31 +78,43 @@ export default function PedidosView() {
     setDone(!done);
   }
   
+  //Formateo de Fechas
+  const formattedShippingDate = moment(pedido.shippingDate).format('DD/MM/YY - HH:mm');
+  const formattedCreateAt = moment(pedido.createAt).format('DD/MM/YY - HH:mm');
+  const formattedUpdatedAt = moment(pedido.updatedAt).format('DD/MM/YY - HH:mm');
+  let formattedDoneAt;
+  pedido.doneAt ? formattedDoneAt = moment(pedido.doneAt).format('DD/MM/YY - HH:mm') : formattedDoneAt = "No entregado";
+  
+
+
+
 
 
   return (
     <div className='p-5 flex justify-center'>
-      <div className='Tarjeta relative w-2/3'>
+      <div className='Tarjeta relative w-5/6 mx-auto'>
             <header className='flex justify-between mb-2'>
                 <h2 className='text-xl font-bold'>{pedido.title}</h2>
                 <span>{done == 1 ? "✅" : "❌"}</span>
             </header>
-            <p className='Tarjeta_field h-40 Tarjeta_field_Overflow'><b>Descripción:</b> {pedido.description}</p>
-            <p className='Tarjeta_field'><b>Fecha de entrega:</b> {pedido.shippingDate}</p>
-            <p className='Tarjeta_field'><b>Creado el:</b> {pedido.createAt}</p>
-            <p className='Tarjeta_field'><b>Ultima modificación:</b> {pedido.updatedAt}</p>
-            <p className='Tarjeta_field'><b>Entregado el:</b> {pedido.doneAt}</p>
+            <p className='Tarjeta_field'><b>Entregado:</b> {done ? "SI" : "NO"}</p>
+            <p className='Tarjeta_field'><b>Fecha de entrega:</b> {formattedShippingDate}</p>
             <p className='Tarjeta_field'><b>Envío o Retira:</b> {pedido.withdrawOrSend == 1 ? "Envio" : "Retira"}</p>
             <p className='Tarjeta_field h-20 Tarjeta_field_Overflow'><b>Dirección:</b> {pedido.address}</p>
-            <p className='Tarjeta_field h-20 Tarjeta_field_Overflow'><b>Cliente:</b> {pedido.client}</p>
+            <p className='Tarjeta_field h-14 Tarjeta_field_Overflow'><b>Cliente:</b> {pedido.client}</p>
             <p className='Tarjeta_field'><b>Costo de envío:</b> {pedido.deliveryCost}</p>
+            <p className='Tarjeta_field'><b>Metodo de pago:</b> {pedido.payment}</p>
+            <p className='Tarjeta_field h-32 Tarjeta_field_Overflow'><b>Observaciones:</b> {pedido.description}</p>
             <p className='Tarjeta_field'><b>Total:</b> {pedido.total}</p>
-            <p className='Tarjeta_field mb-10'><b>Medio de pago:</b> {pedido.payment}</p>
+
+            <p className='Tarjeta_field'><b>Creado el:</b> {formattedCreateAt}</p>
+            <p className='Tarjeta_field'><b>Ultima modificación:</b> {formattedUpdatedAt}</p>
+            <p className='Tarjeta_field mb-10'><b>Entregado el:</b> {formattedDoneAt}</p>
 
             <div className='absolute bottom-3 flex flex-wrap gap-x-2 mt-3'>
-                <button className='Card-icon' onClick={() => (deletePedido(pedido.id), navigate(`/`))}><MdDelete/></button>
-                <button className='Card-icon' onClick={() => navigate(`/editarPedido/${pedido.id}`)}><AiFillEdit/></button>
-                <button className='Card-icon' onClick={() => handleDone(pedido.done)}><MdDone/></button>
+                <button className='Card-icon pr-2' onClick={() => (deletePedido(pedido.id), navigate(`/`))}><MdDelete className='m-1'/>Eliminar</button>
+                <button className='Card-icon pr-2' onClick={() => navigate(`/editarPedido/${pedido.id}`)}><AiFillEdit className='m-1'/>Editar</button>
+                <button className='Card-icon pr-2' onClick={() => handleDone(pedido.done)}><MdDone className='m-1'/>Entregado</button>
             </div>
         </div>
     </div>

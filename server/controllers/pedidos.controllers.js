@@ -7,20 +7,29 @@ import { pool } from "../db.js"
 export const createPedido = async (req, res) => {
     try {
         //res.send('Creando Pedidos');
-        const {title, description, doneAt, address, client} = req.body;
+        const {title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment} = req.body;
+        // En el form del frontend, al dejar el checkbox sin marcar por defecto, cuando se envian
+        // los datos el campo done viene como null por lo que es necesario controlarlo y si este
+        // es el caso asumir que es 0 (no entrgado), de otra forma aceptar el valor que trae
+        done ? done : 0;
         const [result] = await pool.query(
-            "INSERT INTO orders(title, description, doneAt, address, client) VALUES (?, ?, ?, ?, ?)",
-            [title, description, doneAt, address, client]
+            "INSERT INTO orders(title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment]
         );
         console.log(result);
         res.json({
             id: result.insertId,
             title,
             description,
-            doneAt,
+            done,
+            shippingDate,
+            withdrawOrSend,
             address,
-            client
-        }); 
+            client,
+            deliveryCost,
+            total,
+            payment
+        });
     } catch (error) {
         /* Devuelve un mensaje de error con estado http 500 que indica
         que se acepto la solicitud pero un error impidio que se cumpliera */
@@ -93,6 +102,7 @@ export const deletePedido = async (req, res) => {
 export const updatePedido = async (req, res) => {
     //res.send('Modificando un pedido')
     // Los datos de los campos a modificar se obtienen del req.body
+    console.log(req.body)
     const result = await pool.query("UPDATE orders SET ? WHERE id = ?", [req.body, req.params.id]);
     /* 
        De la misma manera que al eliminar un pedido hay que controlar que exista,
