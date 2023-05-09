@@ -19,6 +19,8 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 // Importar libreria moment para formatear fechas
 import moment from 'moment';
 
+import ProductoSearchBar from "../components/ProductoSearchBar"
+
 
 export default function PedidosForm() {
 
@@ -157,6 +159,9 @@ export default function PedidosForm() {
               placeholder='Escribe un titulo'
               //value={values.title} // Resetea al valor inicial despues de enviar el form
             ></Field>
+
+            {/* Barra de busqueda de productos */}
+            <ProductoSearchBar/>
 
             <label className='block my-2 mb-3 w-full'>
               Entregado

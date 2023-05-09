@@ -126,7 +126,7 @@ export const getProducts = async (req, res) => {
         const [result] = await pool.query("SELECT * FROM products ORDER BY createdAt DESC");
         // Devuelve un arreglo con todos los productos
         //console.log(result);
-        console.log("Obteniendo productos...")
+        //console.log("Obteniendo productos...")
         res.json(result); 
     } catch (error) {
         // Retornar el mensaje de error como respuesta
@@ -188,6 +188,21 @@ export const deleteProduct = async (req, res) => {
         // Retornar el mensaje de error como respuesta
         return res.status(500).json({message: error.message});
     }
+}
 
-
+// * Funcion para obtener productos mediante coincidencias en el campo productName
+export const getProducts_productName = async (req, res) => {
+    try {
+        //res.send('Obteniendo productos mediante el nombre...')
+        const { productName } = req.query;
+        console.log('Buscando productos con la coincidencia en el nombre: ', productName);
+        const [result] = await pool.query("SELECT * FROM products WHERE productName LIKE ?", [`%${productName}%`]);
+        // Devuelve un arreglo con todos los productos
+        //console.log(result);
+        res.json(result); 
+    } catch (error) {
+        // Retornar el mensaje de error como respuesta
+        return res.status(500).json({message: error.message});
+    }
+    
 }

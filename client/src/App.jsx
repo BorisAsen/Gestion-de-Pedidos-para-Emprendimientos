@@ -32,6 +32,10 @@ import PedidoView from "./pages/PedidoView"
 // Importar el Contexto de tareas
 import { GlobalContextProvider } from "./context/ContextProvider";
 
+/********** CONTEXT **********/
+// Importar la pagina de testeo del SearchBar
+import TestSearchBar from "./pages/TestSearchBar"
+
 
 export default function App() {
   return (
@@ -65,6 +69,10 @@ export default function App() {
               
               {/* Pagina por defecto que se mostrara cuando se solicite una pagina que no existe */}
               <Route path='*' element={<NotFoundPage/>} />
+
+
+              {/* RUTAS DE TESTEO */}
+              <Route path='/testSearchBar' element={<TestSearchBar/>} />
             </Routes>
           </GlobalContextProvider>
         </div>

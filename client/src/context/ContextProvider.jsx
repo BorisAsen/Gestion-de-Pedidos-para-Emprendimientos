@@ -23,6 +23,7 @@ import {
     deleteProductRequest,
     createProductRequest,
     updateProductRequest,
+    getProductByProductNameRequest
 } from "../api/productos.api";
 
 // Hook para usar el contexto global en todos los componentes
@@ -182,6 +183,17 @@ export const GlobalContextProvider = ({children}) => {
         }
     };
 
+    // Funcion para obtener productos que tengan coincidencias en sun nombre con el termino buscado
+    const getProductByProductName = async (productName) => {
+        try {
+            const response = await getProductByProductNameRequest(productName);
+            // Guardo el resultado de la busqueda en el arreglo de productos
+            setProducts(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 /**************************** DATOS Y FUNCIONES A EXPORTAR ****************************/
     return (<GlobalContext.Provider value={{
                 // Pedidos
@@ -199,7 +211,8 @@ export const GlobalContextProvider = ({children}) => {
                 deleteProduct,
                 createProduct,
                 getProduct,
-                updateProduct
+                updateProduct,
+                getProductByProductName
 
             }}>
                 {children}

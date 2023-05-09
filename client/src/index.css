@@ -85,4 +85,14 @@
         transition-all duration-100 ease-linear
         ;
     }
+
+    .ProductShortView{
+        @apply
+        p-2
+        relative
+        bg-slate-200
+        rounded-md
+        h-max
+        
+    }
 }

@@ -26,6 +26,7 @@ module.exports = {
         'navBarIconHover': '0 0.2em 0.7em rgba(0, 0, 0, 0.3)',
         'taskCardIcon': '0 0.1em 0.2em rgba(0, 0, 0, 0.3)',
         'container': '0 0.3em 0.5em rgba(0, 0, 0, 0.5)',
+        'SearchResult': 'inset 0 0 0.6em rgba(255, 0, 0, 0.9)',
       }
 
       

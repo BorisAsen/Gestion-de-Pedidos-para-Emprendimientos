@@ -5,7 +5,11 @@ import axios from "axios";
 export const getProductsRequest = async () =>
     await axios.get("http://localhost:4000/products");
 
-// Funcion para traer un unico prodcuto mediante el id
+// Funcion para traer productos mediante una coincidencia de sus nombres y el termino buscado
+export const getProductByProductNameRequest = async (productName) =>
+    await axios.get(`http://localhost:4000/products/search?productName=${productName}`);
+
+// Funcion para traer un unico producto mediante el id
 export const getProductRequest = async (id) =>
     await axios.get(`http://localhost:4000/products/${id}`);
 

@@ -12,7 +12,7 @@ import { AiFillEdit } from 'react-icons/ai';
 
 // El componente recibe un elemento del arreglo de productos
 // y muestra todas las propiedades del mismo
-export default function ProductCard({ product }) {
+export default function ProductShortView({ product }) {
 
     // Extraigo del context las funciones para eliminar un producto
     const {deleteProduct} = useGlobalContext();
@@ -21,23 +21,19 @@ export default function ProductCard({ product }) {
     const navigate = useNavigate();
 
     // Truncar el titulo si es que es demasiado largo
-    const maxLength = 23;
+    const maxLength = 10;
     let tittle;
     product.productName.length <= maxLength ? tittle = product.productName : (tittle = product.productName.slice(0, maxLength) + '...');
 
+
     return (
-        <div className='Tarjeta relative'>
-            <header className='flex justify-between mb-2'>
-                <h2 className='text-xl font-bold h-11 leading-none'>{tittle}</h2>
+        <div className='ProductShortView'>
+            <header className='flex justify-between h-7'>
+                <h2 className='text-xs font-bold'>{tittle}</h2>
             </header>
-            {product.imgURL && <img className='w-100 mb-3' src={product.imgURL}/>}
-            {/* <p className='Tarjeta_field'>URL: {product.imgURL}</p> */}
-            {/* <p className='Tarjeta_field'>Public_id: {product.imgPublic_id}</p> */}
-            <div className='Tarjeta_field bg-white rounded-md h-24 overflow-y-auto whitespace-pre-wrap'>{(product.description)}</div>
-            <p className='Tarjeta_field mb-10'>Precio: ${product.price}</p>
-            {/* <p className='Tarjeta_field'><span>C: {product.createdAt}</span></p> */}
-            {/* <p className='Tarjeta_field'><span>M: {product.updatedAt}</span></p> */}
-            <footer className='absolute bottom-3 flex flex-wrap gap-x-2'>
+            {product.imgURL && <img className='w-100 mb-6' src={product.imgURL}/>}
+            
+            <footer className='absolute bottom-1.5 flex flex-wrap gap-x-2'>
                 <button className='Card-icon' onClick={() => deleteProduct(product.id)}><MdDelete/></button>
                 <button className='Card-icon' onClick={() => navigate(`/editarProducto/${product.id}`)}><AiFillEdit/></button>
             </footer>

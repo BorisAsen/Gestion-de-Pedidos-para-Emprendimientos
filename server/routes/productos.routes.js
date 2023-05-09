@@ -8,13 +8,21 @@ import {
     getProduct,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getProducts_productName
  } from "../controllers/products.controllers.js";
+import { getProductByProductNameRequest } from "../../client/src/api/productos.api.js";
 
 // Aqui se construiran todas las rutas relacionadas con el CRUD de PRODUCTOS
 
 // Obtener productos de la db para mostrarlos
 router.get('/products', getProducts);
+
+// Obtener productos mediante coincidencias en el nombre del mismo
+router.get('/products/search', getProducts_productName);
+// Es importante definir la ruta de busqueda antes de la de obtener un
+// producto mediante su id porque sino esta entraria en conflicto e
+// inutilizaria la ruta de busqueda
 
 // Obtener un unico producto correspondiente a un id
 router.get('/products/:id', getProduct);
