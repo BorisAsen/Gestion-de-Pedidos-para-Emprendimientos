@@ -194,6 +194,62 @@ export const GlobalContextProvider = ({children}) => {
         }
     };
 
+/**************************** CONTEXT ORDER_ITEMS (Producto + Cantidad) ****************************/
+    // Defino el arreglo de items (productos seleccionados y su cantidad)
+    const [items, setItems] = useState([]);
+
+    // Funcion para AGREGAR un item
+    const addItem = async (product, quantity) => {
+        try { 
+            setItems([... items, { product, quantity }]);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Funcion para QUITAR un item
+    const removeItem = async (productToRemove) => {
+        try {
+            const auxArray = items.filter((item) => item.product !== productToRemove);
+            setItems(auxArray);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Funcion para modificar la cantidad de un item
+    const modifyQuantity = async (item, newQuantity) => {
+        try {
+            //Controlar que la nueva cantidad no sea menor que 0 ni mayor que 99
+            newQuantity = newQuantity < 1 ? 1 : newQuantity;
+            newQuantity = newQuantity > 99 ? 99 : newQuantity;
+            
+            // Controlar que la cantidad no sea mayor a 99
+            if (newQuantity > 99) {
+            newQuantity = 99;
+            }
+            const updatedItems = items.map(existingItem  => {
+                if (existingItem  === item) {
+                  // Si el producto coincide, se actualiza la cantidad
+                  if (existingItem.Quantity) {
+                    
+                  }
+                  return {
+                    ...existingItem,
+                    quantity: newQuantity
+                  };
+                }
+                // Sino se mantiene el elemento original
+                return existingItem;
+            });
+            // Ahora seteo el arreglo modificado (o no)
+            setItems(updatedItems);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
 /**************************** DATOS Y FUNCIONES A EXPORTAR ****************************/
     return (<GlobalContext.Provider value={{
                 // Pedidos
@@ -212,8 +268,13 @@ export const GlobalContextProvider = ({children}) => {
                 createProduct,
                 getProduct,
                 updateProduct,
-                getProductByProductName
+                getProductByProductName,
 
+                // Relacion Pedidos - Productos
+                items,
+                addItem,
+                removeItem,
+                modifyQuantity
             }}>
                 {children}
             </GlobalContext.Provider>

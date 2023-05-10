@@ -24,7 +24,7 @@ import ProductoSearchBar from "../components/ProductoSearchBar"
 
 export default function PedidosForm() {
 
-  // Extraigo del context las funciones necesarias
+  // Extraigo del context las funciones necesarias para pedidos
   const {
     createPedido, // Fn de crear pedidos
     getPedido, // Fn para obtener un pedido mediante el id

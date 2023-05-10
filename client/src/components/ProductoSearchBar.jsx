@@ -6,12 +6,18 @@ import { useEffect } from "react";
 // Importar el context de productos
 import { useGlobalContext } from "../context/ContextProvider";
 
-// Importar el componente para mostrar una tarjeta de producto
+// Importar el componente para mostrar la vista resumida del producto
 import ProductoShortView from "../components/ProductoShortView";
+
+// Importar el componente para mostrar la vista de producto seleccionado
+import SelectedProductView from "../components/SelectedProductView";
 
 const SearchBar = () => {
   // Extraigo del context las funciones para eliminar un producto
   const {products, loadProducts} = useGlobalContext();
+
+  // Extraigo del context el arreglo de items (productos y sus cantidades)
+  const {items} = useGlobalContext();
 
   // Campo que recoge la informacion de busqueda
   const [search, setSearch] = useState('');
@@ -26,13 +32,16 @@ const SearchBar = () => {
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
-
   const results = !search ? [] : products.filter( (dato) => dato.productName.toLowerCase().includes(search.toLocaleLowerCase()));
-
 
   // Funcion que renderiza el contenido del recuadro del resultado de la busqueda
   function renderSearchResult() {
     return results.map ((product) => <ProductoShortView product={product} key={product.id}/>)
+  }
+
+  // Funcion que renderiza los productos seleccionados para el pedido
+  function renderSelectedProducts() {
+    return items.map ((item) => <SelectedProductView item={item} key={item.product.id}/>)
   }
 
   return (
@@ -49,6 +58,11 @@ const SearchBar = () => {
         <div className='grid grid-cols-4 gap-1 bg-white mt-3 h-60 overflow-auto p-2 rounded-md'>
             {renderSearchResult()}
             {/* {console.log('RESULTADO: ', results)} */}
+        </div>
+
+        <label className='block mt-3'>Productos seleccionados:</label>
+        <div className='grid grid-cols-4 gap-1.5 overflow-auto bg-white h-36 p-2 rounded-md'>
+            {renderSelectedProducts()}
         </div>
     </div>
   );

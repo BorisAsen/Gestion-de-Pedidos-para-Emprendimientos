@@ -93,6 +93,34 @@
         bg-slate-200
         rounded-md
         h-max
-        
+    }
+
+    .SelectedProductView{
+        @apply
+        relative
+        bg-details_3
+        rounded-md
+        h-max
+    }
+
+    .Cantidad{
+        @apply 
+        absolute bottom-0 right-0
+        transform translate-x-1 translate-y-1
+        /* absolute bottom-0
+        transform translate-y-1/2 */
+        flex items-center justify-center
+        bg-red-600
+        text-white font-bold
+        rounded-full h-6 w-6
+    }
+
+    .QuantityButtons{
+        @apply
+        flex items-center justify-center
+        p-0.5
+        bg-details_3
+        hover:bg-indigo-600
+        transition-all duration-100 ease-linear
     }
 }

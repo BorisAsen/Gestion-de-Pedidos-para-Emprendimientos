@@ -42,13 +42,6 @@ export default function PedidosPage() {
           </button>
         </Link>
       </div>
-
-      {/* Dirige a la Pagina para testear el SearchBar */}
-      <Link to="/testSearchBar">
-          <button className='MainButton'>
-            Buscar
-          </button>
-      </Link>
       
       <div className='p-5 pt-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
         {/* Se llama a la funcion que renderiza el contenido de la pagina */}
