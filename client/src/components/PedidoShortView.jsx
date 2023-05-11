@@ -32,12 +32,28 @@ export default function PedidoCard({ pedido }) {
     //Formateo de Fechas
     const formattedDate = moment(pedido.shippingDate).format('DD/MM/YY - HH:mm');
 
+    // Funcion que renderiza los productos seleccionados para el pedido
+    // {item.product.imgURL && <img className='w-100' src={item.product.imgURL}/>}
+    // <SelectedProductView item={item} key={item.product.id}/>
+    function renderSelectedProducts() {
+        return pedido.items.map ((item) => 
+            <div className='relative bg-details_3 h-max' key={item.product.id}>
+                <img className='w-100' src={item.product.imgURL}/>
+                <div className='Cantidad bg-details_2'>{item.quantity}</div>
+            </div>
+        )
+    }
+
     return (
         <div className='Tarjeta relative'>
             <header className='flex justify-between mb-2'>
                 <h2 className='text-xl font-bold'>{pedido.title}</h2>
                 <span>{pedido.done == 1 ? "✅" : "❌"}</span>
             </header>
+            {/* <p className='Tarjeta_field'>id Pedido: {pedido.id}</p> */}
+             <div className='grid grid-cols-4 gap-2 overflow-auto h-max pb-1 mb-2'>
+                {renderSelectedProducts()}
+            </div>
             {/* <p className='Tarjeta_field h-40 Tarjeta_field_Overflow'><b>Descripción:</b> {pedido.description}</p> */}
             <p className='Tarjeta_field'><b>Fecha de entrega:</b> {formattedDate}</p>
             {/* <p className='Tarjeta_field'><b>Creado el:</b> {pedido.createAt}</p> */}

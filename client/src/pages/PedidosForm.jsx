@@ -31,6 +31,9 @@ export default function PedidosForm() {
     updatePedido // Fn para modificar un pedido mediante su id y los nuevos valores
   } = useGlobalContext();
 
+  // Extraigo del context el arreglo de items (Productos y sus cantidades) y la funcion para setearlo
+  const { items } = useGlobalContext();
+
   // Definir el useState para setear valores en el formulario
   const [pedido, setPedido] = useState({
     title: "",
@@ -93,6 +96,7 @@ export default function PedidosForm() {
     loadPedido();
     
   }, [])
+
   
   return (
     <div className='p-6'>
@@ -105,15 +109,18 @@ export default function PedidosForm() {
 
         // Evento que se activa cuando el formuilario es enviado
         onSubmit={async (values, actions) => {
+          // Agregar el arreglo de items a los valores que capturo formik
+          const updatedValues = { ...values, items: items };
+
           // Muestro los valores capturados por consola
           //console.log("VALORES ENVIADOS: ", values);
           // Corroboro si el pedido ya existe para modificarlo o crearlo segun corresponda
           if (params.id) {
             // Llamo a la funcion para modificar un pedido
-            await updatePedido(params.id, values)
+            await updatePedido(params.id, updatedValues)
           } else {
             // Llamo a la funcion para crear un pedido
-            await createPedido(values);
+            await createPedido(updatedValues);
           }
           
           // Limpio el formulario una vez que se crea o modifica un pedido

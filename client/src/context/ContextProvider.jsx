@@ -249,6 +249,15 @@ export const GlobalContextProvider = ({children}) => {
         }
     }
 
+    // Funcion para borrar el arreglo de items
+    const clearItems = async () => {
+        try {
+            setItems([]);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
 /**************************** DATOS Y FUNCIONES A EXPORTAR ****************************/
     return (<GlobalContext.Provider value={{
@@ -274,7 +283,8 @@ export const GlobalContextProvider = ({children}) => {
                 items,
                 addItem,
                 removeItem,
-                modifyQuantity
+                modifyQuantity,
+                clearItems
             }}>
                 {children}
             </GlobalContext.Provider>

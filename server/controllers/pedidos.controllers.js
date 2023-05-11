@@ -7,7 +7,9 @@ import { pool } from "../db.js"
 export const createPedido = async (req, res) => {
     try {
         //res.send('Creando Pedidos');
-        const {title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment} = req.body;
+        // Se toman los datos del body
+        const {title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment, items} = req.body;
+
         // En el form del frontend, al dejar el checkbox sin marcar por defecto, cuando se envian
         // los datos el campo done viene como null por lo que es necesario controlarlo y si este
         // es el caso asumir que es 0 (no entrgado), de otra forma aceptar el valor que trae
@@ -16,7 +18,22 @@ export const createPedido = async (req, res) => {
             "INSERT INTO orders(title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment]
         );
-        console.log(result);
+        // console.log(result);
+
+        // Se obtiene el id del pedido que se acaba de agregar
+        const orderId = result.insertId;
+
+        // Recorrer el arreglo de items del pedido agregandolos a la tabla orders_products
+        items.forEach(async (item) => {
+            const { product, quantity } = item;
+        
+            // Insertar en la tabla "orders_products"
+            await pool.query(
+                "INSERT INTO orders_products(order_id, product_id, quantity) VALUES (?, ?, ?)",
+                [orderId, product.id, quantity]
+            );
+        }); 
+
         res.json({
             id: result.insertId,
             title,
@@ -30,6 +47,8 @@ export const createPedido = async (req, res) => {
             total,
             payment
         });
+
+        //console.log("Arreglo de items: ", items);
     } catch (error) {
         /* Devuelve un mensaje de error con estado http 500 que indica
         que se acepto la solicitud pero un error impidio que se cumpliera */
@@ -38,15 +57,41 @@ export const createPedido = async (req, res) => {
     
 }
 
-// * Funcion para obtener todas las tareas de la db
+// * Funcion para obtener todas los pedidos de la db
 export const getPedidos = async (req, res) => {
     try {
         //res.send('Obteniendo Pedidos')
         const [result] = await pool.query("SELECT * FROM orders ORDER BY createAt DESC");
         // Devuelve un arreglo con todas los pedidos
-        //console.log(result);
-        console.log("Obteniendo Pedidos...")
-        res.json(result); 
+
+        // Recorrer el arreglo de pedidos y agregarle a cada uno el areglo items
+        // que contiene todos los productos y cantidades asociados a cada pedido
+        const newResult = result.map(async (pedido) => {
+            const [items] = await pool.query("SELECT * FROM orders_products WHERE order_id = ?", [pedido.id]);
+            
+            // Ahora por cada item del arreglo de filas que se obtuvieron del SELECT a orders_products
+            // hay que traer el producto correspondiente y armar el arreglo de 
+            const updatedItems = await Promise.all(
+                items.map(async (item) => {
+                    const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [item.product_id]);
+                    return {
+                        product: product[0],
+                        quantity: item.quantity
+                    };
+                })
+            );
+            
+            return {
+            ...pedido,
+            items: updatedItems
+            };
+        });
+
+        // Esperar a que todas las promesas se resuelvan y no ocasionen errores
+        const newResultPromises = await Promise.all(newResult);
+
+        // console.log("Promises: ", newResultPromises);
+        res.json(newResultPromises); 
     } catch (error) {
         // Retornar el mensaje de error como respuesta
         return res.status(500).json({message: error.message});
@@ -77,6 +122,7 @@ export const getPedido = async (req, res) => {
 // Funcion para eliminar un pedido mediante su id
 export const deletePedido = async (req, res) => {
     try {
+        console.log('Se eliminara el pedido con id: ', req.params.id);
         //res.send('Eliminando un pedido')
         /* 
         Aca, si bien no es necesario devolver un resultado luego de eliminar un pedido,

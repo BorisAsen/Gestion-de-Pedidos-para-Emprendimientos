@@ -17,7 +17,7 @@ const SearchBar = () => {
   const {products, loadProducts} = useGlobalContext();
 
   // Extraigo del context el arreglo de items (productos y sus cantidades)
-  const {items} = useGlobalContext();
+  const { items, clearItems } = useGlobalContext();
 
   // Campo que recoge la informacion de busqueda
   const [search, setSearch] = useState('');
@@ -26,6 +26,11 @@ const SearchBar = () => {
   useEffect (() => {
     // Carga el arreglo de productos
     loadProducts();
+    // Cada vez que se llama al componente de busqueda y seleccion de productos para el pedido,
+    // se limpia el arreglo de productos seleccionados ya que de lo contrario por mas que envie
+    // el form de pedido o simplemente navege entre paginas para volver al formulario, quedaran
+    // persistentes los items seleccionados para el pedido a menos que recargue la pagina
+    clearItems();
   }, []);
   
   // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
