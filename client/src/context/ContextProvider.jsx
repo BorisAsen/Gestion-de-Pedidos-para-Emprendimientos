@@ -281,6 +281,7 @@ export const GlobalContextProvider = ({children}) => {
 
                 // Relacion Pedidos - Productos
                 items,
+                setItems,
                 addItem,
                 removeItem,
                 modifyQuantity,

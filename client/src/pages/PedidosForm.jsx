@@ -32,7 +32,7 @@ export default function PedidosForm() {
   } = useGlobalContext();
 
   // Extraigo del context el arreglo de items (Productos y sus cantidades) y la funcion para setearlo
-  const { items } = useGlobalContext();
+  const { items, setItems } = useGlobalContext();
 
   // Definir el useState para setear valores en el formulario
   const [pedido, setPedido] = useState({
@@ -65,7 +65,7 @@ export default function PedidosForm() {
       if (params.id) {
         const pedido = await getPedido(params.id);
         // Muestro por consola los datos del pedido para corroborar
-        // console.log(pedido);
+        //console.log(pedido);
         setPedido({
           //id: pedido.id,
           title: pedido.title,
@@ -90,7 +90,11 @@ export default function PedidosForm() {
           deliveryCost: pedido.deliveryCost,
           total: pedido.total,
           payment: pedido.payment,
-        }) 
+        })
+        
+        // Cargo el arreglo de items que se extrae del context para guardar los productos del pedido
+        // con el arreglo de items que ya traia el pedido
+        setItems(pedido.items);
       }
     };
     loadPedido();
@@ -122,7 +126,7 @@ export default function PedidosForm() {
             // Llamo a la funcion para crear un pedido
             await createPedido(updatedValues);
           }
-          
+
           // Limpio el formulario una vez que se crea o modifica un pedido
           // setPedido({
           //   title: "",
