@@ -25,10 +25,12 @@ export default function PedidosPage() {
   // Funcion que renderiza el contenido de la pagina principal
   // Muestra el arreglo de pedidos, si esta vacio muestra la leyenda correspondiente
   function renderMain() {
-    if (pedidos.length === 0) {
+    // Filtro los pedidos NO entregados que seran el listado de pedidos propiamente dicho 
+    const pedidosFilter = pedidos.filter( (pedido) => pedido.done == 0 );
+    if (pedidosFilter.length === 0) {
       return <h1>No hay pedidos que mostrar</h1>
     }else{
-      return pedidos.map ((pedido) => <PedidoShortView pedido={pedido} key={pedido.id}/>)
+      return pedidosFilter.map ((pedido) => <PedidoShortView pedido={pedido} key={pedido.id}/>)
     }
   }
 
