@@ -166,37 +166,58 @@ export const deletePedido = async (req, res) => {
 export const updatePedido = async (req, res) => {
     try {
         //res.send('Modificando un pedido')
-        // Los datos de los campos a modificar se obtienen del req.body
-        const {title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment, items} = req.body;
+
+        // Como en el req.body se envian todos los campos de un pedido que corresponden a los de
+        // la tabla orders pero ademas tambien el arreglo de items cuyos elementos corresponden a la tabla
+        // orders_products, para hacer la consulta dinamica que ahorre escribir la consulta seteando
+        // campo por campo, se guardan en una constante todos los campos del pedido excepto el arreglo de items
+        // de esta manera se genera una consulta que actualice correctamente la tabla orders
+        const fieldsToUpdate = Object.keys(req.body).filter(field => field !== 'items');
+        const query = "UPDATE orders SET " + fieldsToUpdate.map(field => `${field}=?`).join(", ") + " WHERE id = ?";
+        const values = [...fieldsToUpdate.map(field => req.body[field]), req.params.id];
         
         // Ejecuto el UPDATE de los datos del pedido en la tabla orders
-        const result = await pool.query("UPDATE orders SET title=?, description=?, done=?, shippingDate=?, withdrawOrSend=?, address=?, client=?, deliveryCost=?, total=?, payment=? WHERE id = ?", [title, description, done, shippingDate, withdrawOrSend, address, client, deliveryCost, total, payment, req.params.id]);
+        const result = await pool.query(query, values);
         // De la misma manera que al eliminar un pedido hay que controlar que exista,
         // lo mismo debe suceder al intentar modificarlo
         if (result.affectedRows === 0) {
             return res.status(404).json({message: "Pedido not found"});
         };
 
-        // Eliminar las filas de la tabla orders_products que coincidan con el id del pedido
-        const deleteResult = await pool.query("DELETE FROM orders_products WHERE order_id = ?", [req.params.id]);
-        // Control del resultado de la consulta
-        if (deleteResult.affectedRows === 0) {
-            return res.status(404).json({message: "Orders_products not found"});
-        };
+        // Como esta funcion de update sirve para actualizar todos los campos del pedido
+        // como asi tambien para actualizar solamente el campo done que marca como entregado un pedido,
+        // es necesario controlar las dos opciones. Si el req.body tiene solo un campo (done), significa
+        // que se llamo la funcion solo para marcar el pedido como entregado, por lo que solo debera
+        // actualizar ese campo en la fila correspondiente de la db. En el caso de que el body tenga mas
+        // de un campo significa que se invoco para actualizar todos los campos del pedido como asi tambien
+        // los productos que incluye, es por eso que se deben actualizar las filas correspondientes
+        // de la tabla orders_products
+        if (fieldsToUpdate.length > 1) {
+            // Eliminar las filas de la tabla orders_products que coincidan con el id del pedido
+            const deleteResult = await pool.query("DELETE FROM orders_products WHERE order_id = ?", [req.params.id]);
+            // Control del resultado de la consulta
+            if (deleteResult.affectedRows === 0) {
+                return res.status(404).json({message: "Orders_products not found"});
+            };
 
-        // Insertar nuevas filas en la tabla orders_products correspondientes a los productos
-        // y sus cantidades recorriendo el arreglo de items
-        items.forEach(async (item) => {
-            const { product, quantity } = item;
-        
-            // Insertar en la tabla "orders_products"
-            await pool.query(
-                "INSERT INTO orders_products(order_id, product_id, quantity) VALUES (?, ?, ?)",
-                [req.params.id, product.id, quantity]
-            );
-        });
+            
+            // Extraigo el arreglo de items del req.body
+            const { items } = req.body;
+            // Insertar nuevas filas en la tabla orders_products correspondientes a los productos
+            // y sus cantidades recorriendo el arreglo de items
+            items.forEach(async (item) => {
+                const { product, quantity } = item;
+            
+                // Insertar en la tabla "orders_products"
+                await pool.query(
+                    "INSERT INTO orders_products(order_id, product_id, quantity) VALUES (?, ?, ?)",
+                    [req.params.id, product.id, quantity]
+                );
+            });
+        }
 
-        // En el caso de que todas las consultas hayan resultado exitosas se indica
+
+        // En el caso de que todas las consultas correspondientes hayan resultado exitosas se indica
         // que el producto se actualizo correctamente pero no devuelve ningun resultado
         return res.sendStatus(204);
     } catch (error) {

@@ -32,7 +32,7 @@ export default function PedidosForm() {
   } = useGlobalContext();
 
   // Extraigo del context el arreglo de items (Productos y sus cantidades) y la funcion para setearlo
-  const { items, setItems } = useGlobalContext();
+  const { items, setItems, clearItems } = useGlobalContext();
 
   // Definir el useState para setear valores en el formulario
   const [pedido, setPedido] = useState({
@@ -58,11 +58,19 @@ export default function PedidosForm() {
   // Creo la constante para disponer del useNavigate
   const navigate = useNavigate();
 
+  // Constante auxiliar que controla si el form es de modificacion o no
+  const [isUpdateForm, setIsUpdateForm] = useState(false);
+
+
   // Utilizar el useEfect para traer los datos del pedido en el caso de que ya exista y se lo quiera editar
   useEffect(() => {
+
     // Es necesario colocar el llamado a getPedido con el await dentro de otra funcion sino arroja un error
     const loadPedido = async () => {
       if (params.id) {
+        // Cambio el valor de isUpdateForm a true
+        setIsUpdateForm(true);
+
         const pedido = await getPedido(params.id);
         // Muestro por consola los datos del pedido para corroborar
         //console.log(pedido);
@@ -99,9 +107,23 @@ export default function PedidosForm() {
     };
     loadPedido();
     
-  }, [])
+    
+  }, []);
 
-  
+  // Funcion para calcular el total del envio
+  const calculateTotal = () => {
+    let total = 0;
+
+    items.forEach((item) => {
+      total += item.product.price * item.quantity;
+    });
+
+    total += parseFloat(pedido.deliveryCost);
+
+    return total;
+  };
+
+
   return (
     <div className='p-6'>
       <Formik
@@ -115,6 +137,8 @@ export default function PedidosForm() {
         onSubmit={async (values, actions) => {
           // Agregar el arreglo de items a los valores que capturo formik
           const updatedValues = { ...values, items: items };
+          updatedValues.title = `${items.map(item => `${item.product.productName} (${item.quantity})`).join(' + ')}`;
+          //updatedValues.total = calculateTotal() + values.deliveryCost;
 
           // Muestro los valores capturados por consola
           //console.log("VALORES ENVIADOS: ", values);
@@ -145,6 +169,10 @@ export default function PedidosForm() {
           // });
 
           actions.setSubmitting(false);
+
+          // Limpiar el arreglo de items una vez que se envia el formulario
+          clearItems();
+          
           // Redireccionar a la pagina principal una vez actualizado o creado el pedido
           navigate("/");
         }}
@@ -154,7 +182,7 @@ export default function PedidosForm() {
         y guarden en los Values definidos anteriormente mediante la propiedad handleChange
         que se ejecuta con el evento onChange. Con la propiedad handleSubmit y el evento onSubmit
         se podran observar los datos capturados por el formulario */}
-        {({ isSubmitting, handleSubmit }) => (
+        {({ values, isSubmitting, handleSubmit }) => (
           <Form onSubmit={handleSubmit} className='w-5/6 mx-auto bg-slate-300 rounded-md p-4'>
            
             {/* Crear un titulo condicional para el formulario segun se quiera crear
@@ -162,19 +190,21 @@ export default function PedidosForm() {
             de caso contrario sera Crear. */}
             <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Pedido" : "Crear Pedido" }</h1>
             
-            <label className='block'>Titulo:</label>
+            <label className='block font-bold'>Titulo:</label>
             <Field
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
-              type="text"
+              component="textarea"
               name="title"
-              placeholder='Escribe un titulo'
-              //value={values.title} // Resetea al valor inicial despues de enviar el form
+              //placeholder='Escribe un titulo'
+              disabled={true} 
+              // Autocompletar el titulo del pedido con todos los items seleccionados y sus cantidades
+              value={`${items.map(item => `${item.product.productName} (${item.quantity})`).join(' + ')}`}
             ></Field>
 
             {/* Barra de busqueda de productos */}
-            <ProductoSearchBar/>
+            <ProductoSearchBar oncha/>
 
-            <label className='block my-2 mb-3 w-full'>
+            <label className='block my-2 mb-3 w-full font-bold'>
               Entregado
               <Field
                 className='ml-1.5'
@@ -183,7 +213,7 @@ export default function PedidosForm() {
               ></Field>
             </label>
 
-            <label className='block my-2 mb-3'>
+            <label className='block my-2 mb-3 font-bold'>
               Fecha de entrega 
               <Field
                 className='p-0.5 ml-2 rounded-md'
@@ -192,7 +222,7 @@ export default function PedidosForm() {
               ></Field>
             </label>
 
-            <label className='block'>Despacho del pedido: </label>
+            <label className='block font-bold'>Despacho del pedido: </label>
             <Field
               as="select"
               name="withdrawOrSend"
@@ -203,7 +233,7 @@ export default function PedidosForm() {
             </Field>
 
             
-            <label className='block'>Dirección:</label>
+            <label className='block font-bold'>Dirección:</label>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -212,7 +242,7 @@ export default function PedidosForm() {
               placeholder='Escribe la dirección del envío'
             ></Field>
 
-            <label className='block'>Cliente:</label>
+            <label className='block font-bold'>Cliente:</label>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -221,7 +251,7 @@ export default function PedidosForm() {
               placeholder='Escribe el cliente que recibira el pedido'
             ></Field>
 
-            <label className='block'>Costo del envío: </label>
+            <label className='block font-bold'>Costo del envío:</label>
             <Field
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
               type="number"
@@ -230,7 +260,7 @@ export default function PedidosForm() {
             ></Field>
 
             <div className='block my-2 w-full'>
-              <label className=''>
+              <label className='font-bold'>
               Efectivo
                 <Field
                   className='m-1.5'
@@ -240,7 +270,7 @@ export default function PedidosForm() {
                 ></Field>
               </label>
 
-              <label className='ml-3'>
+              <label className='ml-3 font-bold'>
               Transferencia
                 <Field
                   className='m-1.5'
@@ -250,7 +280,7 @@ export default function PedidosForm() {
                 ></Field>
               </label>
 
-              <label className='ml-3'>
+              <label className='ml-3 font-bold'>
               Tarjeta
                 <Field
                   className='m-1.5'
@@ -261,7 +291,7 @@ export default function PedidosForm() {
               </label>
             </div>
 
-            <label className='block'>Observaciones:</label>
+            <label className='block font-bold'>Observaciones:</label>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -270,12 +300,13 @@ export default function PedidosForm() {
               placeholder='Escribe la descripcion del pedido'
             ></Field>
 
-            <label className='block'>Total: </label>
+            <label className='block font-bold'>Total: </label>
+            <div className='text-details_2'>Valor sugerido ${isUpdateForm ? calculateTotal() + values.deliveryCost - pedido.deliveryCost : calculateTotal() + values.deliveryCost}</div>
             <Field
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
               type="number"
               name="total"
-              placeholder='Escribe el total del pedido'
+              placeholder= 'Escribe el total del pedido'
             ></Field>
 
             <button className='block bg-green-500 rounded-md px-2 py-0.5 text-white' type='submit' disabled={isSubmitting}>

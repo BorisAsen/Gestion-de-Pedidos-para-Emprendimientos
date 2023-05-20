@@ -17,7 +17,7 @@ const SearchBar = () => {
   const {products, loadProducts} = useGlobalContext();
 
   // Extraigo del context el arreglo de items (productos y sus cantidades)
-  const { items, clearItems } = useGlobalContext();
+  const { items, clearItems, setItems } = useGlobalContext();
 
   // Campo que recoge la informacion de busqueda
   const [search, setSearch] = useState('');
@@ -31,6 +31,7 @@ const SearchBar = () => {
     // el form de pedido o simplemente navege entre paginas para volver al formulario, quedaran
     // persistentes los items seleccionados para el pedido a menos que recargue la pagina
     clearItems();
+    //setItems(itemsP);
   }, []);
   
   // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
@@ -41,7 +42,7 @@ const SearchBar = () => {
 
   // Funcion que renderiza el contenido del recuadro del resultado de la busqueda
   function renderSearchResult() {
-    return results.map ((product) => <ProductoShortView product={product} key={product.id}/>)
+    return results.map ((product) => <ProductoShortView product={product} itemsReceived={items} key={product.id}/>)
   }
 
   // Funcion que renderiza los productos seleccionados para el pedido

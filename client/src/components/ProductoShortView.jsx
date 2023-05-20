@@ -3,44 +3,46 @@ import React from 'react'
 // Importar el context de productos
 import { useGlobalContext } from "../context/ContextProvider";
 
-//Importar el hook para direccionar al formulario de tareas cuando se presione el boton editar
-import { useNavigate } from "react-router-dom";
-
-import { useState } from "react";
+// Importar el hook useEffect para mostrar informacion ni bien se carga la pagina
+import { useEffect } from "react";
 
 // Importo iconos de React Icons
 import { MdDelete, MdFileDownloadDone } from 'react-icons/md';
 import { AiFillEdit } from 'react-icons/ai';
 
-// El componente recibe un elemento del arreglo de productos
-// y muestra todas las propiedades del mismo
-export default function ProductShortView({ product }) {
+// El componente recibe un producto y el arreglo de items del pedido
+export default function ProductShortView({ product, itemsReceived }) {
 
     // Extraigo del context el arreglo de items (productos y sus cantidades)
     // Y las funciones para agregar y quitar items del arreglo
-    const {items, addItem, removeItem} = useGlobalContext();
+    const {items, setItems, addItem, removeItem} = useGlobalContext();
+
+    // Se ejecuta al cargar el componente
+    useEffect(() => {
+        const loadItems = async () => {
+            setItems(itemsReceived);
+        };
+        loadItems();
+    }, [])
 
     // Truncar el titulo si es que es demasiado largo
     const maxLength = 10;
     let tittle;
     product.productName.length <= maxLength ? tittle = product.productName : (tittle = product.productName.slice(0, maxLength) + '...');
-
-    // Agregar el producto al arreglo de items
-    const [selectedProduct, setSelectedProduct] = useState(false);
-    const handleClick = () => {
-        // Cambiar el estado al hacer click
-        setSelectedProduct(!selectedProduct);
-        // Si el producto esta seleccionado se lo agrega al arreglo de items
-        // Si no esta seleccionado se lo quita del arreglo de items
-        !selectedProduct ? addItem(product, 1) : removeItem(product);
-    };
-
+    
     // Controlar si el producto esta en el arreglo de items para darle un estilo que resalte 
-    let resaltar = false;
+    let resaltar = null;
     function isProductSelected() {
-        items.some((item) => item.product === product) ? resaltar = true : resaltar = false;
+        items.some((item) => item.product.id === product.id) ? resaltar = true : resaltar = false;
     }
     isProductSelected();
+
+    // Agregar el producto al arreglo de items
+    const handleClick = () => {
+        // Controlar si el producto ya esta en el arreglo de items
+        // Si es el caso se lo agrega y si ya esta se lo quita
+        items.some((item) => item.product.id === product.id) ? removeItem(product) : addItem(product, 1);
+    };
 
     return (
         <div className={`ProductShortView ${resaltar ? 'bg-details_3' : null}`} onClick={handleClick}>

@@ -200,7 +200,7 @@ export const GlobalContextProvider = ({children}) => {
 
     // Funcion para AGREGAR un item
     const addItem = async (product, quantity) => {
-        try { 
+        try {
             setItems([... items, { product, quantity }]);
         } catch (error) {
             console.log(error);
@@ -210,7 +210,7 @@ export const GlobalContextProvider = ({children}) => {
     // Funcion para QUITAR un item
     const removeItem = async (productToRemove) => {
         try {
-            const auxArray = items.filter((item) => item.product !== productToRemove);
+            const auxArray = items.filter((item) => item.product.id !== productToRemove.id);
             setItems(auxArray);
         } catch (error) {
             console.log(error);

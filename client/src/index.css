@@ -44,6 +44,7 @@
         bg-slate-200 rounded-md p-3.5
         shadow-container
         w-auto
+        overflow-hidden
         ;
     }
     .Tarjeta_field{

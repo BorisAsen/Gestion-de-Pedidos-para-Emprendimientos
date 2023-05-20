@@ -27,6 +27,9 @@ export default function ProductForm() {
     updateProduct // Fn para modificar un producto mediante su id y los nuevos valores
   } = useGlobalContext();
 
+  // Extraigo del context el arreglo de items (productos y sus cantidades)
+  const { items, clearItems } = useGlobalContext();
+
   // Definir el useState para setear valores en el formulario
   const [product, setProduct] = useState({
     productName: "",
