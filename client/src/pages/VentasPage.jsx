@@ -12,6 +12,9 @@ import { useGlobalContext } from "../context/ContextProvider";
 // Importo el Link para redirigir a los formularios de pedidos
 import { Link } from "react-router-dom";
 
+// Importar el Paginador
+import Paginador from "../components/pagination/Paginador"
+
 export default function VentasPage() {
   // Extraigo del context el arreglo de pedidos vacio y la funcion para cargarlo con los pedidos de la db
   const {pedidos, loadPedidos} = useGlobalContext();
@@ -22,18 +25,8 @@ export default function VentasPage() {
     loadPedidos();
   }, []);
 
-  // Funcion que renderiza el contenido de la pagina principal
-  // Muestra el arreglo de pedidos, si esta vacio muestra la leyenda correspondiente
-  function renderMain() {
-    // Filtro los pedidos entregados que seran el listado de ventas
-    const ventas = pedidos.filter( (pedido) => pedido.done == 1 );
-
-    if (ventas.length === 0) {
-      return <h1>No hay ventas que mostrar</h1>
-    }else{
-      return ventas.map ((pedido) => <PedidoShortView pedido={pedido} key={pedido.id}/>)
-    }
-  }
+  // Filtro los pedidos SI entregados que seran el listado de ventas
+  const pedidosFilter = pedidos.filter( (pedido) => pedido.done == 1 );
 
   return (
     <div className= '' >
@@ -46,10 +39,7 @@ export default function VentasPage() {
         </Link>
       </div>
       
-      <div className='relative z-0 p-5 pt-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
-        {/* Se llama a la funcion que renderiza el contenido de la pagina */}
-        {renderMain()}
-      </div>
+      <Paginador items={pedidosFilter} ComponentToShow={PedidoShortView} itemsPerPage={6} componentName={"Ventas"}/>
     </div>
   )
 }

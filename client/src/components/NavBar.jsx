@@ -25,13 +25,13 @@ export default function NavBar() {
             <li>
                 {/* Tareas */}
                 <Link to="/">
-                    <NavBarIcon icon={<AiOutlineProfile size='25'/>} text = 'Listado de Pedidos'/>
+                    <NavBarIcon icon={<AiOutlineProfile size='25'/>} text = 'Pedidos'/>
                 </Link>
             </li>
             <li>
                 {/* Ventas */}
                 <Link to="/ventas">
-                    <NavBarIcon icon={<AiOutlineFileDone size='25'/>} text = 'Historial de Ventas'/>
+                    <NavBarIcon icon={<AiOutlineFileDone size='25'/>} text = 'Ventas'/>
                 </Link>
             </li>
             <li>

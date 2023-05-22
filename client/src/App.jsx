@@ -39,11 +39,11 @@ import TestSearchBar from "./pages/TestSearchBar"
 
 export default function App() {
   return (
-    <div className="bg-primary h-screen">
+    <div className=" bg-primary min-h-screen">
       <div className="bg-primary">
         <NavBar/>
-        <div className= 'ml-14'>
-          <GlobalContextProvider>
+        <div className= 'ml-14' >
+          <GlobalContextProvider >
             <Routes>
               {/* Ruta de la pag principal de Pedidos*/}
               <Route path='/' element={<PedidosPage/>} />

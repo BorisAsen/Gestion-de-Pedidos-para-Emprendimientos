@@ -27,6 +27,7 @@ module.exports = {
         'taskCardIcon': '0 0.1em 0.2em rgba(0, 0, 0, 0.3)',
         'container': '0 0.3em 0.5em rgba(0, 0, 0, 0.5)',
         'SearchResult': 'inset 0 0 0.6em rgba(255, 0, 0, 0.9)',
+        'Paginador': '0 0 0.6em rgba(0, 0, 0, 0.5)',
       }
 
       
