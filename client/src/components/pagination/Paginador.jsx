@@ -36,7 +36,7 @@ const Paginador = (props) => {
         const pedidosPaginados = items.slice(startIndex, endIndex);
         return<div className="relative">
                 <div className='p-5 pt-1 mb-14 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
-                    { pedidosPaginados.map((pedido) => <ComponentToShow itemName={pedido} key={pedido.id}/>) }
+                    { pedidosPaginados.map((pedido) => <ComponentToShow element={pedido} key={pedido.id}/>) }
                 </div>
                 <div className='fixed bottom-0 left-14 right-0 bg-white flex items-center justify-center h-14 p-3 shadow-Paginador'>
                     <button
