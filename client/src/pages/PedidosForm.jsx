@@ -19,6 +19,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 // Importar libreria moment para formatear fechas
 import moment from 'moment';
 
+// Importar el buscador de productos
 import ProductoSearchBar from "../components/ProductoSearchBar"
 
 
@@ -173,8 +174,8 @@ export default function PedidosForm() {
           // Limpiar el arreglo de items una vez que se envia el formulario
           clearItems();
           
-          // Redireccionar a la pagina principal una vez actualizado o creado el pedido
-          navigate("/");
+          // Redireccionar a la pagina anterior una vez actualizado o creado el pedido
+          navigate(-1);
         }}
       >
 
@@ -202,9 +203,9 @@ export default function PedidosForm() {
             ></Field>
 
             {/* Barra de busqueda de productos */}
-            <ProductoSearchBar oncha/>
+            <ProductoSearchBar/>
 
-            <label className='block my-2 mb-3 w-full font-bold'>
+            <label className='block my-2 mb-3 w-full'>
               Entregado
               <Field
                 className='ml-1.5'
@@ -213,7 +214,7 @@ export default function PedidosForm() {
               ></Field>
             </label>
 
-            <label className='block my-2 mb-3 font-bold'>
+            <label className='block my-2 mb-3'>
               Fecha de entrega 
               <Field
                 className='p-0.5 ml-2 rounded-md'
@@ -222,7 +223,7 @@ export default function PedidosForm() {
               ></Field>
             </label>
 
-            <label className='block font-bold'>Despacho del pedido: </label>
+            <label className='block'>Despacho del pedido: </label>
             <Field
               as="select"
               name="withdrawOrSend"
@@ -233,7 +234,7 @@ export default function PedidosForm() {
             </Field>
 
             
-            <label className='block font-bold'>Dirección:</label>
+            <label className='block'>Dirección:</label>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -242,7 +243,7 @@ export default function PedidosForm() {
               placeholder='Escribe la dirección del envío'
             ></Field>
 
-            <label className='block font-bold'>Cliente:</label>
+            <label className='block'>Cliente:</label>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -251,7 +252,7 @@ export default function PedidosForm() {
               placeholder='Escribe el cliente que recibira el pedido'
             ></Field>
 
-            <label className='block font-bold'>Costo del envío:</label>
+            <label className='block'>Costo del envío:</label>
             <Field
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
               type="number"
@@ -260,7 +261,7 @@ export default function PedidosForm() {
             ></Field>
 
             <div className='block my-2 w-full'>
-              <label className='font-bold'>
+              <label className=''>
               Efectivo
                 <Field
                   className='m-1.5'
@@ -270,7 +271,7 @@ export default function PedidosForm() {
                 ></Field>
               </label>
 
-              <label className='ml-3 font-bold'>
+              <label className='ml-3'>
               Transferencia
                 <Field
                   className='m-1.5'
@@ -280,7 +281,7 @@ export default function PedidosForm() {
                 ></Field>
               </label>
 
-              <label className='ml-3 font-bold'>
+              <label className='ml-3'>
               Tarjeta
                 <Field
                   className='m-1.5'
@@ -291,7 +292,7 @@ export default function PedidosForm() {
               </label>
             </div>
 
-            <label className='block font-bold'>Observaciones:</label>
+            <label className='block'>Descripcion:</label>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -300,8 +301,9 @@ export default function PedidosForm() {
               placeholder='Escribe la descripcion del pedido'
             ></Field>
 
-            <label className='block font-bold'>Total: </label>
-            <div className='text-details_2'>Valor sugerido ${isUpdateForm ? calculateTotal() + values.deliveryCost - pedido.deliveryCost : calculateTotal() + values.deliveryCost}</div>
+            <label className=''>
+              Total: <span className='text-details_2'>(Valor sugerido ${isUpdateForm ? calculateTotal() + values.deliveryCost - pedido.deliveryCost : calculateTotal() + values.deliveryCost})</span>
+            </label>
             <Field
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
               type="number"

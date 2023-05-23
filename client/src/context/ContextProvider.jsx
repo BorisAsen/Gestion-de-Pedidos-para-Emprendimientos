@@ -9,6 +9,7 @@ import { useContext, useState } from "react";
 // Importo desde la API las funciones necesarias para manipular los pedidos
 import { 
     getPedidosRequest,
+    getVentasRequest,
     getPedidoRequest,
     deletePedidoRequest,
     createPedidoRequest,
@@ -47,12 +48,13 @@ export const GlobalContextProvider = ({children}) => {
     const [pedidos, setPedidos] = useState([]);
 
     // Funcion para cargar el arreglo de pedidos
-    async function loadPedidos() {
-        const response = await getPedidosRequest();
+    async function loadPedidos(done) {
+        const response = (done === 1) ? await getVentasRequest() : await getPedidosRequest();
+        // const response = await getPedidosRequest();
         // Muestro por consola el arreglo de pedidos que se encuentra en data
         //console.log(response.data);
     
-        // Guardo el arreglo de pedidos en la vble pedidos
+        // Guardo el arreglo de pedidos en el estado pedidos
         setPedidos(response.data);
     }
 

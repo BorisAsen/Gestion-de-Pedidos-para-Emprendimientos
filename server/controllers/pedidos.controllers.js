@@ -61,8 +61,21 @@ export const createPedido = async (req, res) => {
 export const getPedidos = async (req, res) => {
     try {
         //res.send('Obteniendo Pedidos')
-        const [result] = await pool.query("SELECT * FROM orders ORDER BY createAt DESC");
-        // Devuelve un arreglo con todas los pedidos
+
+        // Obtener el parametro done para segun su valor devolver los pedidos o las ventas
+        const { done } = req.params;
+
+        // Construir la consulta base que trae los pedidos del trimestre actual
+        let query = "SELECT * FROM orders WHERE MONTH(shippingDate) = MONTH(CURDATE()) AND YEAR(shippingDate) = YEAR(CURDATE())";
+        
+        // Si done es 1 o 0 se agrega el valor en la consulta
+        (done === '1' || done === '0') ? query += ` AND done = ${done}` : '';
+        
+        // Por ultimo se agrega el orden de las filas segun el campo que guarda la fecha de entrega
+        query += " ORDER BY shippingDate ASC";
+
+
+        const [result] = await pool.query(query);
 
         // Recorrer el arreglo de pedidos y agregarle a cada uno el areglo items
         // que contiene todos los productos y cantidades asociados a cada pedido

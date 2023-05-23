@@ -22,6 +22,12 @@ import VentasPage from "./pages/VentasPage";
 // Importo el componente que se mostrara cuando se solicite una pagina que no exista
 import NotFoundPage from "./pages/NotFoundPage";
 
+// Importar la pagina del historial de ventas completo
+import VentasHistoryPage from "./pages/VentasHistoryPage";
+
+// Importar la pagina del historial de pedidos completo
+import PedidosHistoryPage from "./pages/PedidosHistoryPage";
+
 /********** COMPONENTES **********/
 // Importo el componente de la barra de navegacion
 import NavBar from "./components/NavBar";
@@ -53,6 +59,10 @@ export default function App() {
               <Route path='/editarPedido/:id' element={<PedidosForm/>} />
               {/* Ruta que muestra la vista completa de un pedido */}
               <Route path='/vistaPedido/:id' element={<PedidoView/>} />
+              {/* Ruta que muestra el historial de ventas completo */}
+              <Route path='/historialVentas' element={<VentasHistoryPage/>} />
+              {/* Ruta que muestra el historial de pedidos completo */}
+              <Route path='/historialPedidos' element={<PedidosHistoryPage/>} />
 
               {/* Ruta de la pagina de Productos */}
               <Route path='/productos' element={<ProductosPage/>} />

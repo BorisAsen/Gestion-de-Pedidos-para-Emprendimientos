@@ -14,8 +14,11 @@ import {
 
 // Aqui se construiran todas las rutas relacionadas con el CRUD
 
-// Obtener pedidos de la db para mostrarlos
-router.get('/pedidos', getPedidos);
+// Obtener pedidos de la db
+router.get('/pedidos/:done', getPedidos);
+
+// Obtener ventas de la db
+router.get('/ventas/:done', getPedidos);
 
 // Obtener un unico pedido correspondiente a un id
 router.get('/pedidos/:id', getPedido);

@@ -1,7 +1,7 @@
 import React from 'react'
 
 // Importar el hook useEffect para mostrar informacion ni bien se carga la pagina
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Importar el componente para mostrar una tarjeta de producto
 import Producto from "../components/Producto";
@@ -12,6 +12,9 @@ import { useGlobalContext } from "../context/ContextProvider";
 // Importo el Link para redirigir a los formularios de productos
 import { Link } from "react-router-dom";
 
+// Importar iconos
+import { TbArrowsSort } from 'react-icons/tb';
+
 // Importar el Paginador
 import Paginador from "../components/pagination/Paginador"
 
@@ -19,15 +22,77 @@ export default function ProductosPage() {
   // Extraigo del context el arreglo de productos vacio y la funcion para cargarlo con los productos de la db
   const {products, loadProducts} = useGlobalContext();
 
+  // Estado para el valor del filtro de pedidos
+  const [selectedFilter, setSelectedFilter] = useState("fecha de creacion");
+
+  // Estado para guardar el valor del orden, ascendente o descendente
+  const [sortOrder, setSortOrder] = useState("asc");
+
   // Se ejecuta al cargar la pagina
   useEffect (() => {
     // Carga el arreglo de productos
     loadProducts();
+
+    // Recuperar el valor del filtro almacenado en localStorage (si existe)
+    const storedFilterValue = localStorage.getItem('selectedFilter_Products');
+    if (storedFilterValue) {
+      setSelectedFilter(storedFilterValue);
+    }
+    
   }, []);
+
+  // Filtrar y ordenar los productos
+  const productsFilter = products.slice().sort((a, b) => {
+    if (selectedFilter === "fecha de creacion") {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+  
+      if (sortOrder === "asc") {
+        return dateA - dateB;
+      } else {
+        return dateB - dateA;
+      }
+    } else if (selectedFilter === "costo") {
+      if (sortOrder === "asc") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    }
+  });
+
+  // Handler del selector de filtro
+  const handleFilterChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedFilter(selectedValue);
+    localStorage.setItem('selectedFilter_Products', selectedValue);
+  };
+
+  //Handler del boton para cambiar el orden del listado
+  const handleSortOrderChange = () => {
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+  };
+
+  // Estado que recoge la informacion del campo de busqueda
+  const [search, setSearch] = useState('');
+
+  // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  // Resultado de la busqueda
+  const results = !search ? [] : products.filter( (dato) => dato.productName.toLowerCase().includes(search.toLocaleLowerCase()));
+
+  // Arreglo de productos a mostrar
+  // Si hay algun valor en el campo de busqueda, el resultado del mismo es lo que se carga en el arreglo final
+  // Si no hay datos del campo de busqueda se muestra el arreglo de productos segun los filtros aplicados 
+  const productsToShow = (search != '' ? results : productsFilter);
 
   return (
     <div className= '' >
-      <div className='bg-white py-3.5 px-6 flex items-center justify-between mb-4 align-middle'>
+      <div className='bg-white py-3.5 px-6 flex items-center justify-between align-middle'>
         <h1 className='PageTitle'>Listado de Productos</h1>
         <Link to="/nuevoProducto">
           <button className='MainButton'>
@@ -36,7 +101,44 @@ export default function ProductosPage() {
         </Link> 
       </div>
 
-      <Paginador items={products} ComponentToShow={Producto} itemsPerPage={6} itemName={"product"} componentName={"Productos"} />
+      <div className='bg-tertiary flex justify-between items-center text-white p-2.5 px-6 mb-2'>
+        <div className='flex items-center'>
+            <label className='block'>Pedidos </label>
+            <select
+              name="Datefilter"
+              onChange={handleFilterChange}
+              value={selectedFilter}
+              disabled = {search}
+              className={`p-0.5 ml-2 rounded-md text-black ${search ? 'bg-tertiary text-gray-100 disabled:cursor-not-allowed' : ''}`}
+            >
+              <option value={"fecha de creacion"}>Fecha de creacion</option>
+              <option value={"costo"}>Costo</option>
+            </select>
+            <button className={`Card-icon p-1.5 ml-2 ${search ? 'bg-tertiary text-primary disabled:cursor-not-allowed disabled:hover:bg-tertiary' : ''}`} disabled = {search} onClick={handleSortOrderChange}><TbArrowsSort/></button>       
+            {selectedFilter === "costo" && (
+              <span className="ml-2 text-sm">
+                {sortOrder === "asc" ? "Mas barato a mas costoso" : "Mas costoso a mas barato"}
+              </span>
+            )}
+            {selectedFilter === "fecha de creacion" && (
+              <span className="ml-2 text-sm">
+                {sortOrder === "asc" ? "Mas antiguo a mas reciente" : "Mas reciente a mas antiguo"}
+              </span>
+            )}
+        </div>
+        
+        <div>
+          <input
+          className='p-0.5 px-1.5 rounded-md w-full text-black'
+            type="text"
+            value={search}
+            onChange={handleSearchChange}
+            placeholder="Buscar productos..."
+          />
+        </div>
+      </div>
+
+      <Paginador items={productsToShow} ComponentToShow={Producto} propName={"product"} itemsPerPage={6} itemName={"Productos"} />
 
     </div>
   )

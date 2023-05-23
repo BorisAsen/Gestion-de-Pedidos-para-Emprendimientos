@@ -63,7 +63,6 @@ const SearchBar = () => {
 
         <div className='grid grid-cols-4 gap-1 bg-white mt-3 h-60 overflow-auto p-2 rounded-md'>
             {renderSearchResult()}
-            {/* {console.log('RESULTADO: ', results)} */}
         </div>
 
         <label className='block mt-3'>Productos seleccionados:</label>

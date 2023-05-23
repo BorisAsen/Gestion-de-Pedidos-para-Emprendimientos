@@ -3,7 +3,11 @@ import axios from "axios";
 
 // Funcion para enviar la peticion get que trae todos los pedidos
 export const getPedidosRequest = async () => 
-    await axios.get("http://localhost:4000/pedidos");
+    await axios.get("http://localhost:4000/pedidos/0");
+
+    // Funcion para enviar la peticion get que trae todos las ventas
+export const getVentasRequest = async () => 
+await axios.get("http://localhost:4000/ventas/1");
 
 // Funcion para traer un unico pedido mediante el id
 export const getPedidoRequest = async (id) =>
