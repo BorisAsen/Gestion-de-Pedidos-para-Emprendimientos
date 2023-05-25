@@ -9,12 +9,22 @@ import { useContext, useState } from "react";
 // Importo desde la API las funciones necesarias para manipular los pedidos
 import { 
     getPedidosRequest,
+    getAllPedidosRequest,
+    getMonthYearPedidosRequest,
+    getDatePedidosRequest,
+
     getVentasRequest,
+    getAllVentasRequest,
+    getMonthYearVentasRequest,
+    getDateVentasRequest,
+    
     getPedidoRequest,
     deletePedidoRequest,
     createPedidoRequest,
     updatePedidoRequest,
-    togglePedidoDoneRequest
+    togglePedidoDoneRequest,
+
+    getMonthYearRevenueRequest,
 } from "../api/pedidos.api";
 
 // Importo desde la API las funciones necesarias para manipular los productos
@@ -47,9 +57,42 @@ export const GlobalContextProvider = ({children}) => {
     // Defino el arreglo de pedidos
     const [pedidos, setPedidos] = useState([]);
 
-    // Funcion para cargar el arreglo de pedidos
+    // Funcion para cargar el arreglo de pedidos o ventas del mes actual
     async function loadPedidos(done) {
         const response = (done === 1) ? await getVentasRequest() : await getPedidosRequest();
+        // const response = await getPedidosRequest();
+        // Muestro por consola el arreglo de pedidos que se encuentra en data
+        //console.log(response.data);
+    
+        // Guardo el arreglo de pedidos en el estado pedidos
+        setPedidos(response.data);
+    }
+
+    // Funcion para cargar el arreglo de todos los pedidos o todas las ventas
+    async function loadAllPedidos(done) {
+        const response = (done === 1) ? await getAllVentasRequest() : await getAllPedidosRequest();
+        // const response = await getPedidosRequest();
+        // Muestro por consola el arreglo de pedidos que se encuentra en data
+        //console.log(response.data);
+    
+        // Guardo el arreglo de pedidos en el estado pedidos
+        setPedidos(response.data);
+    }
+
+    // Funcion para cargar el arreglo de todos los pedidos o todas las ventas de un mes y año especificos
+    async function loadMonthYearPedidos(done, monthYear) {
+        const response = (done === 1) ? await getMonthYearVentasRequest(monthYear) : await getMonthYearPedidosRequest(monthYear);
+        // const response = await getPedidosRequest();
+        // Muestro por consola el arreglo de pedidos que se encuentra en data
+        //console.log(response.data);
+    
+        // Guardo el arreglo de pedidos en el estado pedidos
+        setPedidos(response.data);
+    }
+
+    // Funcion para cargar el arreglo de todos los pedidos o todas las ventas de un dia especifico
+    async function loadDatePedidos(done, date) {
+        const response = (done === 1) ? await getDateVentasRequest(date) : await getDatePedidosRequest(date);
         // const response = await getPedidosRequest();
         // Muestro por consola el arreglo de pedidos que se encuentra en data
         //console.log(response.data);
@@ -123,6 +166,18 @@ export const GlobalContextProvider = ({children}) => {
             console.log(error);
         }
     };
+
+    // *************** UTILIDAD *************** //
+    // Funcion para obtener el total recaudado en un mes y años especificos
+    const getMonthYearRevenue = async (monthYear) => {
+        try {
+            const response = await getMonthYearRevenueRequest(monthYear);
+            return response.data;
+        } catch (error) {
+            console.log(error);   
+        }
+    };
+    
 
 /**************************** CONTEXT PRODUCTOS ****************************/
     // Defino el arreglo de productos
@@ -265,12 +320,19 @@ export const GlobalContextProvider = ({children}) => {
     return (<GlobalContext.Provider value={{
                 // Pedidos
                 pedidos,
+                setPedidos,
                 loadPedidos,
+                loadAllPedidos,
+                loadMonthYearPedidos,
+                loadDatePedidos,
                 deletePedido,
                 createPedido,
                 getPedido,
                 updatePedido,
                 togglePedidoDone,
+
+                // Utilitdad
+                getMonthYearRevenue,
 
                 // Productos
                 products,

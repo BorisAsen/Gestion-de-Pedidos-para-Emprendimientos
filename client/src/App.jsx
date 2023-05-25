@@ -14,7 +14,7 @@ import ProductosPage from "./pages/ProductosPage";
 import ProductosForm from "./pages/ProductosForm";
 
 // Importo el componente de la pagina de Estadisticas
-import EstadisticasPage from "./pages/EstadisticasPage";
+import RecaudacionYEstadisticas from "./pages/RecaudacionYEstadisticasPage";
 
 // Importo el componente de la pagina de Ventas
 import VentasPage from "./pages/VentasPage";
@@ -75,7 +75,7 @@ export default function App() {
               <Route path='/ventas' element={<VentasPage/>} />
               
               {/* Ruta de la pagina de Estadisticas */}
-              <Route path='/estadisticas' element={<EstadisticasPage/>} />
+              <Route path='/recaudacion_y_estadisticas' element={<RecaudacionYEstadisticas/>} />
               
               {/* Pagina por defecto que se mostrara cuando se solicite una pagina que no existe */}
               <Route path='*' element={<NotFoundPage/>} />

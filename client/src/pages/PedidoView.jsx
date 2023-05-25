@@ -21,7 +21,7 @@ import moment from 'moment';
 
 export default function PedidosView() {
   // Creo la constante para disponer del useParams
-  const params = useParams();
+  const params = useParams()
   //console.log('ID rescatado: ',params); // Mustro el id del pedido en consola
 
   // Extraigo del context las funciones necesarias
@@ -86,6 +86,9 @@ export default function PedidosView() {
 
   // Funcion que renderiza los productos seleccionados para el pedido
   function renderSelectedProducts() {
+    if (items === undefined) {
+      return null;
+    }
     //console.log('ARREGLO DE ITEMS: ', items);
     return items.map ((item) => 
         <div className='relative bg-details_3 h-max' key={item.product.id}>

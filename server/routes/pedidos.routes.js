@@ -3,26 +3,55 @@ import { Router } from "express";
 const router = Router()
 
 //Importar las funciones del CRUD de pedidos
-import { 
+import {
+    getAllPedidos,
     getPedidos,
+    getMonthYearPedidos,
+    getDatePedidos,
+
     getPedido,
     createPedido,
     updatePedido,
-    deletePedido
+    deletePedido,
+
+    getMonthYearRevenue,
  } from "../controllers/pedidos.controllers.js";
 
 
 // Aqui se construiran todas las rutas relacionadas con el CRUD
 
-// Obtener pedidos de la db
+// ***************** PEDIDOS ***************** //
+// Obtener un unico pedido correspondiente a un id
+router.get('/pedido/:id', getPedido);
+
+// Obtener todos los pedidos
+router.get('/all_pedidos/:done', getAllPedidos);
+
+// Obtener pedidos del mes actual
 router.get('/pedidos/:done', getPedidos);
 
-// Obtener ventas de la db
+// Obtener pedidos de un mes y año específico
+router.get('/pedidos/:done/:monthYear', getMonthYearPedidos);
+
+// Obtener pedidos de un dia específicomonthly collection
+router.get('/pedidosDate/:done/:date', getDatePedidos);
+
+
+// ****************** VENTAS ****************** //
+// Obtener todos las ventas
+router.get('/all_ventas/:done', getAllPedidos);
+
+// Obtener ventas del mes actual
 router.get('/ventas/:done', getPedidos);
 
-// Obtener un unico pedido correspondiente a un id
-router.get('/pedidos/:id', getPedido);
+// Obtener ventas de un mes y año específico
+router.get('/ventas/:done/:monthYear', getMonthYearPedidos);
 
+// Obtener ventas de un dia específico
+router.get('/ventasDate/:done/:date', getDatePedidos);
+
+
+// ***************** CRUD ***************** //
 // Crear pedidos
 router.post('/pedidos', createPedido);
 
@@ -33,6 +62,8 @@ router.put('/pedidos/:id', updatePedido);
 router.delete('/pedidos/:id', deletePedido);
 
 
-
+// *************** UTILIDAD *************** //
+// Obtener el total recaudado en un mes y año especificos
+router.get('/monthly_revenue/:monthYear', getMonthYearRevenue);
 
 export default router

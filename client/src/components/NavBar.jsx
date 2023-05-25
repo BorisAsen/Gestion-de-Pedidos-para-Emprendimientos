@@ -42,7 +42,7 @@ export default function NavBar() {
             </li>
             <li>
                 {/* Estadisticas */}
-                <Link to="/estadisticas">
+                <Link to="/recaudacion_y_estadisticas">
                     <NavBarIcon icon={<VscGraphLine size='21'/> }text = 'Estadisticas'/>
                 </Link>             
             </li>

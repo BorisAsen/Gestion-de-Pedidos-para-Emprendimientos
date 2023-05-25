@@ -125,4 +125,33 @@
         transition-all duration-100 ease-linear
     }
 
+    .PedidoRowView{
+        @apply
+        bg-slate-200 rounded-md 
+        w-full
+        ;
+    }
+
+    .PedidoRowViewField{
+        @apply
+        h-8
+        items-center 
+        p-1.5 px-2.5
+        text-sm
+        bg-white
+        whitespace-pre-wrap
+        overflow-hidden
+        ;
+    }
+
+    .PedidoRowViewFieldHeader{
+        @apply
+        flex items-center 
+        p-1.5 px-2.5
+        text-sm text-white
+        bg-tertiary
+        whitespace-pre-wrap
+        ;
+    }
+
 }

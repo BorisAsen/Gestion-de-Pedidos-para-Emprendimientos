@@ -205,7 +205,7 @@ export default function PedidosForm() {
             {/* Barra de busqueda de productos */}
             <ProductoSearchBar/>
 
-            <label className='block my-2 mb-3 w-full'>
+            <label className='block my-2 mb-3 w-24'>
               Entregado
               <Field
                 className='ml-1.5'

@@ -26,7 +26,7 @@ import { useState } from "react";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const Paginador = (props) => {
-    const {items, ComponentToShow, propName, itemsPerPage, itemName} = props;
+    const {items, ComponentToShow, propName, itemsPerPage, itemName, listView} = props;
 
     // Estados necesarios para la paginacion
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,10 +55,9 @@ const Paginador = (props) => {
     }else{
         const itemsPaginados = items.slice(startIndex, endIndex);
         return<div className="relative">
-                <div className='p-5 pt-1 mb-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
+                <div className={`p-5 pt-1 mb-10 grid grid-cols-1 ${!listView ? 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5' : ''} `}>
                     {itemsPaginados.map((item) => {
                         const props = { [propName]: item }; // Crear el objeto de props dinámicamente
-
                         return <ComponentToShow {...props} key={item.id} />;
                     })}
                 </div>

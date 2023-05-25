@@ -54,10 +54,62 @@ export const createPedido = async (req, res) => {
         que se acepto la solicitud pero un error impidio que se cumpliera */
         return res.status(500).json({message: error.message}); 
     }
-    
 }
 
-// * Funcion para obtener todas los pedidos de la db
+// * Funcion para obtener todos los pedidos de la db
+export const getAllPedidos = async (req, res) => {
+    try {
+        //res.send('Obteniendo Pedidos')
+
+        // Obtener el parametro done para segun su valor devolver los pedidos o las ventas
+        const { done } = req.params;
+
+        // Construir la consulta base que trae los pedidos del trimestre actual
+        let query = "SELECT * FROM orders";
+        
+        // Si done es 1 o 0 se agrega el valor en la consulta
+        (done === '1' || done === '0') ? query += ` WHERE done = ${done}` : '';
+        
+        // Por ultimo se agrega el orden de las filas segun el campo que guarda la fecha de entrega
+        query += " ORDER BY shippingDate ASC";
+
+        const [result] = await pool.query(query);
+
+        // Recorrer el arreglo de pedidos y agregarle a cada uno el areglo items
+        // que contiene todos los productos y cantidades asociados a cada pedido
+        const newResult = result.map(async (pedido) => {
+            const [items] = await pool.query("SELECT * FROM orders_products WHERE order_id = ?", [pedido.id]);
+            
+            // Ahora por cada item del arreglo de filas que se obtuvieron del SELECT a orders_products
+            // hay que traer el producto correspondiente y armar el arreglo de items
+            const updatedItems = await Promise.all(
+                items.map(async (item) => {
+                    const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [item.product_id]);
+                    return {
+                        product: product[0],
+                        quantity: item.quantity
+                    };
+                })
+            );
+            
+            return {
+            ...pedido,
+            items: updatedItems
+            };
+        });
+
+        // Esperar a que todas las promesas se resuelvan y no ocasionen errores
+        const newResultPromises = await Promise.all(newResult);
+
+        // console.log("Promises: ", newResultPromises);
+        res.json(newResultPromises); 
+    } catch (error) {
+        // Retornar el mensaje de error como respuesta
+        return res.status(500).json({message: error.message});
+    }  
+}
+
+// * Funcion para obtener todos los pedidos del mes actual
 export const getPedidos = async (req, res) => {
     try {
         //res.send('Obteniendo Pedidos')
@@ -109,8 +161,143 @@ export const getPedidos = async (req, res) => {
         // Retornar el mensaje de error como respuesta
         return res.status(500).json({message: error.message});
     }
-    
 }
+
+// * Funcion para obtener todos los pedidos de un mes especifico
+export const getMonthYearPedidos = async (req, res) => {
+    try {
+      const { done, monthYear } = req.params;
+        
+      // Obtener el mes y el año del parámetro monthYear
+      const [year, month] = monthYear.split("-");
+
+      // Construir la consulta para traer los pedidos del mes y año específico
+      let query = `SELECT * FROM orders WHERE YEAR(shippingDate) = ${year} AND MONTH(shippingDate) = ${month}`;
+  
+      if (done === '1' || done === '0') {
+        query += ` AND done = ${done}`;
+      }
+  
+      query += " ORDER BY shippingDate ASC";
+  
+      const [result] = await pool.query(query);
+  
+      const newResult = await Promise.all(
+        result.map(async (pedido) => {
+          const [items] = await pool.query("SELECT * FROM orders_products WHERE order_id = ?", [pedido.id]);
+  
+          const updatedItems = await Promise.all(
+            items.map(async (item) => {
+              const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [item.product_id]);
+              return {
+                product: product[0],
+                quantity: item.quantity
+              };
+            })
+          );
+  
+          return {
+            ...pedido,
+            items: updatedItems
+          };
+        })
+      );
+  
+      res.json(newResult);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+}
+
+// * Funcion para obtener todos los pedidos del mes actual
+export const getDatePedidos = async (req, res) => {
+    try {
+      const { done, date } = req.params;
+        
+      // Obtener la fecha desglosada del paramtro date
+      const [year, month, day] = date.split("-");
+
+      // Construir la consulta para traer los pedidos del mes y año específico
+      let query = `SELECT * FROM orders WHERE YEAR(shippingDate) = ${year} AND MONTH(shippingDate) = ${month} AND DAY(shippingDate) = ${day}`;
+  
+      if (done === '1' || done === '0') {
+        query += ` AND done = ${done}`;
+      }
+  
+      query += " ORDER BY shippingDate ASC";
+  
+      const [result] = await pool.query(query);
+  
+      const newResult = await Promise.all(
+        result.map(async (pedido) => {
+          const [items] = await pool.query("SELECT * FROM orders_products WHERE order_id = ?", [pedido.id]);
+  
+          const updatedItems = await Promise.all(
+            items.map(async (item) => {
+              const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [item.product_id]);
+              return {
+                product: product[0],
+                quantity: item.quantity
+              };
+            })
+          );
+  
+          return {
+            ...pedido,
+            items: updatedItems
+          };
+        })
+      );
+  
+      res.json(newResult);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+}
+
+// * Funcion para obtener todos los pedidos cuya direccion sea similar a la solicitada
+// export const getPedidoAddress = async (req, res) => {
+//     try {
+//       const { address, done } = req.params;
+  
+//       // Construir la consulta para traer los pedidos con la dirección y estado específicos
+//       let query = `SELECT * FROM orders WHERE address LIKE '%${address}%'`;
+      
+//       if (done === '1' || done === '0') {
+//         query += ` AND done = '${done}'`;
+//       }
+  
+//       query += " ORDER BY shippingDate ASC";
+  
+//       const [result] = await pool.query(query);
+  
+//       const newResult = await Promise.all(
+//         result.map(async (pedido) => {
+//           const [items] = await pool.query("SELECT * FROM orders_products WHERE order_id = ?", [pedido.id]);
+  
+//           const updatedItems = await Promise.all(
+//             items.map(async (item) => {
+//               const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [item.product_id]);
+//               return {
+//                 product: product[0],
+//                 quantity: item.quantity
+//               };
+//             })
+//           );
+  
+//           return {
+//             ...pedido,
+//             items: updatedItems
+//           };
+//         })
+//       );
+  
+//       res.json(newResult);
+//     } catch (error) {
+//       return res.status(500).json({ message: error.message });
+//     }
+//   }
+  
 
 // * Funcion para obtener un pedido mediante su id
 export const getPedido = async (req, res) => {
@@ -237,5 +424,29 @@ export const updatePedido = async (req, res) => {
         // Retornar el mensaje de error como respuesta
         return res.status(500).json({message: error.message});
     }
-
 }
+
+
+
+// **************** Funciones de utilidad **************** //
+
+// * Funcion para obtener la recaudacion de un mes en especifico
+export const getMonthYearRevenue = async (req, res) => {
+    try {
+      const { monthYear } = req.params;
+        
+      // Obtener el mes y el año del parámetro monthYear
+      const [year, month] = monthYear.split("-");
+  
+      // Construir la consulta para traer la suma del total de las ventas de un mes y año específico
+      let query = `SELECT SUM(total) AS totalRevenue FROM orders WHERE YEAR(shippingDate) = ${year} AND MONTH(shippingDate) = ${month} AND done = 1`;
+  
+      const [result] = await pool.query(query);
+  
+      const { totalRevenue } = result[0];
+  
+      res.json({ totalRevenue });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }

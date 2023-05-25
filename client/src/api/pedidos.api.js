@@ -1,18 +1,47 @@
 // Importo axios
 import axios from "axios";
 
-// Funcion para enviar la peticion get que trae todos los pedidos
+// ***************** PEDIDOS ***************** //
+// Funcion para traer un unico pedido mediante el id
+export const getPedidoRequest = async (id) =>
+    await axios.get(`http://localhost:4000/pedido/${id}`);
+
+// Funcion para enviar la peticion get que trae todos los pedidos del mes actual
 export const getPedidosRequest = async () => 
     await axios.get("http://localhost:4000/pedidos/0");
 
-    // Funcion para enviar la peticion get que trae todos las ventas
+// Funcion para enviar la peticion get que trae todos los pedidos
+export const getAllPedidosRequest = async () => 
+await axios.get("http://localhost:4000/all_pedidos/0");
+
+// Funcion para enviar la peticion get que trae todos los pedidos de un mes y año especificos
+export const getMonthYearPedidosRequest = async (monthYear) => 
+await axios.get(`http://localhost:4000/pedidos/0/${monthYear}`);
+
+// Funcion para enviar la peticion get que trae todos los pedidos de un dia especifico
+export const getDatePedidosRequest = async (date) => 
+await axios.get(`http://localhost:4000/pedidosDate/0/${date}`);
+
+
+// ****************** VENTAS ****************** //
+// Funcion para enviar la peticion get que trae todos las ventas del mes  actual
 export const getVentasRequest = async () => 
 await axios.get("http://localhost:4000/ventas/1");
 
-// Funcion para traer un unico pedido mediante el id
-export const getPedidoRequest = async (id) =>
-    await axios.get(`http://localhost:4000/pedidos/${id}`);
+// Funcion para enviar la peticion get que trae todos las ventas
+export const getAllVentasRequest = async () => 
+await axios.get("http://localhost:4000/all_ventas/1");
 
+// Funcion para enviar la peticion get que trae todas las ventas de un mes y año especificos
+export const getMonthYearVentasRequest = async (monthYear) => 
+await axios.get(`http://localhost:4000/ventas/1/${monthYear}`);
+
+// Funcion para enviar la peticion get que trae todos las ventas de un dia especifico
+export const getDateVentasRequest = async (date) => 
+await axios.get(`http://localhost:4000/ventasDate/1/${date}`);
+
+
+// ***************** CRUD ***************** //
 // Funcion para crear una pedido, recibe un objeto tipo pedido y lo guarda
 export const createPedidoRequest = async (pedido) => 
     await axios.post("http://localhost:4000/pedidos", pedido);
@@ -28,3 +57,9 @@ export const updatePedidoRequest = async (id, newFields) =>
 // Funcion para cambiar el estado (done) de un pedido segun su id
 export const togglePedidoDoneRequest = async (id, done) =>
     await axios.put(`http://localhost:4000/pedidos/${id}`, {done,});
+
+
+// *************** UTILIDAD *************** //
+// Funcion para obtener el total recaudado en un mes y año especificos
+export const getMonthYearRevenueRequest = async (monthYear) => 
+await axios.get(`http://localhost:4000/monthly_revenue/${monthYear}`);
