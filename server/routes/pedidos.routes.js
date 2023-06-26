@@ -14,7 +14,11 @@ import {
     updatePedido,
     deletePedido,
 
-    getMonthYearRevenue,
+    getMonthRevenue,
+    getYearRevenue,
+    getMonthlySalesAmount,
+    getYearlySalesAmount,
+
  } from "../controllers/pedidos.controllers.js";
 
 
@@ -63,7 +67,16 @@ router.delete('/pedidos/:id', deletePedido);
 
 
 // *************** UTILIDAD *************** //
-// Obtener el total recaudado en un mes y año especificos
-router.get('/monthly_revenue/:monthYear', getMonthYearRevenue);
+// Obtener el total recaudado en un mes especifico
+router.get('/monthly_revenue/:monthYear', getMonthRevenue);
+
+// Obtener el total recaudado en un año especifico
+router.get('/yearly_revenue/:year', getYearRevenue);
+
+// Obtener la cantidad de ventas en un mes especifico
+router.get('/monthly_sales_amount/:monthYear', getMonthlySalesAmount);
+
+// Obtener la cantidad de ventas en un año especifico
+router.get('/yearly_sales_amount/:year', getYearlySalesAmount);
 
 export default router

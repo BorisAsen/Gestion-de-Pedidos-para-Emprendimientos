@@ -60,6 +60,18 @@ export const togglePedidoDoneRequest = async (id, done) =>
 
 
 // *************** UTILIDAD *************** //
-// Funcion para obtener el total recaudado en un mes y año especificos
-export const getMonthYearRevenueRequest = async (monthYear) => 
+// Funcion para obtener el total recaudado en un mes especifico
+export const getMonthRevenueRequest = async (monthYear) => 
 await axios.get(`http://localhost:4000/monthly_revenue/${monthYear}`);
+
+// Funcion para obtener el total recaudado en un año especifico
+export const getYearRevenueRequest = async (year) =>
+await axios.get(`http://localhost:4000/yearly_revenue/${year}`);
+
+// Funcion para obtener la cantidad de ventas en un mes especifico
+export const getMonthlySalesAmountRequest = async (monthYear) =>
+await axios.get(`http://localhost:4000/monthly_sales_amount/${monthYear}`);
+
+// Funcion para obtener la cantidad de ventas en un año especifico
+export const getYearlySalesAmountRequest = async (year) =>
+await axios.get(`http://localhost:4000/yearly_sales_amount/${year}`);

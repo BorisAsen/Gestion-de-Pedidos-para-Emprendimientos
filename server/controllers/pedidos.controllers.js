@@ -430,23 +430,107 @@ export const updatePedido = async (req, res) => {
 
 // **************** Funciones de utilidad **************** //
 
-// * Funcion para obtener la recaudacion de un mes en especifico
-export const getMonthYearRevenue = async (req, res) => {
-    try {
-      const { monthYear } = req.params;
-        
-      // Obtener el mes y el año del parámetro monthYear
-      const [year, month] = monthYear.split("-");
-  
-      // Construir la consulta para traer la suma del total de las ventas de un mes y año específico
-      let query = `SELECT SUM(total) AS totalRevenue FROM orders WHERE YEAR(shippingDate) = ${year} AND MONTH(shippingDate) = ${month} AND done = 1`;
-  
-      const [result] = await pool.query(query);
-  
-      const { totalRevenue } = result[0];
-  
-      res.json({ totalRevenue });
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
+// Funcion para obtener la recaudacion de un mes en especifico
+// Devuelve un arreglo con las recaudaciones de cada dia del mes
+export const getMonthRevenue = async (req, res) => {
+  try {
+    const { monthYear } = req.params;
+
+    // Obtener el mes y el año del parámetro monthYear
+    const [year, month] = monthYear.split("-");
+
+    // Obtener el último día del mes
+    const lastDay = new Date(year, month, 0).getDate();
+
+    // Construir la consulta para traer la suma del total de las ventas de cada día del mes y año específico
+    let query = `SELECT DAY(shippingDate) AS day, SUM(total) AS dailyRevenue FROM orders WHERE YEAR(shippingDate) = ${year} AND MONTH(shippingDate) = ${month} AND done = 1 GROUP BY DAY(shippingDate)`;
+
+    const [result] = await pool.query(query);
+
+    const monthRevenue = Array(lastDay).fill(0); // Crear un arreglo con la longitud del mes, inicializado en 0
+
+    result.forEach((row) => {
+      const day = row.day;
+      const dailyRevenue = row.dailyRevenue;
+      monthRevenue[day - 1] = dailyRevenue; // Asignar la recaudación diaria al arreglo correspondiente
+    });
+
+    res.json({ monthRevenue });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
+};
+
+
+// Funcion para obtener la recaudacion de un año en especifico
+// Devuelve un arreglo con las recaudaciones de cada mes del año
+export const getYearRevenue = async (req, res) => {
+  try {
+    const { year } = req.params;
+
+    // Construir la consulta para traer la suma del total de las ventas de cada mes de un año específico
+    let query = `SELECT MONTH(shippingDate) AS month, SUM(total) AS totalRevenue FROM orders WHERE YEAR(shippingDate) = ${year} AND done = 1 GROUP BY MONTH(shippingDate)`;
+
+    const [result] = await pool.query(query);
+
+    const yearRevenue = Array(12).fill(0); // Crear un arreglo de 12 elementos inicializado en 0
+
+    result.forEach((row) => {
+      const month = row.month - 1; // Restar 1 para ajustar al índice del arreglo
+      const totalRevenue = row.totalRevenue;
+      yearRevenue[month] = totalRevenue; // Asignar la suma del mes al arreglo correspondiente
+    });
+
+    res.json({ yearRevenue });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Funcion para obtener la cantidad de ventas de un mes en especifico
+export const getMonthlySalesAmount = async (req, res) => {
+  try {
+    // Obtener el mes y el año del parámetro monthYear
+    const { monthYear } = req.params;
+    const [year, month] = monthYear.split("-");
+
+    // Construir la consulta para obtener la cantidad de ventas del mes y año específico
+    const query = `
+      SELECT COUNT(*) as salesAmount
+      FROM orders
+      WHERE YEAR(shippingDate) = ? AND MONTH(shippingDate) = ? AND done = 1
+    `;
+    
+    const [result] = await pool.query(query, [year, month]);
+
+    const salesAmount = result[0].salesAmount;
+    
+    res.json({ salesAmount });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Función para obtener la cantidad de ventas de un año específico
+export const getYearlySalesAmount = async (req, res) => {
+  try {
+    // Obtener el año del parámetro
+    const { year } = req.params;
+
+    // Construir la consulta para obtener la cantidad de ventas del año específico
+    const query = `
+      SELECT COUNT(*) as salesAmount
+      FROM orders
+      WHERE YEAR(shippingDate) = ? AND done = 1
+    `;
+
+    const [result] = await pool.query(query, [year]);
+
+    const salesAmount = result[0].salesAmount;
+
+    res.json({ salesAmount });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+

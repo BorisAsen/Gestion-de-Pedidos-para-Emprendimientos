@@ -24,7 +24,10 @@ import {
     updatePedidoRequest,
     togglePedidoDoneRequest,
 
-    getMonthYearRevenueRequest,
+    getMonthRevenueRequest,
+    getYearRevenueRequest,
+    getMonthlySalesAmountRequest,
+    getYearlySalesAmountRequest,
 } from "../api/pedidos.api";
 
 // Importo desde la API las funciones necesarias para manipular los productos
@@ -169,12 +172,42 @@ export const GlobalContextProvider = ({children}) => {
 
     // *************** UTILIDAD *************** //
     // Funcion para obtener el total recaudado en un mes y años especificos
-    const getMonthYearRevenue = async (monthYear) => {
+    const getMonthRevenue = async (monthYear) => {
         try {
-            const response = await getMonthYearRevenueRequest(monthYear);
+            const response = await getMonthRevenueRequest(monthYear);
             return response.data;
         } catch (error) {
             console.log(error);   
+        }
+    };
+
+    // Funcion para obtener el total recaudado en un año especifico
+    const getYearRevenue = async (year) => {
+        try {
+            const response = await getYearRevenueRequest(year);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Funcion para obtener la cantidad de ventas realizadas en un mes y año especificos
+    const getMonthSales = async (monthYear) => {
+        try {
+            const response = await getMonthlySalesAmountRequest(monthYear);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Funcion para obtener la cantidad de ventas realizadas en un año especifico
+    const getYearSales = async (year) => {
+        try {
+            const response = await getYearlySalesAmountRequest(year);
+            return response.data;
+        } catch (error) {
+            console.log(error);
         }
     };
     
@@ -332,7 +365,10 @@ export const GlobalContextProvider = ({children}) => {
                 togglePedidoDone,
 
                 // Utilitdad
-                getMonthYearRevenue,
+                getMonthRevenue,
+                getYearRevenue,
+                getMonthSales,
+                getYearSales,
 
                 // Productos
                 products,
