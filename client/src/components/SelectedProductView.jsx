@@ -10,7 +10,7 @@ import { BiMinus  } from 'react-icons/bi';
 
 
 // El componente recibe un elemento del arreglo de items
-export default function ProductShortView({ item }) {
+export default function SelectedProductView({ item }) {
     // Extraigo del context el arreglo de items que
     // contiene los productos seleccionados para el pedido y sus cantidades
     const {items, removeItem, modifyQuantity} = useGlobalContext();

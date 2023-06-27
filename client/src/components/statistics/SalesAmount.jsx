@@ -1,21 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Importar el global context
 import { useGlobalContext } from '../../context/ContextProvider';
 
-export default function TotalRevenue({ period, value }) {
+export default function SalesAmount({ period, value }) {
   
     // Importar las funciones para obtener las cantidades de ventas segun el periodo
     const { getMonthSales, getYearSales } = useGlobalContext();
 
-    // Estado para alamcenar la cantidad de ventas total
+    // Estado para almacenar la cantidad de ventas total
     const [salesAmount, setSalesAmount] = useState(0);
-
-    // // Estado para almacenar la cantidad de ventas mensuales
-    // const [monthlySalesAmount, setMonthlySalesAmount] = useState(0);
-
-    // // Estado para almacenar la cantidad de ventas anuales
-    // const [yearlySalesAmount, setYearlySalesAmount] = useState(0);
 
     // Funcion para obtener la cantidad de ventas segun el periodo
     const fetchSalesAmount = async () => {

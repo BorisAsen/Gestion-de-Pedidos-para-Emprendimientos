@@ -28,6 +28,8 @@ import {
     getYearRevenueRequest,
     getMonthlySalesAmountRequest,
     getYearlySalesAmountRequest,
+    getMonthlyBestSellingProductRequest,
+    getYearlyBestSellingProductRequest,
 } from "../api/pedidos.api";
 
 // Importo desde la API las funciones necesarias para manipular los productos
@@ -191,7 +193,7 @@ export const GlobalContextProvider = ({children}) => {
         }
     };
 
-    // Funcion para obtener la cantidad de ventas realizadas en un mes y año especificos
+    // Funcion para obtener la cantidad de ventas realizadas en un mes especifico
     const getMonthSales = async (monthYear) => {
         try {
             const response = await getMonthlySalesAmountRequest(monthYear);
@@ -205,6 +207,26 @@ export const GlobalContextProvider = ({children}) => {
     const getYearSales = async (year) => {
         try {
             const response = await getYearlySalesAmountRequest(year);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Funcion para obtener el producto mas vendido en un mes especifico
+    const getMonthlyBestSellingProduct = async (monthYear) => {
+        try {
+            const response = await getMonthlyBestSellingProductRequest(monthYear);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Funcion para obtener el producto mas vendido en un año especifico
+    const getYearlyBestSellingProduct = async (year) => {
+        try {
+            const response = await getYearlyBestSellingProductRequest(year);
             return response.data;
         } catch (error) {
             console.log(error);
@@ -369,6 +391,8 @@ export const GlobalContextProvider = ({children}) => {
                 getYearRevenue,
                 getMonthSales,
                 getYearSales,
+                getMonthlyBestSellingProduct,
+                getYearlyBestSellingProduct,
 
                 // Productos
                 products,

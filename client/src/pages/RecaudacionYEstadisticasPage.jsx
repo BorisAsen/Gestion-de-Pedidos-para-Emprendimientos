@@ -6,6 +6,9 @@ import TotalRevenue from '../components/statistics/TotalRevenue';
 // Importar el componente para mostrar la cantidad de ventas
 import SalesAmount from '../components/statistics/SalesAmount';
 
+// Importar el componente para mostrar el producto mas vendido
+import BestSellingProduct from '../components/statistics/BestSellingProduct';
+
 export default function RecaudacionYEstadisticas() {
   // Obtener el mes actual
   const getCurrentMonth = () => {
@@ -103,6 +106,11 @@ export default function RecaudacionYEstadisticas() {
       />
 
       <SalesAmount
+        period={selectedPeriod}
+        value={selectedPeriod === 'month' ? selectedMonth : selectedYear}
+      />
+
+      <BestSellingProduct
         period={selectedPeriod}
         value={selectedPeriod === 'month' ? selectedMonth : selectedYear}
       />

@@ -543,7 +543,7 @@ export const getMonthlyBestSellingProduct = async (req, res) => {
 
     // Construir la consulta para obtener el producto más vendido del mes y año específico
     const query = `
-      SELECT p.id, p.name, p.price, p.description, p.image, p.category_id, p.stock, p.active, p.createdAt, p.updatedAt, SUM(op.quantity) AS totalQuantity
+      SELECT p.id, p.productName, p.imgURL, p.imgPublic_id, p.description, p.price, SUM(op.quantity) AS totalQuantity
       FROM products p
       INNER JOIN orders_products op ON p.id = op.product_id
       INNER JOIN orders o ON op.order_id = o.id
@@ -559,19 +559,18 @@ export const getMonthlyBestSellingProduct = async (req, res) => {
 
     res.json({ bestSellingProduct });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(error);
+    return res.status(500).json({ message: "Error retrieving best-selling product" });
   }
-}
+};
 
 // Funcion para obtener el producto mas vendido de un año en especifico
 export const getYearlyBestSellingProduct = async (req, res) => {
   try {
-    // Obtener el año del parámetro
     const { year } = req.params;
 
-    // Construir la consulta para obtener el producto más vendido del año específico
     const query = `
-      SELECT p.id, p.name, p.price, p.description, p.image, p.category_id, p.stock, p.active, p.createdAt, p.updatedAt, SUM(op.quantity) AS totalQuantity
+      SELECT p.id, p.productName, p.imgURL, p.imgPublic_id, p.description, p.price, SUM(op.quantity) AS totalQuantity
       FROM products p
       INNER JOIN orders_products op ON p.id = op.product_id
       INNER JOIN orders o ON op.order_id = o.id
@@ -582,12 +581,15 @@ export const getYearlyBestSellingProduct = async (req, res) => {
     `;
 
     const [result] = await pool.query(query, [year]);
-
     const bestSellingProduct = result[0];
+
+    console.log(bestSellingProduct);
 
     res.json({ bestSellingProduct });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving best-selling product" });
   }
-}
+};
+
 
