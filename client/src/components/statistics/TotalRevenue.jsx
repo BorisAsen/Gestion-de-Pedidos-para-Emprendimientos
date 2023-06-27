@@ -164,31 +164,31 @@ export default function TotalRevenue({ period, value }) {
 
     return (
         <div className="Tarjeta flex flex-wrap m-4 p-4 pt-4 justify-center items-center">
-        <div className="flex justify-center mb-4 items-center w-full text-details_3 text-lg font-bold">
-            {period === 'month' && (
-            <h2>
-                Recaudación de <span>{formatMonth(value)}</span>
-            </h2>
-            )}
-            {period === 'year' && (
-            <h2>
-                Recaudación del año <span>{value}</span>
-            </h2>
-            )}
-        </div>
-        <div className="m-3 lg:mr-14 rounded-md justify-center items-center">
-            <div className="mb-6 flex items-center justify-center">
-            <p className="m-auto text-sky-500 font-mono text-xl">TOTAL</p>
-            <p className="m-auto text-sky-500 font-mono text-6xl">${revenue ? revenue : '0'}</p>
+            <div className="flex justify-center mb-4 items-center text-center w-full text-secondary text-lg font-bold">
+                {period === 'month' && (
+                <h2>
+                    Recaudación de <span>{formatMonth(value)}</span>
+                </h2>
+                )}
+                {period === 'year' && (
+                <h2>
+                    Recaudación del año <span>{value}</span>
+                </h2>
+                )}
             </div>
-            <div className="flex items-center justify-center">
-            <p className="m-auto text-orange-400 font-mono text-xl">NETA</p>
-            <p className="m-auto text-orange-400 font-mono text-6xl">${revenue ? revenue : '0'}</p>
+            <div className="m-3 lg:mr-14 rounded-md justify-center items-center">
+                <div className="mb-6 text-details_3 flex items-center justify-center">
+                    <p className="m-auto font-mono text-xl">TOTAL</p>
+                    <p className="m-auto font-mono text-6xl">${revenue ? revenue : '0'}</p>
+                </div>
+                <div className="flex text-orange-400 items-center justify-center">
+                    <p className="m-auto font-mono text-xl">NETA</p>
+                    <p className="m-auto font-mono text-6xl">${revenue ? revenue : '0'}</p>
+                </div>
             </div>
-        </div>
-        <div className='m-3 h-80 w-96'>
-            <canvas ref={chartRef}></canvas>
-        </div>
+            <div className='m-3 h-80 w-96'>
+                <canvas ref={chartRef}></canvas>
+            </div>
         </div>
     );
 }

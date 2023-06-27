@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 // Importar el componente para mostrar las recaudaciones
 import TotalRevenue from '../components/statistics/TotalRevenue';
 
+// Importar el componente para mostrar la cantidad de ventas
+import SalesAmount from '../components/statistics/SalesAmount';
+
 export default function RecaudacionYEstadisticas() {
   // Obtener el mes actual
   const getCurrentMonth = () => {
@@ -95,6 +98,11 @@ export default function RecaudacionYEstadisticas() {
       </div>
 
       <TotalRevenue
+        period={selectedPeriod}
+        value={selectedPeriod === 'month' ? selectedMonth : selectedYear}
+      />
+
+      <SalesAmount
         period={selectedPeriod}
         value={selectedPeriod === 'month' ? selectedMonth : selectedYear}
       />

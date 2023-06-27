@@ -75,3 +75,11 @@ await axios.get(`http://localhost:4000/monthly_sales_amount/${monthYear}`);
 // Funcion para obtener la cantidad de ventas en un año especifico
 export const getYearlySalesAmountRequest = async (year) =>
 await axios.get(`http://localhost:4000/yearly_sales_amount/${year}`);
+
+// Funcion para obtener el producto mas vendido de un mes especifico
+export const getMonthlyBestSellingProductRequest = async (monthYear) =>
+await axios.get(`http://localhost:4000/best_selling_product_month/${monthYear}`);
+
+// Funcion para obtener el producto mas vendido de un año especifico
+export const getYearlyBestSellingProductRequest = async (year) =>
+await axios.get(`http://localhost:4000/best_selling_product_year/${year}`);

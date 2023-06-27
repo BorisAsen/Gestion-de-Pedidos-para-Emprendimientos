@@ -534,3 +534,60 @@ export const getYearlySalesAmount = async (req, res) => {
   }
 };
 
+// Funcion para obtener el producto mas vendido de un mes en especifico
+export const getMonthlyBestSellingProduct = async (req, res) => {
+  try {
+    // Obtener el mes y el año del parámetro monthYear
+    const { monthYear } = req.params;
+    const [year, month] = monthYear.split("-");
+
+    // Construir la consulta para obtener el producto más vendido del mes y año específico
+    const query = `
+      SELECT p.id, p.name, p.price, p.description, p.image, p.category_id, p.stock, p.active, p.createdAt, p.updatedAt, SUM(op.quantity) AS totalQuantity
+      FROM products p
+      INNER JOIN orders_products op ON p.id = op.product_id
+      INNER JOIN orders o ON op.order_id = o.id
+      WHERE YEAR(o.shippingDate) = ? AND MONTH(o.shippingDate) = ? AND o.done = 1
+      GROUP BY p.id
+      ORDER BY totalQuantity DESC
+      LIMIT 1
+    `;
+
+    const [result] = await pool.query(query, [year, month]);
+
+    const bestSellingProduct = result[0];
+
+    res.json({ bestSellingProduct });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+// Funcion para obtener el producto mas vendido de un año en especifico
+export const getYearlyBestSellingProduct = async (req, res) => {
+  try {
+    // Obtener el año del parámetro
+    const { year } = req.params;
+
+    // Construir la consulta para obtener el producto más vendido del año específico
+    const query = `
+      SELECT p.id, p.name, p.price, p.description, p.image, p.category_id, p.stock, p.active, p.createdAt, p.updatedAt, SUM(op.quantity) AS totalQuantity
+      FROM products p
+      INNER JOIN orders_products op ON p.id = op.product_id
+      INNER JOIN orders o ON op.order_id = o.id
+      WHERE YEAR(o.shippingDate) = ? AND o.done = 1
+      GROUP BY p.id
+      ORDER BY totalQuantity DESC
+      LIMIT 1
+    `;
+
+    const [result] = await pool.query(query, [year]);
+
+    const bestSellingProduct = result[0];
+
+    res.json({ bestSellingProduct });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
