@@ -534,14 +534,14 @@ export const getYearlySalesAmount = async (req, res) => {
   }
 };
 
-// Funcion para obtener el producto mas vendido de un mes en especifico
-export const getMonthlyBestSellingProduct = async (req, res) => {
+// Funcion para obtener los productos mas vendidos de un mes en especifico
+export const getMonthlyBestSellingProducts = async (req, res) => {
   try {
     // Obtener el mes y el año del parámetro monthYear
     const { monthYear } = req.params;
     const [year, month] = monthYear.split("-");
 
-    // Construir la consulta para obtener el producto más vendido del mes y año específico
+    // Construir la consulta para obtener los 5 productos más vendidos del mes y año específico
     const query = `
       SELECT p.id, p.productName, p.imgURL, p.imgPublic_id, p.description, p.price, SUM(op.quantity) AS totalQuantity
       FROM products p
@@ -550,25 +550,28 @@ export const getMonthlyBestSellingProduct = async (req, res) => {
       WHERE YEAR(o.shippingDate) = ? AND MONTH(o.shippingDate) = ? AND o.done = 1
       GROUP BY p.id
       ORDER BY totalQuantity DESC
-      LIMIT 1
+      LIMIT 5
     `;
 
     const [result] = await pool.query(query, [year, month]);
 
-    const bestSellingProduct = result[0];
+    const bestSellingProducts = result;
 
-    res.json({ bestSellingProduct });
+    res.json({ bestSellingProducts });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error retrieving best-selling product" });
+    return res.status(500).json({ message: "Error retrieving best-selling products" });
   }
 };
 
-// Funcion para obtener el producto mas vendido de un año en especifico
-export const getYearlyBestSellingProduct = async (req, res) => {
+
+
+// Funcion para obtener los productos mas vendidos de un año en especifico
+export const getYearlyBestSellingProducts = async (req, res) => {
   try {
     const { year } = req.params;
 
+    // Construir la consulta para obtener los 5 productos más vendidos del año específico
     const query = `
       SELECT p.id, p.productName, p.imgURL, p.imgPublic_id, p.description, p.price, SUM(op.quantity) AS totalQuantity
       FROM products p
@@ -577,19 +580,18 @@ export const getYearlyBestSellingProduct = async (req, res) => {
       WHERE YEAR(o.shippingDate) = ? AND o.done = 1
       GROUP BY p.id
       ORDER BY totalQuantity DESC
-      LIMIT 1
+      LIMIT 5
     `;
 
     const [result] = await pool.query(query, [year]);
-    const bestSellingProduct = result[0];
+    const bestSellingProducts = result;
 
-    console.log(bestSellingProduct);
-
-    res.json({ bestSellingProduct });
+    res.json({ bestSellingProducts });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error retrieving best-selling product" });
+    res.status(500).json({ message: "Error retrieving best-selling products" });
   }
 };
+
 
 

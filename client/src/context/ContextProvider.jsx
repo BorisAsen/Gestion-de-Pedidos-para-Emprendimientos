@@ -28,8 +28,8 @@ import {
     getYearRevenueRequest,
     getMonthlySalesAmountRequest,
     getYearlySalesAmountRequest,
-    getMonthlyBestSellingProductRequest,
-    getYearlyBestSellingProductRequest,
+    getMonthlyBestSellingProductsRequest,
+    getYearlyBestSellingProductsRequest,
 } from "../api/pedidos.api";
 
 // Importo desde la API las funciones necesarias para manipular los productos
@@ -213,20 +213,20 @@ export const GlobalContextProvider = ({children}) => {
         }
     };
 
-    // Funcion para obtener el producto mas vendido en un mes especifico
-    const getMonthlyBestSellingProduct = async (monthYear) => {
+    // Funcion para obtener los productos mas vendidos en un mes especifico
+    const getMonthlyBestSellingProducts = async (monthYear) => {
         try {
-            const response = await getMonthlyBestSellingProductRequest(monthYear);
+            const response = await getMonthlyBestSellingProductsRequest(monthYear);
             return response.data;
         } catch (error) {
             console.log(error);
         }
     };
 
-    // Funcion para obtener el producto mas vendido en un año especifico
-    const getYearlyBestSellingProduct = async (year) => {
+    // Funcion para obtener los productos mas vendidos en un año especifico
+    const getYearlyBestSellingProducts = async (year) => {
         try {
-            const response = await getYearlyBestSellingProductRequest(year);
+            const response = await getYearlyBestSellingProductsRequest(year);
             return response.data;
         } catch (error) {
             console.log(error);
@@ -391,8 +391,8 @@ export const GlobalContextProvider = ({children}) => {
                 getYearRevenue,
                 getMonthSales,
                 getYearSales,
-                getMonthlyBestSellingProduct,
-                getYearlyBestSellingProduct,
+                getMonthlyBestSellingProducts,
+                getYearlyBestSellingProducts,
 
                 // Productos
                 products,

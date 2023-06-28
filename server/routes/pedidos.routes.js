@@ -18,8 +18,8 @@ import {
     getYearRevenue,
     getMonthlySalesAmount,
     getYearlySalesAmount,
-    getMonthlyBestSellingProduct,
-    getYearlyBestSellingProduct
+    getMonthlyBestSellingProducts,
+    getYearlyBestSellingProducts
 
  } from "../controllers/pedidos.controllers.js";
 
@@ -81,10 +81,10 @@ router.get('/monthly_sales_amount/:monthYear', getMonthlySalesAmount);
 // Obtener la cantidad de ventas en un año especifico
 router.get('/yearly_sales_amount/:year', getYearlySalesAmount);
 
-// Obtener el producto mas vendido en un mes especifico
-router.get('/best_selling_product_month/:monthYear', getMonthlyBestSellingProduct);
+// Obtener los productos mas vendidos en un mes especifico
+router.get('/best_selling_products_month/:monthYear', getMonthlyBestSellingProducts);
 
-// Obtener el producto mas vendido en un año especifico
-router.get('/best_selling_product_year/:year', getYearlyBestSellingProduct);
+// Obtener los productos mas vendidos en un año especifico
+router.get('/best_selling_products_year/:year', getYearlyBestSellingProducts);
 
 export default router

@@ -1,0 +1,16 @@
+.carousel-wrapper {
+  height: 600px; 
+    width: 80%;
+    max-width: 20em;
+    margin: 0 auto;
+  }
+  
+  .carousel-slider {
+    display: flex;
+    align-items: center;
+  }
+  
+  .carousel-item {
+    text-align: center;
+    padding: 20px;
+  }
