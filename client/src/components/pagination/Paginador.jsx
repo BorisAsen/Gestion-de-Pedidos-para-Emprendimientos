@@ -20,7 +20,7 @@ el arreglo, se muestre una leyenda de que no hay 'elementos' que mostrar
 
 import React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Importar iconos
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
@@ -49,6 +49,12 @@ const Paginador = (props) => {
             behavior: "smooth", // Desplazamiento suave
         });
     };
+
+    // Reestablecer el indice de paginacion cuando se modifiquen los items a mostrar
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [items]);
+      
 
     if (items.length === 0) {
         return <h1  className="ml-6" >No hay {itemName} que mostrar</h1>

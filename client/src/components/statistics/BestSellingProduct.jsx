@@ -45,12 +45,12 @@ export default function BestSellingProduct({ period, value }) {
       <div className="flex justify-center mb-4 items-center text-center w-full text-secondary text-lg font-bold">
         {period === 'month' && (
           <h2>
-            Producto más vendido de <span>{formatMonth(value)}</span>
+            Productos más vendidos de <span>{formatMonth(value)}</span>
           </h2>
         )}
         {period === 'year' && (
           <h2>
-            Producto más vendido del <span>{value}</span>
+            Productos más vendidos del <span>{value}</span>
           </h2>
         )}
       </div>

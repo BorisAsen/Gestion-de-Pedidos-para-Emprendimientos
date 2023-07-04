@@ -28,6 +28,9 @@ export default function ProductosPage() {
   // Estado para guardar el valor del orden, ascendente o descendente
   const [sortOrder, setSortOrder] = useState("asc");
 
+  // Estado que recoge la informacion del campo de busqueda
+  const [search, setSearch] = useState('');
+
   // Se ejecuta al cargar la pagina
   useEffect (() => {
     // Carga el arreglo de productos
@@ -38,8 +41,24 @@ export default function ProductosPage() {
     if (storedFilterValue) {
       setSelectedFilter(storedFilterValue);
     }
+
+    // Recuperar el valor del campo de busqueda en localStorage (si existe)
+    const storedSearchValue = localStorage.getItem('searchContent_Products');
+    if (storedSearchValue) {
+      setSearch(storedSearchValue);
+    }
     
   }, []);
+
+  // Guardar el filtro seleccionado en localstorage 
+  useEffect(() => {
+    localStorage.setItem('selectedFilter_Products', selectedFilter);
+  }, [selectedFilter]);  
+
+  // Guardar el contenido del campo de busqueda en localstorage 
+  useEffect(() => {
+    localStorage.setItem('searchContent_Products', search);
+  }, [search]);
 
   // Filtrar y ordenar los productos
   const productsFilter = products.slice().sort((a, b) => {
@@ -74,12 +93,11 @@ export default function ProductosPage() {
     setSortOrder(newSortOrder);
   };
 
-  // Estado que recoge la informacion del campo de busqueda
-  const [search, setSearch] = useState('');
-
   // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
+  const handleSearchChange = (e) => {
+    const selectedValue = e.target.value;
+    setSearch(selectedValue);
+    localStorage.setItem('searchContent_Products', selectedValue); // Guardar el valor del campo de busqueda en localstorage
   };
 
   // Resultado de la busqueda
@@ -105,14 +123,14 @@ export default function ProductosPage() {
         <div className='flex items-center'>
             <label className='block'>Pedidos </label>
             <select
-              name="Datefilter"
-              onChange={handleFilterChange}
-              value={selectedFilter}
-              disabled = {search}
-              className={`p-0.5 ml-2 rounded-md text-black ${search ? 'bg-tertiary text-gray-100 disabled:cursor-not-allowed' : ''}`}
-            >
-              <option value={"fecha de creacion"}>Fecha de creacion</option>
-              <option value={"costo"}>Costo</option>
+                name="Datefilter"
+                onChange={handleFilterChange}
+                value={selectedFilter}
+                disabled={search !== ''}
+                className={`p-0.5 ml-2 rounded-md text-black ${search !== '' ? 'bg-tertiary text-gray-100 disabled:cursor-not-allowed' : ''}`}
+              >
+                <option value={'fecha de creacion'}>Fecha de creacion</option>
+                <option value={'costo'}>Costo</option>
             </select>
             <button className={`Card-icon p-1.5 ml-2 ${search ? 'bg-tertiary text-primary disabled:cursor-not-allowed disabled:hover:bg-tertiary' : ''}`} disabled = {search} onClick={handleSortOrderChange}><TbArrowsSort/></button>       
             {selectedFilter === "costo" && (
@@ -129,7 +147,7 @@ export default function ProductosPage() {
         
         <div>
           <input
-          className='p-0.5 px-1.5 rounded-md w-full text-black'
+          className='ml-1.5 p-0.5 px-1.5 rounded-md w-full text-black'
             type="text"
             value={search}
             onChange={handleSearchChange}
