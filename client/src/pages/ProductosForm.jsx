@@ -16,7 +16,11 @@ import { useParams, useNavigate } from "react-router-dom";
 // Importar iconos
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
+// Preview de la imagen de producto
 import Preview_Image from '../components/Form Components/Preview_Image';
+
+// Ruta de la imagen por defecto
+import defaultImage from "../../assets/images/NoImage.jpg";
 
 export default function ProductForm() {
 
@@ -27,16 +31,15 @@ export default function ProductForm() {
     updateProduct // Fn para modificar un producto mediante su id y los nuevos valores
   } = useGlobalContext();
 
-  // Extraigo del context el arreglo de items (productos y sus cantidades)
-  const { items, clearItems } = useGlobalContext();
-
-  // Definir el useState para setear valores en el formulario
-  const [product, setProduct] = useState({
+  // Valores Iniciales
+  const initialValues = {
     productName: "",
-    imgURL: null,
     description: "",
     price: 0,
-  });
+  };
+
+  // Definir el useState para setear valores en el formulario
+  const [product, setProduct] = useState(initialValues);
 
   // Creo la constante para disponer del useParams
   const params = useParams();
@@ -45,7 +48,6 @@ export default function ProductForm() {
   // Creo la constante para disponer del useNavigate
   const navigate = useNavigate();
 
-  const [originalImage, setOriginalImage] = useState({imgURL: null});
 
   // Utilizar el useEfect para traer los datos del producto en el caso de
   // que ya exista y se lo quiera editar
@@ -55,17 +57,19 @@ export default function ProductForm() {
     const loadProduct = async () => {
       if (params.id) {
         const product = await getProduct(params.id);
-        // Muestro por consola los datos del producto para corroborar
-        // console.log(product);
-        setOriginalImage({
-          imgURL: product.imgURL,
-        })
+
         setProduct({
           productName: product.productName,
-          //imgURL: product.imgURL,
+          imgURL: product.imgURL,
           description: product.description,
           price: product.price,
-        })
+        });
+
+        // Muestro por consola los datos del producto
+        console.log(product);
+
+        // También establecemos el campo de imagen en null
+        //setProduct({ ...product, imgURL: null });
       }
     };
     loadProduct();
@@ -132,16 +136,27 @@ export default function ProductForm() {
             />
 
             {/* Preview de la imagen */}
-            {product.imgURL && <img src={product.imgURL}/>}
+            {/* {product.imgURL && <img src={product.imgURL} alt="Preview"/>} */}
             <div className="flex justify-center items-center w-60 my-4 mx-auto h-60 bg-white">
-              {(values.imgURL) && ( <Preview_Image file={values.imgURL}/> )}
-              {/* En el caso de que se este editando el producto, se debe cargar la imagen original en el preview */}
-              {(!values.imgURL && originalImage.imgURL) && ( 
-                  <div>
-                    {originalImage.imgURL && <img src={originalImage.imgURL}/>}
-                  </div>
-              )}
-            </div>  
+            {(values.imgURL ? (
+              <Preview_Image file={values.imgURL} url={values.imgURL} />
+            ) : (
+              <img src={defaultImage} alt="Default" />
+            ))}
+            </div>
+            <div className="flex justify-center mb-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setFieldValue('imgURL', null);
+                  // También restablece el valor del campo de entrada de archivo
+                  document.querySelector("input[type='file']").value = '';
+                }}
+                className="bg-details_3 text-white px-3 py-1 rounded-md"
+              >
+                Eliminar Imagen
+              </button>
+            </div>
 
             <label className='block'>Descripcion: </label>
             <Field

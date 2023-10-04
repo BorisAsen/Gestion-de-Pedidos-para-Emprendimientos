@@ -66,9 +66,6 @@ export const updateProduct = async (req, res) => {
     // Extraigo el valor de los campos del req.body
     const {productName, description, price} = req.body;
 
-    // En el caso de no haber deseado modificar la imagen, el input quedo sin ningun archivo seleccionado,
-    // es por eso que se debe controlar esto y ejecutar el UPDATE en la db dependiendo si el req trajo o no una imagen
-
     // Si hay una imagen para subir, se la envia a cloudinary para que la suba
     let image = {
         url: null,
@@ -92,20 +89,31 @@ export const updateProduct = async (req, res) => {
         // Como existe una nueva imagen para subir, se debe eliminar de cloudinary la anterior
         // Primero se debe encontrar el imgPublic_id de cloudinary que tiene la imagen antigua del producto
         const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [req.params.id]);
-        let cloudinaryImgPublic_id = product[0].imgPublic_id; // En caso de no tener imagen, la variable tomara el valor de null
+        let cloudinaryImgPublic_id = product[0].imgPublic_id; // Si no tenia imagen, la variable tomara el valor de null
         
         // Ahora, en el caso de que el producto haya tenido una imagen anteriormente se la eliminara porque ya no es necesaria
         if (cloudinaryImgPublic_id) {
             await deleteImage(cloudinaryImgPublic_id);
         }
 
-        // Ejecutar el UPDATE incluyendo el campo imgURL porque el req SI mando una nueva imagen para el producto
+        // Ejecutar el UPDATE incluyendo la nueva imagen del producto
         result = await pool.query("UPDATE products SET productName = ?, imgURL = ?, imgPublic_id = ?, description = ?, price = ? WHERE id = ?", [productName, image.url, image.public_id, description, price, req.params.id]);
     } else {
-        // Ejecutar el UPDATE obviando el campo imgURL porque el req NO mando una nueva imagen para el producto
-        result = await pool.query("UPDATE products SET productName = ?, imgPublic_id = ?, description = ?, price = ? WHERE id = ?", [productName, image.public_id, description, price, req.params.id]);
-
-    }
+        // En este caso, no se incluyó una nueva imagen en el req, por lo que se verificara si el producto ya contaba con una imagen
+        const [product] = await pool.query("SELECT * FROM products WHERE id = ?", [req.params.id]);
+        let cloudinaryImgPublic_id = product[0].imgPublic_id; // Si no tenia imagen, la variable tomará el valor de null
+    
+        if (cloudinaryImgPublic_id) {
+          // Si tenia imagen, se elimina de Cloudinary y se actualiza el registro en la base de datos
+          await deleteImage(cloudinaryImgPublic_id);
+    
+          // Se actualiza el producto limpiando el contenido anterior de la imagen (imgURL e imgPublic_id )
+          result = await pool.query("UPDATE products SET productName = ?, description = ?, price = ?, imgURL = NULL, imgPublic_id = NULL WHERE id = ?", [productName, description, price, req.params.id]);
+        } else {
+          // Si no había una imagen anterior, simplemente actualizamos el registro en la base de datos excluyendo el campo imgURL.
+          result = await pool.query("UPDATE products SET productName = ?, description = ?, price = ? WHERE id = ?", [productName, description, price, req.params.id]);
+        }
+      }
     
     /* 
        De la misma manera que al eliminar un producto hay que controlar que exista,

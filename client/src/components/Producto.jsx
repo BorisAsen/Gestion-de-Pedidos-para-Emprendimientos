@@ -10,6 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { MdDelete, MdFileDownloadDone } from 'react-icons/md';
 import { AiFillEdit } from 'react-icons/ai';
 
+// Ruta de la imagen por defecto
+import defaultImage from "../../assets/images/NoImage.jpg";
+
 // El componente recibe un elemento del arreglo de productos
 // y muestra todas las propiedades del mismo
 export default function ProductCard({ product }) {
@@ -22,15 +25,17 @@ export default function ProductCard({ product }) {
 
     // Truncar el titulo si es que es demasiado largo
     const maxLength = 23;
-    let tittle;
-    product.productName.length <= maxLength ? tittle = product.productName : (tittle = product.productName.slice(0, maxLength) + '...');
+    let title;
+    product.productName.length <= maxLength ? title = product.productName : (title = product.productName.slice(0, maxLength) + '...');
 
     return (
         <div className='Tarjeta relative'>
             <header className='flex justify-between mb-2'>
-                <h2 className='text-xl font-bold h-11 leading-none'>{tittle}</h2>
+                <h2 className='text-xl font-bold h-11 leading-none'>{title}</h2>
             </header>
-            {product.imgURL && <img className='w-100 mb-3' src={product.imgURL}/>}
+            <div className="flex justify-center items-center w-full mb-3 bg-white">
+                <img className='w-100' src={product.imgURL || defaultImage} alt={title} />
+            </div>
             {/* <p className='Tarjeta_field'>URL: {product.imgURL}</p> */}
             {/* <p className='Tarjeta_field'>Public_id: {product.imgPublic_id}</p> */}
             <div className='Tarjeta_field bg-white rounded-md h-24 overflow-y-auto whitespace-pre-wrap'>{(product.description)}</div>
