@@ -22,7 +22,7 @@ export default function ProductosPage() {
   // Extraigo del context el arreglo de productos vacio y la funcion para cargarlo con los productos de la db
   const {products, loadProducts} = useGlobalContext();
 
-  // Estado para el valor del filtro de pedidos
+  // Estado para el valor del filtro
   const [selectedFilter, setSelectedFilter] = useState("fecha de creacion");
 
   // Estado para guardar el valor del orden, ascendente o descendente
@@ -42,6 +42,12 @@ export default function ProductosPage() {
       setSelectedFilter(storedFilterValue);
     }
 
+    // Recuperar el valor almacenado del orden de busqueda en localStorage (si existe)
+    const storedSortOrder = localStorage.getItem("sortOrder_Products");
+    if (storedSortOrder) {
+      setSortOrder(storedSortOrder);
+    }
+
     // Recuperar el valor del campo de busqueda en localStorage (si existe)
     const storedSearchValue = localStorage.getItem('searchContent_Products');
     if (storedSearchValue) {
@@ -49,16 +55,6 @@ export default function ProductosPage() {
     }
     
   }, []);
-
-  // Guardar el filtro seleccionado en localstorage 
-  useEffect(() => {
-    localStorage.setItem('selectedFilter_Products', selectedFilter);
-  }, [selectedFilter]);  
-
-  // Guardar el contenido del campo de busqueda en localstorage 
-  useEffect(() => {
-    localStorage.setItem('searchContent_Products', search);
-  }, [search]);
 
   // Filtrar y ordenar los productos
   const productsFilter = products.slice().sort((a, b) => {
@@ -91,6 +87,7 @@ export default function ProductosPage() {
   const handleSortOrderChange = () => {
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
+    localStorage.setItem('sortOrder_Products', newSortOrder);
   };
 
   // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda

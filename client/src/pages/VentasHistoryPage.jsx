@@ -29,6 +29,12 @@ export default function VentasHistoryPage() {
   // Estado para el valor del tipo de busqueda
   const [Ventas_BuscarPor, setVentas_BuscarPor] = useState("producto");
 
+  // Estado para el valor del orden, ascendente o descendente
+  const [Ventas_OrdenarPor, setVentas_OrdenarPor] = useState("asc");
+
+  // Estado que recoge la informacion del campo de busqueda
+  const [Ventas_CampoBusqueda, setVentas_CampoBusqueda] = useState('');
+
   // Constantes para extraer el dia, mes y año actual con los que
   // se inializaran selectedMonth y selectedDate
   const currentDate = new Date();
@@ -36,9 +42,9 @@ export default function VentasHistoryPage() {
   const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
   const currentDay = currentDate.getDate().toString().padStart(2, '0');
   // Estado para el valor del input de mes y año
-  const [selectedMonth, setSelectedMonth] = useState(`${currentYear}-${currentMonth}`);
+  const [Ventas_SelectedMonth, setVentas_SelectedMonth] = useState(`${currentYear}-${currentMonth}`);
   // Estado para el valor del input de dia especifico
-  const [selectedDate, setSelectedDate] = useState(`${currentYear}-${currentMonth}-${currentDay}`);
+  const [Ventas_SelectedDate, setVentas_SelectedDate] = useState(`${currentYear}-${currentMonth}-${currentDay}`);
 
   // Estado para mostrar y limpiar el resultado de la busqueda
   const [search_clean, setSearch_clean] = useState('clean');
@@ -58,18 +64,35 @@ export default function VentasHistoryPage() {
       setVentas_BuscarPor(storedValue_Ventas_BuscarPor);
     }
 
-    // Recuperar el valor almacenado de searchValue en localStorage (si existe)
-    const storedValue_searchField = localStorage.getItem('searchField');
-    if (storedValue_searchField) {
-      setSearchField(storedValue_searchField);
+    // Recuperar el valor almacenado de Pedidos_OrdenarPor en localStorage (si existe)
+    const storedValue_Ventas_OrdenarPor = localStorage.getItem('Ventas_OrdenarPor');
+    if (storedValue_Ventas_OrdenarPor) {
+      setVentas_OrdenarPor(storedValue_Ventas_OrdenarPor);
     }
 
-    // Recuperar el valor almacenado de sortOrder en localStorage (si existe)
-    const storedSortOrder = localStorage.getItem("sortOrder");
-    if (storedSortOrder) {
-      setSortOrder(storedSortOrder);
+    // Recuperar el valor almacenado de Ventas_CampoBusqueda en localStorage (si existe)
+    const storedValue_Ventas_CampoBusqueda = localStorage.getItem('Ventas_CampoBusqueda');
+    if (storedValue_Ventas_CampoBusqueda) {
+      setVentas_CampoBusqueda(storedValue_Ventas_CampoBusqueda);
     }
-  }, []);
+
+    // Recuperar el valor almacenado de Ventas_SelectedDate en localStorage (si existe)
+    const storedValue_Ventas_SelectedDate = localStorage.getItem('Ventas_SelectedDate');
+    if (storedValue_Ventas_SelectedDate) {
+      setVentas_SelectedDate(storedValue_Ventas_SelectedDate);
+    }
+
+    // Recuperar el valor almacenado de Ventas_SelectedMonth en localStorage (si existe)
+    const storedValue_Ventas_SelectedMonth = localStorage.getItem('Ventas_SelectedMonth');
+    if (storedValue_Ventas_SelectedMonth) {
+      setVentas_SelectedMonth(storedValue_Ventas_SelectedMonth);
+    }
+
+  }, [Ventas_FiltrarPor, Ventas_BuscarPor, Ventas_OrdenarPor, Ventas_CampoBusqueda, Ventas_SelectedDate, Ventas_SelectedMonth]);
+
+  useEffect(() => {
+    search();
+  }, [Ventas_FiltrarPor, Ventas_BuscarPor, Ventas_OrdenarPor, Ventas_CampoBusqueda, Ventas_SelectedDate, Ventas_SelectedMonth]);
 
   // Handler del selector de filtro
   const handleFilterChange = (e) => {
@@ -84,18 +107,49 @@ export default function VentasHistoryPage() {
     setVentas_BuscarPor(selectedValue);
     localStorage.setItem('Ventas_BuscarPor', selectedValue);
   };
-  
-  // Filtrar las ventas por mes y año, dia especifico y todos las ventas
+
+  //Handler del boton para cambiar el orden del listado
+  const handleSortOrderChange = () => {
+    const newSortOrder = Ventas_OrdenarPor === "asc" ? "desc" : "asc";
+    setVentas_OrdenarPor(newSortOrder);
+    localStorage.setItem('Ventas_OrdenarPor', newSortOrder);
+  };
+
+  //Handler del input Ventas_SelectedDate
+  const handleVentas_SelectedDateChange = (e) => {
+    const selectedValue = e.target.value;
+    setVentas_SelectedDate(selectedValue);
+    localStorage.setItem('Ventas_SelectedDate', selectedValue);
+  };
+
+  //Handler del input Ventas_SelectedMonth
+  const handleVentas_SelectedMonthChange = (e) => {
+    const selectedValue = e.target.value;
+    setVentas_SelectedMonth(selectedValue);
+    localStorage.setItem('Ventas_SelectedMonth', selectedValue);
+  };
+
+  // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
+  const handleSearchFieldChange = (e) => {
+    const searchValue = e.target.value;
+    setVentas_CampoBusqueda(searchValue);
+    localStorage.setItem('Ventas_CampoBusqueda', searchValue);
+  };
+
+
+  // Filtrar los pedidos según el tipo de búsqueda seleccionado
+  // Filtrar los pedidos por mes y año, dia especifico y todos las ventas
   const search = async () => {
+    // console.log("BUSCANDO");
     switch (Ventas_FiltrarPor) {
       case "mes_y_año":
-        await loadMonthYearPedidos(1, selectedMonth);
+        await loadMonthYearPedidos(1, Ventas_SelectedMonth);
         break;
       case "todos":
         await loadAllPedidos(1);
         break;
       case "dia":
-        await loadDatePedidos(1, selectedDate)
+        await loadDatePedidos(1, Ventas_SelectedDate)
         break;
       default:
         break;
@@ -108,69 +162,52 @@ export default function VentasHistoryPage() {
     setPedidos([]);
   }
 
-
-  // Filtrar los pedidos según el tipo de búsqueda seleccionado
-  // Estado que recoge la informacion del campo de busqueda
-  const [searchField, setSearchField] = useState('');
-  // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
-  const handleSearchFieldChange = (event) => {
-    setSearchField(event.target.value);
-    localStorage.setItem('searchField', searchField); // Guardar el valor en localStorage
-  };
-
-  const searchFieldLowercase = searchField.toLowerCase();
-  // Filtrar los pedidos por dirección
-  const filterPedidosByAddress = () => {
+  const searchFieldLowercase = Ventas_CampoBusqueda.toLowerCase();
+  // Filtrar las ventas por dirección
+  const filterVentasByAddress = () => {
     return pedidos.filter(pedido => pedido.address.toLowerCase().includes(searchFieldLowercase));
   };
-  // Filtrar los pedidos por cliente
-  const filterPedidosByClient = () => {
+  // Filtrar los ventas por cliente
+  const filterVentasByClient = () => {
     return pedidos.filter(pedido => pedido.client.toLowerCase().includes(searchFieldLowercase));
   };
-  // Filtrar los pedidos por forma de pago
-  const filterPedidosByPayment = () => {
+  // Filtrar los ventas por forma de pago
+  const filterVentasByPayment = () => {
     return pedidos.filter(pedido => pedido.payment.toLowerCase().includes(searchFieldLowercase));
   };
-  // Filtrar los pedidos por nombre de producto
-  const filterPedidosByProduct = () => {
+  // Filtrar los ventas por nombre de producto
+  const filterVentasByProduct = () => {
     return pedidos.filter(pedido => {
       return pedido.items.some(item => item.product.productName.toLowerCase().includes(searchFieldLowercase));
     });
   };
 
-  let filteredPedidos = pedidos;
-  if (searchField !== '') {
+  let filteredVentas = pedidos;
+  if (Ventas_CampoBusqueda !== '') {
     switch (Ventas_BuscarPor) {
       case "direccion":
-        filteredPedidos = filterPedidosByAddress();
+        filteredVentas = filterVentasByAddress();
         break;
       case "cliente":
-        filteredPedidos = filterPedidosByClient();
+        filteredVentas = filterVentasByClient();
         break;
       case "forma_de_pago":
-        filteredPedidos = filterPedidosByPayment();
+        filteredVentas = filterVentasByPayment();
         break;
       case "producto":
-        filteredPedidos = filterPedidosByProduct();
+        filteredVentas = filterVentasByProduct();
         break;
       default:
         break;
     }
   }
 
-  // Estado para guardar el valor del orden, ascendente o descendente
-  const [sortOrder, setSortOrder] = useState("desc");
-  //Handler del boton para cambiar el orden del listado
-  const handleSortOrderChange = () => {
-    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newSortOrder);
-    localStorage.setItem("sortOrder", newSortOrder); // Guardar el valor en localStorage
-  };
+
   // Ordenar el arreglo de ventas segun el orden seleccionado
-  const orderedVentas = filteredPedidos.slice().sort((a, b) => {
+  const orderedVentas = filteredVentas.slice().sort((a, b) => {
     const dateA = new Date(a.shippingDate);
     const dateB = new Date(b.shippingDate);
-    if (sortOrder === "asc") {
+    if (Ventas_OrdenarPor === "asc") {
       return dateA - dateB;
     } else {
       return dateB - dateA;
@@ -205,16 +242,16 @@ export default function VentasHistoryPage() {
             {Ventas_FiltrarPor === "mes_y_año" && (
               <input
                 type="month"
-                value={selectedMonth}
-                onChange={e => setSelectedMonth(e.target.value)}
+                value={Ventas_SelectedMonth}
+                onChange={handleVentas_SelectedMonthChange}
                 className="block px-1.5 rounded-md w-44 m-1"
               />
               )}
               {Ventas_FiltrarPor === "dia" && (
               <input
                 type="date"
-                value={selectedDate}
-                onChange={e => setSelectedDate(e.target.value)}
+                value={Ventas_SelectedDate}
+                onChange={handleVentas_SelectedDateChange}
                 className="block px-1.5 rounded-md w-36 m-1"
               />
             )}
@@ -229,22 +266,22 @@ export default function VentasHistoryPage() {
                 className="block p-0.5 m-1 rounded-md w-36"
               >
                 <option value={"producto"}>Producto</option>
-                <option value={"direccion"}>Direccion</option>
+                <option value={"direccion"}>Dirección</option>
                 <option value={"cliente"}>Cliente</option>
                 <option value={"forma_de_pago"}>Forma de pago</option>
               </select>
               <input
                 className='block p-0.5 px-1.5 rounded-md w-36 m-1'
                   type="text"
-                  value={searchField}
+                  value={Ventas_CampoBusqueda}
                   onChange={handleSearchFieldChange}
                   placeholder="Buscar..."
               />
           </div>
         </div>
         <div className='flex flex-wrap p-1.5 pl-0 pr-0 items-center justify-center'>
-          <button onClick={() => search()} className='Card-icon p-1.5'><BiSearchAlt/></button>
-          <button onClick={() => clean()} className='Card-icon p-1.5 ml-2'><TbEraser/></button>
+          {/* <button onClick={() => search()} name='searchButton' className='Card-icon p-1.5'><BiSearchAlt/></button>
+          <button onClick={() => clean()} className='Card-icon p-1.5 ml-2'><TbEraser/></button> */}
           <button onClick={handleSortOrderChange} className={`Card-icon p-1.5 ml-2 }`}><TbArrowsSort/></button>
         </div>
       </div>

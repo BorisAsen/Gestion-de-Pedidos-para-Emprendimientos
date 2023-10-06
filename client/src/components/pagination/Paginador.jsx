@@ -25,6 +25,9 @@ import { useState, useEffect } from "react";
 // Importar iconos
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
+// Ruta de la imagen del grillo
+import grilloImage from "../../../assets/images/grillo.png";
+
 const Paginador = (props) => {
     const {items, ComponentToShow, propName, itemsPerPage, itemName, listView} = props;
 
@@ -57,7 +60,12 @@ const Paginador = (props) => {
       
 
     if (items.length === 0) {
-        return <h1  className="ml-6" >No hay {itemName} que mostrar</h1>
+        return <div className="flex flex-col items-center justify-center mt-5">
+        <h1 className="font-bold text-white text-center mb-10">No hay {itemName} que mostrar</h1>
+        <div className="flex items-center justify-center">
+          <img className="w-1/3" src={grilloImage} alt="Sin resultados"/>
+        </div>
+      </div>
     }else{
         const itemsPaginados = items.slice(startIndex, endIndex);
         return<div className="relative">

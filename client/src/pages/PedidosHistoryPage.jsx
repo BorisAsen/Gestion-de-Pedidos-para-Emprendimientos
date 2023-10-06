@@ -19,7 +19,7 @@ import { BiSearchAlt } from 'react-icons/bi';
 // Importar el Paginador
 import Paginador from "../components/pagination/Paginador"
 
-export default function VentasHistoryPage() {
+export default function PedidosHistoryPage() {
   // Extraigo del context el arreglo de pedidos vacio y la funcion para cargarlo con los pedidos de la db
   const {pedidos, setPedidos, loadAllPedidos, loadMonthYearPedidos, loadDatePedidos} = useGlobalContext();
 
@@ -29,6 +29,12 @@ export default function VentasHistoryPage() {
   // Estado para el valor del tipo de busqueda
   const [Pedidos_BuscarPor, setPedidos_BuscarPor] = useState("producto");
 
+  // Estado para el valor del orden, ascendente o descendente
+  const [Pedidos_OrdenarPor, setPedidos_OrdenarPor] = useState("asc");
+
+  // Estado que recoge la informacion del campo de busqueda
+  const [Pedidos_CampoBusqueda, setPedidos_CampoBusqueda] = useState('');
+
   // Constantes para extraer el dia, mes y año actual con los que
   // se inializaran selectedMonth y selectedDate
   const currentDate = new Date();
@@ -36,9 +42,9 @@ export default function VentasHistoryPage() {
   const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
   const currentDay = currentDate.getDate().toString().padStart(2, '0');
   // Estado para el valor del input de mes y año
-  const [selectedMonth, setSelectedMonth] = useState(`${currentYear}-${currentMonth}`);
+  const [Pedidos_SelectedMonth, setPedidos_SelectedMonth] = useState(`${currentYear}-${currentMonth}`);
   // Estado para el valor del input de dia especifico
-  const [selectedDate, setSelectedDate] = useState(`${currentYear}-${currentMonth}-${currentDay}`);
+  const [Pedidos_SelectedDate, setPedidos_SelectedDate] = useState(`${currentYear}-${currentMonth}-${currentDay}`);
 
   // Estado para mostrar y limpiar el resultado de la busqueda
   const [search_clean, setSearch_clean] = useState('clean');
@@ -58,18 +64,35 @@ export default function VentasHistoryPage() {
       setPedidos_BuscarPor(storedValue_Pedidos_BuscarPor);
     }
 
-    // Recuperar el valor almacenado de searchValue en localStorage (si existe)
-    const storedValue_searchField = localStorage.getItem('searchField_Pedidos');
-    if (storedValue_searchField) {
-      setSearchField(storedValue_searchField);
+    // Recuperar el valor almacenado de Pedidos_OrdenarPor en localStorage (si existe)
+    const storedValue_Pedidos_OrdenarPor = localStorage.getItem('Pedidos_OrdenarPor');
+    if (storedValue_Pedidos_OrdenarPor) {
+      setPedidos_OrdenarPor(storedValue_Pedidos_OrdenarPor);
     }
 
-    // Recuperar el valor almacenado de sortOrder en localStorage (si existe)
-    const storedSortOrder = localStorage.getItem("sortOrder_Pedidos");
-    if (storedSortOrder) {
-      setSortOrder(storedSortOrder);
+    // Recuperar el valor almacenado de Pedidos_CampoBusqueda en localStorage (si existe)
+    const storedValue_Pedidos_CampoBusqueda = localStorage.getItem('Pedidos_CampoBusqueda');
+    if (storedValue_Pedidos_CampoBusqueda) {
+      setPedidos_CampoBusqueda(storedValue_Pedidos_CampoBusqueda);
     }
-  }, []);
+
+    // Recuperar el valor almacenado de Pedidos_SelectedDate en localStorage (si existe)
+    const storedValue_Pedidos_SelectedDate = localStorage.getItem('Pedidos_SelectedDate');
+    if (storedValue_Pedidos_SelectedDate) {
+      setPedidos_SelectedDate(storedValue_Pedidos_SelectedDate);
+    }
+
+    // Recuperar el valor almacenado de Pedidos_SelectedMonth en localStorage (si existe)
+    const storedValue_Pedidos_SelectedMonth = localStorage.getItem('Pedidos_SelectedMonth');
+    if (storedValue_Pedidos_SelectedMonth) {
+      setPedidos_SelectedMonth(storedValue_Pedidos_SelectedMonth);
+    }
+
+  }, [Pedidos_FiltrarPor, Pedidos_BuscarPor, Pedidos_OrdenarPor, Pedidos_CampoBusqueda, Pedidos_SelectedDate, Pedidos_SelectedMonth]);
+
+  useEffect(() => {
+    search();
+  }, [Pedidos_FiltrarPor, Pedidos_BuscarPor, Pedidos_OrdenarPor, Pedidos_CampoBusqueda, Pedidos_SelectedDate, Pedidos_SelectedMonth]);
 
   // Handler del selector de filtro
   const handleFilterChange = (e) => {
@@ -84,18 +107,49 @@ export default function VentasHistoryPage() {
     setPedidos_BuscarPor(selectedValue);
     localStorage.setItem('Pedidos_BuscarPor', selectedValue);
   };
-  
-  // Filtrar las ventas por mes y año, dia especifico y todos las ventas
+
+  //Handler del boton para cambiar el orden del listado
+  const handleSortOrderChange = () => {
+    const newSortOrder = Pedidos_OrdenarPor === "asc" ? "desc" : "asc";
+    setPedidos_OrdenarPor(newSortOrder);
+    localStorage.setItem('Pedidos_OrdenarPor', newSortOrder);
+  };
+
+  //Handler del input Pedidos_SelectedDate
+  const handlePedidos_SelectedDateChange = (e) => {
+    const selectedValue = e.target.value;
+    setPedidos_SelectedDate(selectedValue);
+    localStorage.setItem('Pedidos_SelectedDate', selectedValue);
+  };
+
+  //Handler del input Pedidos_SelectedMonth
+  const handlePedidos_SelectedMonthChange = (e) => {
+    const selectedValue = e.target.value;
+    setPedidos_SelectedMonth(selectedValue);
+    localStorage.setItem('Pedidos_SelectedMonth', selectedValue);
+  };
+
+  // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
+  const handleSearchFieldChange = (e) => {
+    const searchValue = e.target.value;
+    setPedidos_CampoBusqueda(searchValue);
+    localStorage.setItem('Pedidos_CampoBusqueda', searchValue);
+  };
+
+
+  // Filtrar los pedidos según el tipo de búsqueda seleccionado
+  // Filtrar los pedidos por mes y año, dia especifico y todos las ventas
   const search = async () => {
+    // console.log("BUSCANDO");
     switch (Pedidos_FiltrarPor) {
       case "mes_y_año":
-        await loadMonthYearPedidos(0, selectedMonth);
+        await loadMonthYearPedidos(0, Pedidos_SelectedMonth);
         break;
       case "todos":
         await loadAllPedidos(0);
         break;
       case "dia":
-        await loadDatePedidos(0, selectedDate)
+        await loadDatePedidos(0, Pedidos_SelectedDate)
         break;
       default:
         break;
@@ -108,17 +162,7 @@ export default function VentasHistoryPage() {
     setPedidos([]);
   }
 
-
-  // Filtrar los pedidos según el tipo de búsqueda seleccionado
-  // Estado que recoge la informacion del campo de busqueda
-  const [searchField, setSearchField] = useState('');
-  // Funcion que se ejecuta cada vez que ocurra un cambio en el campo de busqueda
-  const handleSearchFieldChange = (event) => {
-    setSearchField(event.target.value);
-    localStorage.setItem('searchField_Pedidos', searchField); // Guardar el valor en localStorage
-  };
-
-  const searchFieldLowercase = searchField.toLowerCase();
+  const searchFieldLowercase = Pedidos_CampoBusqueda.toLowerCase();
   // Filtrar los pedidos por dirección
   const filterPedidosByAddress = () => {
     return pedidos.filter(pedido => pedido.address.toLowerCase().includes(searchFieldLowercase));
@@ -139,7 +183,7 @@ export default function VentasHistoryPage() {
   };
 
   let filteredPedidos = pedidos;
-  if (searchField !== '') {
+  if (Pedidos_CampoBusqueda !== '') {
     switch (Pedidos_BuscarPor) {
       case "direccion":
         filteredPedidos = filterPedidosByAddress();
@@ -158,19 +202,12 @@ export default function VentasHistoryPage() {
     }
   }
 
-  // Estado para guardar el valor del orden, ascendente o descendente
-  const [sortOrder, setSortOrder] = useState("desc");
-  //Handler del boton para cambiar el orden del listado
-  const handleSortOrderChange = () => {
-    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newSortOrder);
-    localStorage.setItem("sortOrder", newSortOrder); // Guardar el valor en localStorage
-  };
+
   // Ordenar el arreglo de ventas segun el orden seleccionado
   const orderedVentas = filteredPedidos.slice().sort((a, b) => {
     const dateA = new Date(a.shippingDate);
     const dateB = new Date(b.shippingDate);
-    if (sortOrder === "asc") {
+    if (Pedidos_OrdenarPor === "asc") {
       return dateA - dateB;
     } else {
       return dateB - dateA;
@@ -205,16 +242,16 @@ export default function VentasHistoryPage() {
             {Pedidos_FiltrarPor === "mes_y_año" && (
               <input
                 type="month"
-                value={selectedMonth}
-                onChange={e => setSelectedMonth(e.target.value)}
+                value={Pedidos_SelectedMonth}
+                onChange={handlePedidos_SelectedMonthChange}
                 className="block px-1.5 rounded-md w-44 m-1"
               />
               )}
               {Pedidos_FiltrarPor === "dia" && (
               <input
                 type="date"
-                value={selectedDate}
-                onChange={e => setSelectedDate(e.target.value)}
+                value={Pedidos_SelectedDate}
+                onChange={handlePedidos_SelectedDateChange}
                 className="block px-1.5 rounded-md w-36 m-1"
               />
             )}
@@ -236,15 +273,15 @@ export default function VentasHistoryPage() {
               <input
                 className='block p-0.5 px-1.5 rounded-md w-36 m-1'
                   type="text"
-                  value={searchField}
+                  value={Pedidos_CampoBusqueda}
                   onChange={handleSearchFieldChange}
                   placeholder="Buscar..."
               />
           </div>
         </div>
         <div className='flex flex-wrap p-1.5 pl-0 pr-0 items-center justify-center'>
-          <button onClick={() => search()} className='Card-icon p-1.5'><BiSearchAlt/></button>
-          <button onClick={() => clean()} className='Card-icon p-1.5 ml-2'><TbEraser/></button>
+          {/* <button onClick={() => search()} name='searchButton' className='Card-icon p-1.5'><BiSearchAlt/></button>
+          <button onClick={() => clean()} className='Card-icon p-1.5 ml-2'><TbEraser/></button> */}
           <button onClick={handleSortOrderChange} className={`Card-icon p-1.5 ml-2 }`}><TbArrowsSort/></button>
         </div>
       </div>
