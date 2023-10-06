@@ -121,7 +121,7 @@ export default function ProductosPage() {
 
       <div className='bg-tertiary flex justify-between items-center text-white p-2.5 px-6 mb-2'>
         <div className='flex items-center'>
-            <label className='block'>Pedidos </label>
+            <label className='block'>Productos </label>
             <select
                 name="Datefilter"
                 onChange={handleFilterChange}

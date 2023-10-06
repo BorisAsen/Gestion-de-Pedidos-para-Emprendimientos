@@ -48,7 +48,7 @@ export default function App() {
     <div className=" bg-primary min-h-screen">
       <div className="bg-primary">
         <NavBar/>
-        <div className= 'ml-14' >
+        <div className="ml-navBarCollapsed lg:ml-navBarExtended" >
           <GlobalContextProvider >
             <Routes>
               {/* Ruta de la pag principal de Pedidos*/}

@@ -67,7 +67,7 @@ const Paginador = (props) => {
                         return <ComponentToShow {...props} key={item.id} />;
                     })}
                 </div>
-                <div className='fixed bottom-0 left-14 right-0 bg-white flex items-center justify-center h-10 p-3 shadow-Paginador'>
+                <div className='fixed bottom-0 left-navBarCollapsed lg:left-navBarExtended right-0 bg-white flex items-center justify-center h-10 p-3 shadow-Paginador'>
                     <button
                         className="Card-icon mr-2"
                         disabled={currentPage === 1}
