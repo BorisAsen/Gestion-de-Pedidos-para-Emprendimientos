@@ -16,6 +16,9 @@ import { useParams, useNavigate } from "react-router-dom";
 // Importar iconos
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
+// Boton para volver a la paginma anterior
+import GoBackButton from '../components/buttons/GoBackButton'
+
 // Preview de la imagen de producto
 import Preview_Image from '../components/Form Components/Preview_Image';
 
@@ -66,7 +69,7 @@ export default function ProductForm() {
         });
 
         // Muestro por consola los datos del producto
-        console.log(product);
+        //console.log(product);
 
         // También establecemos el campo de imagen en null
         //setProduct({ ...product, imgURL: null });
@@ -77,6 +80,7 @@ export default function ProductForm() {
 
   return (
     <div className='p-6'>
+      <GoBackButton/>
       <Formik
         // Defino los valores iniciales que tendran los campos
         // Si se quiere editar un producto se corresponderan con los

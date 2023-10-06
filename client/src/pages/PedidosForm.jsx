@@ -22,6 +22,9 @@ import moment from 'moment';
 // Importar el buscador de productos
 import ProductoSearchBar from "../components/ProductoSearchBar"
 
+// Boton para volver a la paginma anterior
+import GoBackButton from '../components/buttons/GoBackButton'
+
 
 export default function PedidosForm() {
 
@@ -127,6 +130,7 @@ export default function PedidosForm() {
 
   return (
     <div className='p-6'>
+      <GoBackButton/>
       <Formik
         // Defino los valores iniciales que tendran los campos
         // Si se quiere editar un pedido se corresponderan con los

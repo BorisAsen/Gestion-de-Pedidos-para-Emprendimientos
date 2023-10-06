@@ -4,8 +4,8 @@ const PreviewImage = ({ file, url }) => {
   const [preview, setPreview] = React.useState(null);
 
   React.useEffect(() => {
-    console.log("File:", file); // Agrega esta línea para imprimir el valor de file
-    console.log("URL:", url); // Agrega esta línea para imprimir el valor de url
+    // console.log("File:", file); // Agrega esta línea para imprimir el valor de file
+    // console.log("URL:", url); // Agrega esta línea para imprimir el valor de url
     
     if (file instanceof File) {
       const reader = new FileReader();
