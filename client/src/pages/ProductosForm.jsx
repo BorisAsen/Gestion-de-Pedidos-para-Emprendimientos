@@ -17,6 +17,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 // Importar iconos
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { MdDelete } from 'react-icons/md';
 
 // Boton para volver a la paginma anterior
 import GoBackButton from '../components/buttons/GoBackButton'
@@ -33,7 +34,8 @@ export default function ProductForm() {
   const {
     createProduct, // Fn de crear productos
     getProduct, // Fn para obtener un producto mediante el id
-    updateProduct // Fn para modificar un producto mediante su id y los nuevos valores
+    updateProduct, // Fn para modificar un producto mediante su id y los nuevos valores
+    deleteProduct // Fn para eliminar un producto mediante su id
   } = useGlobalContext();
 
   // Valores Iniciales
@@ -91,6 +93,27 @@ export default function ProductForm() {
       .required('El precio es obligatorio'),
   });
 
+  // CONFIRMACION DE ELIMINACION
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  // Funcion para cambiar el estado de la variable que muestra el modal de confirmacion de eliminacion
+  const handleDelete = () => {
+      setShowDeleteConfirmation(true);
+  }
+  // CONFIRMAR: Se llama a la funcion que elimina el producto y se restablece showDeleteConfirmation a false
+  const handleDeleteConfirm = async () => {
+      // Llamar a la funcion que se encarga de eliminar el producto segun su id
+      deleteProduct(params.id);
+      // Restablece el estado de showDeleteConfirmation
+      setShowDeleteConfirmation(false);
+
+      // Redirigir a la página de productos
+      navigate('/productos');
+  };
+  // CANCELAR: Se cambia a false el valor de showDelteConfirmation para ocultar el modal
+  const handleDeleteCancel = () => {
+      setShowDeleteConfirmation(false);
+  };
+
   return (
     <div className='p-3 lg:p-6'>
       <GoBackButton/>
@@ -134,7 +157,7 @@ export default function ProductForm() {
       >
 
         {({ values, setFieldValue, isSubmitting, handleSubmit }) => (
-          <Form onSubmit={handleSubmit} className='w-full lg:w-2/3 mx-auto bg-slate-300 rounded-md p-4'>
+          <Form onSubmit={handleSubmit} className='relative w-full lg:w-2/3 mx-auto bg-slate-300 rounded-md p-4'>
 
             <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Producto" : "Nuevo Producto" }</h1>
             
@@ -196,16 +219,34 @@ export default function ProductForm() {
               <ErrorMessage name='price' component='div' className='text-red-500 text-md'/>
             </div>
             <Field
-              className='p-1 my-1 mb-2 rounded-md w-full'
+              className='p-1 my-1 mb-14 rounded-md w-full'
               type="number"
               name="price"
               placeholder='Escribe el precio'
             ></Field>
             
+            <div className='absolute bottom-3 flex flex-wrap gap-x-2 mt-3'>
+              <button className='bg-green-500 flex items-center justify-center h-9 w-20 rounded-md text-white' type='submit' disabled={isSubmitting}>
+                {isSubmitting ? ( <AiOutlineLoading3Quarters className="animate-spin" /> ) : 'Guardar'}
+              </button>
+              {params.id && ( // Mostrar el boton de eliminar solo si se esta editando un producto, es decir, que existe un producto cuyo id se corresponda a params.id
+                <button type='button' className='Card-icon pr-2' onClick={() => handleDelete()}><MdDelete className='m-1'/>Eliminar</button>
+              )}
+            </div>
 
-            <button className='bg-green-500 flex items-center justify-center h-9 w-20 rounded-md text-white' type='submit' disabled={isSubmitting}>
-              {isSubmitting ? ( <AiOutlineLoading3Quarters className="animate-spin" /> ) : 'Guardar'}
-            </button>
+            {showDeleteConfirmation && (
+              <div>
+                  <div className='backdrop-blur-md p-3 absolute inset-0 w-full h-full'></div>
+                  <div className='Tarjeta flex flex-wrap w-10/12 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                      <p className='w-full text-center'>¿Estas seguro que deseas eliminar este producto?</p>
+                      <div className='w-full flex justify-between mt-5'>
+                          <button type='button' className = 'MainButton w-24 mt-2' onClick={handleDeleteConfirm}>Confirmar</button>
+                          <button type='button' className = 'MainButton w-24 mt-2' onClick={handleDeleteCancel}>Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+            )}
+            
           </Form>
         )}
         

@@ -54,7 +54,7 @@ export default function ProductosPage() {
       setSearch(storedSearchValue);
     }
     
-  }, []);
+  }, [products]);
 
   // Filtrar y ordenar los productos
   const productsFilter = products.slice().sort((a, b) => {
