@@ -74,7 +74,7 @@ export default function NavBar() {
                     </NavLink>             
                 </li>
             </ul>
-            <div className="border-t-2 border-white mt-auto p-2 text-center hidden lg:block">
+            <div className="border-t-2 border-primary mt-auto p-2 text-center hidden lg:block">
                 <p className='text-white font-bold'>Willow - Gestión</p>
             </div>
         </div>

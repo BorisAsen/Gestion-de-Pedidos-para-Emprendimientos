@@ -1,6 +1,8 @@
 import React from 'react'
 // Importar el componente de Formik para crear y manejar el formulario de alta de tareas
-import { Form, Field, Formik } from "formik";
+import { Form, Field, Formik, ErrorMessage } from "formik";
+// Importa Yup para definir esquemas de validación
+import * as Yup from 'yup';
 
 // Importar el context de productos
  import { useGlobalContext } from "../context/ContextProvider";
@@ -78,8 +80,19 @@ export default function ProductForm() {
     loadProduct();
   }, [])
 
+  // Definir el esquema de validación con Yup
+  const validationSchema = Yup.object().shape({
+    // Validacion para el campo nombre
+    productName: Yup.string()
+      .required('El nombre es obligatorio'),
+    // Validacion para el campo precio
+    price: Yup.number()
+      .min(1, 'El precio debe ser mayor que cero')
+      .required('El precio es obligatorio'),
+  });
+
   return (
-    <div className='p-6'>
+    <div className='p-3 lg:p-6'>
       <GoBackButton/>
       <Formik
         // Defino los valores iniciales que tendran los campos
@@ -87,6 +100,9 @@ export default function ProductForm() {
         // valores obtenidos de la db, sino estaran vacios al momento de crear uno nuevo
         initialValues={product}
         enableReinitialize={true}
+
+        // Aplica el esquema de validación
+        validationSchema={validationSchema}
         
 
         // Evento que se activa cuando el formuilario es enviado
@@ -118,16 +134,20 @@ export default function ProductForm() {
       >
 
         {({ values, setFieldValue, isSubmitting, handleSubmit }) => (
-          <Form onSubmit={handleSubmit} className='mx-auto bg-slate-300 max-w-sm rounded-md p-4'>
+          <Form onSubmit={handleSubmit} className='w-full lg:w-2/3 mx-auto bg-slate-300 rounded-md p-4'>
 
             <h1 className='mb-3 font-bold text-xl uppercase text-center'>{ params.id ? "Editar Producto" : "Nuevo Producto" }</h1>
             
-            <label className='block'>Nombre: </label>
+            <div className="flex items-center">
+              <label className='block mr-2'>Nombre:</label>
+              <ErrorMessage name='productName' component='div' className='text-red-500 text-md'/>
+            </div>
             <Field
-              className='p-1 my-1 mb-2 rounded-md w-full'
-              type="text"
-              name="productName"
-              placeholder='Escribe un nombre'
+                className='p-1 my-1 rounded-md w-full'
+                type="text"
+                name="productName"
+                id="productName"
+                placeholder='Escribe un nombre'
             ></Field>
 
             <label className='block'>Imagen: </label>
@@ -171,13 +191,17 @@ export default function ProductForm() {
               placeholder='Escribe una descripcion para el producto'
             ></Field>
 
-            <label className='block'>Precio: </label>
+            <div className="flex items-center">
+              <label className='block mr-2'>Precio:</label>
+              <ErrorMessage name='price' component='div' className='text-red-500 text-md'/>
+            </div>
             <Field
               className='p-1 my-1 mb-2 rounded-md w-full'
               type="number"
               name="price"
               placeholder='Escribe el precio'
             ></Field>
+            
 
             <button className='bg-green-500 flex items-center justify-center h-9 w-20 rounded-md text-white' type='submit' disabled={isSubmitting}>
               {isSubmitting ? ( <AiOutlineLoading3Quarters className="animate-spin" /> ) : 'Guardar'}

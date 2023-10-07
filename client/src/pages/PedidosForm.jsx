@@ -1,6 +1,8 @@
 import React from 'react'
 // Importar el componente de Formik para crear y manejar el formulario de alta de tareas
-import { Form, Field, Formik } from "formik";
+import { Form, Field, Formik, ErrorMessage } from "formik";
+// Importa Yup para definir esquemas de validación
+import * as Yup from 'yup';
 
 // Importar el context global
 import { useGlobalContext } from "../context/ContextProvider";
@@ -111,7 +113,6 @@ export default function PedidosForm() {
     };
     loadPedido();
     
-    
   }, []);
 
   // Funcion para calcular el total del envio
@@ -127,6 +128,30 @@ export default function PedidosForm() {
     return total;
   };
 
+  // Definir el esquema de validación con Yup
+  const validationSchema = Yup.object().shape({
+    // Validación para el arreglo de productos seleccionados
+    // items: Yup.array()
+    //   .min(1, 'Debe seleccionar al menos un producto'),
+
+    // Validación para el campo fecha de entrega
+    shippingDate: Yup.string()
+      .required('La fecha de entrega es obligatoria'),
+
+    // Validación para el campo direccion
+    address: Yup.string()
+      .required('La dirección es obligatoria'),
+
+    // Validación para el campo cliente
+    client: Yup.string()
+      .required('El cliente es obligatorio'),
+
+    // Validación para el campo precio
+    total: Yup.number()
+      .min(1, 'El total debe ser mayor que cero')
+      .required('El total es obligatorio'),
+  });
+
 
   return (
     <div className='p-6'>
@@ -137,6 +162,9 @@ export default function PedidosForm() {
         // valores obtenidos de la db, sino estaran vacios al momento de crear uno nuevo
         initialValues={pedido}
         enableReinitialize={true}
+
+        // Aplica el esquema de validación
+        validationSchema={validationSchema}
 
         // Evento que se activa cuando el formuilario es enviado
         onSubmit={async (values, actions) => {
@@ -188,7 +216,7 @@ export default function PedidosForm() {
         que se ejecuta con el evento onChange. Con la propiedad handleSubmit y el evento onSubmit
         se podran observar los datos capturados por el formulario */}
         {({ values, isSubmitting, handleSubmit }) => (
-          <Form onSubmit={handleSubmit} className='w-5/6 mx-auto bg-slate-300 rounded-md p-4'>
+          <Form onSubmit={handleSubmit} className='w-full lg:w-2/3 mx-auto bg-slate-300 rounded-md p-4'>
            
             {/* Crear un titulo condicional para el formulario segun se quiera crear
             o actualizar un pedido. Si ya existe el id del pedido el titulo sera Editar,
@@ -208,6 +236,9 @@ export default function PedidosForm() {
 
             {/* Barra de busqueda de productos */}
             <ProductoSearchBar/>
+            <div className={`text-red-500 text-md ${items.length === 0 ? 'visible' : 'invisible'}`}>
+              Debe seleccionar al menos un producto
+            </div>
 
             <label className='block my-2 mb-3 w-24'>
               Entregado
@@ -218,14 +249,17 @@ export default function PedidosForm() {
               ></Field>
             </label>
 
-            <label className='block my-2 mb-3'>
-              Fecha de entrega 
+            <div className="flex items-center">
+              <label className='block my-2 mb-3 mr-2'>Fecha de entrega: </label>
               <Field
-                className='p-0.5 ml-2 rounded-md'
-                type="datetime-local"
-                name="shippingDate"
-              ></Field>
-            </label>
+              className='p-0.5 pl-1 w-44 ml-2 mr-3 rounded-md'
+              type="datetime-local"
+              name="shippingDate"
+            ></Field>
+              <ErrorMessage name='shippingDate' component='div' className='text-red-500 text-md'/>
+            </div>
+            
+            
 
             <label className='block'>Despacho del pedido: </label>
             <Field
@@ -237,8 +271,10 @@ export default function PedidosForm() {
               <option value={1}>Envio</option>
             </Field>
 
-            
-            <label className='block'>Dirección:</label>
+            <div className="flex items-center">
+              <label className='block mr-2'>Dirección:</label>
+              <ErrorMessage name='address' component='div' className='text-red-500 text-md'/>
+            </div>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -247,7 +283,10 @@ export default function PedidosForm() {
               placeholder='Escribe la dirección del envío'
             ></Field>
 
-            <label className='block'>Cliente:</label>
+            <div className="flex items-center">
+              <label className='block mr-2'>Cliente:</label>
+              <ErrorMessage name='client' component='div' className='text-red-500 text-md'/>
+            </div>
             <Field
               component="textarea"
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
@@ -305,9 +344,12 @@ export default function PedidosForm() {
               placeholder='Escribe la descripcion del pedido'
             ></Field>
 
-            <label className=''>
-              Total: <span className='text-details_2'>(Valor sugerido ${isUpdateForm ? calculateTotal() + values.deliveryCost - pedido.deliveryCost : calculateTotal() + values.deliveryCost})</span>
-            </label>
+            <div className="flex items-center">
+              <label className='block mr-2'>
+                Total: <span className='text-details_2'>(Valor sugerido ${isUpdateForm ? calculateTotal() + values.deliveryCost - pedido.deliveryCost : calculateTotal() + values.deliveryCost})</span>
+              </label>
+              <ErrorMessage name='total' component='div' className='text-red-500 text-md'/>
+            </div>
             <Field
               className='p-1 mt-0.5 mb-2 rounded-md w-full'
               type="number"
@@ -315,7 +357,7 @@ export default function PedidosForm() {
               placeholder= 'Escribe el total del pedido'
             ></Field>
 
-            <button className='block bg-green-500 rounded-md px-2 py-0.5 text-white' type='submit' disabled={isSubmitting}>
+            <button className='block bg-green-500 rounded-md px-2 py-0.5 text-white' type='submit' disabled={isSubmitting || items.length === 0}>
               {isSubmitting ? ( <AiOutlineLoading3Quarters className="animate-spin" /> ) : 'Guardar'}
             </button>
           </Form>

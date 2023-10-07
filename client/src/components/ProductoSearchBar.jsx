@@ -66,7 +66,7 @@ const SearchBar = () => {
         </div>
 
         <label className='block mt-3'>Productos seleccionados:</label>
-        <div className='grid grid-cols-4 gap-1.5 overflow-auto bg-white h-36 p-2 rounded-md'>
+        <div className='grid grid-cols-4 gap-1.5 overflow-auto bg-white h-52 p-2 rounded-md'>
             {renderSelectedProducts()}
         </div>
     </div>
