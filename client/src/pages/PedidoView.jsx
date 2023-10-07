@@ -79,14 +79,6 @@ export default function PedidosView() {
     loadPedido();
   }, [])
 
-
-  // Funcion para cambiar el estado del campo done
-  const handleDone = async () => {
-    await togglePedidoDone(pedido.id);
-    // Cambio el valor de done para que se renderize nuevamente el tilde o cruz
-    setDone(!done);
-  }
-
   // Funcion que renderiza los productos seleccionados para el pedido
   function renderSelectedProducts() {
     if (items === undefined) {
@@ -108,7 +100,55 @@ export default function PedidosView() {
   let formattedDoneAt;
   pedido.doneAt ? formattedDoneAt = moment(pedido.doneAt).format('DD/MM/YY - HH:mm') : formattedDoneAt = " --- ";
   
+  // CONFIRMACION DE ENTREGADO
+  const [showDoneConfirmation, setShowDoneConfirmation] = useState(false);
+  // Funcion para cambiar el estado de la variable que muestra el modal de confirmacion de entregado
+  const handleDone = () => {
+      setShowDoneConfirmation(true);
+  }
+  // CONFIRMAR: Se llama a la funcion que cambia el estado done del pedido y se restablece showDoneConfirmation a false
+  const handleDoneConfirm = async () => {
+      // Llamar a la funcion que se encarga de cambiar el estado de entregado segun el id del pedido
+      await togglePedidoDone(pedido.id);
+      // Restablece el estado de showDoneConfirmation
+      setShowDoneConfirmation(false);
 
+      // Cambio el valor de done para que se renderize nuevamente el tilde o cruz
+      setDone(!done);
+      // Determinar la ruta de redirección en función del valor de "done"
+      const redirectRoute = pedido.done ? '/ventas' : '/';
+      // Redirigir a la página correspondiente
+      navigate(redirectRoute);
+
+      
+  };
+  // CANCELAR: Se cambia a false el valor de showDoneConfirmation para ocultar el modal
+  const handleDoneCancel = () => {
+      setShowDoneConfirmation(false);
+  };
+
+  // CONFIRMACION DE ELIMINACION
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  // Funcion para cambiar el estado de la variable que muestra el modal de confirmacion de eliminacion
+  const handleDelete = () => {
+      setShowDeleteConfirmation(true);
+  }
+  // CONFIRMAR: Se llama a la funcion que elimina el pedido y se restablece showDeleteConfirmation a false
+  const handleDeleteConfirm = async () => {
+      // Llamar a la funcion que se encarga de eliminar el pedido segun su id
+      deletePedido(pedido.id);
+      // Restablece el estado de showDeleteConfirmation
+      setShowDeleteConfirmation(false);
+
+      // Determinar la ruta de redirección en función del valor de "done"
+      const redirectRoute = pedido.done ? '/ventas' : '/';
+      // Redirigir a la página correspondiente
+      navigate(redirectRoute);
+  };
+  // CANCELAR: Se cambia a false el valor de showDelteConfirmation para ocultar el modal
+  const handleDeleteCancel = () => {
+      setShowDeleteConfirmation(false);
+  };
 
 
 
@@ -141,10 +181,37 @@ export default function PedidosView() {
               
 
               <div className='absolute bottom-3 flex flex-wrap gap-x-2 mt-3'>
-                  <button className='Card-icon pr-2' onClick={() => (deletePedido(pedido.id), navigate(`/`))}><MdDelete className='m-1'/>Eliminar</button>
+                  <button className='Card-icon pr-2' onClick={() => handleDelete()}><MdDelete className='m-1'/>Eliminar</button>
                   <button className='Card-icon pr-2' onClick={() => navigate(`/editarPedido/${pedido.id}`)}><AiFillEdit className='m-1'/>Editar</button>
-                  <button className='Card-icon pr-2' onClick={() => handleDone(pedido.done)}><MdDone className='m-1'/>Entregado</button>
+                  <button className='Card-icon pr-2' onClick={() => handleDone()}><MdDone className='m-1'/>Entregado</button>
               </div>
+
+              {showDeleteConfirmation && (
+              <div>
+                  <div className='backdrop-blur-md p-3 absolute inset-0 w-full h-full'></div>
+                  <div className='Tarjeta flex flex-wrap w-10/12 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                      <p className='w-full text-center'>¿Estas seguro que deseas eliminar este pedido?</p>
+                      <div className='w-full flex justify-between mt-5'>
+                          <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDeleteConfirm}>Confirmar</button>
+                          <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDeleteCancel}>Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+              )}
+              
+
+              {showDoneConfirmation && (
+              <div>
+                  <div className='backdrop-blur-md p-3 absolute inset-0 w-full h-full'></div>
+                  <div className='Tarjeta flex flex-wrap w-4/6 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                      <p className='w-full text-center'>Al marcar un pedido como {pedido.done ? '"NO ENTREGADO"' : '"ENTREGADO"'}  se lo pasará al listado de {pedido.done ? 'PEDIDOS' : 'VENTAS'}</p>
+                      <div className='w-full flex justify-between mt-5'>
+                          <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDoneConfirm}>Confirmar</button>
+                          <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDoneCancel}>Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+              )}
           </div>
       </div>
     </div>

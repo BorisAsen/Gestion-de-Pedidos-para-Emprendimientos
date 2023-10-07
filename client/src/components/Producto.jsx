@@ -6,6 +6,8 @@ import { useGlobalContext } from "../context/ContextProvider";
 //Importar el hook para direccionar al formulario de tareas cuando se presione el boton editar
 import { useNavigate } from "react-router-dom";
 
+import { useState } from "react";
+
 // Importo iconos de React Icons
 import { MdDelete, MdFileDownloadDone } from 'react-icons/md';
 import { AiFillEdit } from 'react-icons/ai';
@@ -28,6 +30,25 @@ export default function ProductCard({ product }) {
     let title;
     product.productName.length <= maxLength ? title = product.productName : (title = product.productName.slice(0, maxLength) + '...');
 
+    
+    // CONFIRMACION DE ELIMINACION
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    // Funcion para cambiar el estado de la variable que muestra el modal de confirmacion de eliminacion
+    const handleDelete = () => {
+        setShowDeleteConfirmation(true);
+    }
+    // CONFIRMAR: Se llama a la funcion que elimina el producto y se restablece showDeleteConfirmation a false
+    const handleDeleteConfirm = async () => {
+        // Llamar a la funcion que se encarga de eliminar el producto segun su id
+        deleteProduct(product.id);
+        // Restablece el estado de showDeleteConfirmation
+        setShowDeleteConfirmation(false);
+    };
+    // CANCELAR: Se cambia a false el valor de showDelteConfirmation para ocultar el modal
+    const handleDeleteCancel = () => {
+        setShowDeleteConfirmation(false);
+    };
+
     return (
         <div className='Tarjeta relative'>
             <header className='flex justify-between mb-2'>
@@ -43,10 +64,22 @@ export default function ProductCard({ product }) {
             {/* <p className='Tarjeta_field'><span>C: {product.createdAt}</span></p> */}
             {/* <p className='Tarjeta_field'><span>M: {product.updatedAt}</span></p> */}
             <footer className='absolute bottom-3 flex flex-wrap gap-x-2'>
-                <button className='Card-icon' onClick={() => deleteProduct(product.id)}><MdDelete/></button>
+                <button className='Card-icon' onClick={() => handleDelete()}><MdDelete/></button>
                 <button className='Card-icon' onClick={() => navigate(`/editarProducto/${product.id}`)}><AiFillEdit/></button>
             </footer>
 
+            {showDeleteConfirmation && (
+            <div>
+                <div className='backdrop-blur-md p-3 absolute inset-0 w-full h-full'></div>
+                <div className='Tarjeta flex flex-wrap w-10/12 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                    <p className='w-full text-center'>¿Estas seguro que deseas eliminar este producto?</p>
+                    <div className='w-full flex justify-between'>
+                        <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDeleteConfirm}>Confirmar</button>
+                        <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDeleteCancel}>Cancelar</button>
+                    </div>
+                </div>
+            </div>
+            )}
         </div>
   )
 }

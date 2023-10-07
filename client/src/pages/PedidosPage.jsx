@@ -33,7 +33,7 @@ export default function PedidosPage() {
     if (storedValue) {
       setSelectedFilter(storedValue);
     }
-  }, []);
+  }, [pedidos]);
 
   // Filtrar los pedidos por hoy, mañana, semana y mes
   const pedidosFilter = pedidos.filter((pedido) => {

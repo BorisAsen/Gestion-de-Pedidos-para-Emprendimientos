@@ -33,7 +33,7 @@ export default function VentasPage() {
     if (storedValue) {
       setSelectedFilter_Ventas(storedValue);
     }
-  }, []);
+  }, [pedidos]);
 
   // Filtrar las ventas por hoy, mañana, semana y mes
   const ventasFilter = pedidos.filter((pedido) => {

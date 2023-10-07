@@ -37,6 +37,11 @@ export default function PedidoCard({ pedido }) {
         await togglePedidoDone(pedido.id);
         // Restablece el estado de showDoneConfirmation
         setShowDoneConfirmation(false);
+
+        // Determinar la ruta de redirección en función del valor de "done"
+        const redirectRoute = pedido.done ? '/ventas' : '/';
+        // Redirigir a la página correspondiente
+        navigate(redirectRoute);
     };
     // CANCELAR: Se cambia a false el valor de showDoneConfirmation para ocultar el modal
     const handleDoneCancel = () => {
@@ -55,6 +60,11 @@ export default function PedidoCard({ pedido }) {
         deletePedido(pedido.id);
         // Restablece el estado de showDeleteConfirmation
         setShowDeleteConfirmation(false);
+
+        // Determinar la ruta de redirección en función del valor de "done"
+        const redirectRoute = pedido.done ? '/ventas' : '/';
+        // Redirigir a la página correspondiente
+        navigate(redirectRoute);
     };
     // CANCELAR: Se cambia a false el valor de showDelteConfirmation para ocultar el modal
     const handleDeleteCancel = () => {
@@ -101,20 +111,20 @@ export default function PedidoCard({ pedido }) {
             {/* <p className='Tarjeta_field mb-10'><b>Medio de pago:</b> {pedido.payment}</p> */}
 
             <div className='absolute bottom-3 flex flex-wrap gap-x-2 mt-3'>
-                <button className='Card-icon' onClick={() => handleDelete()}><MdDelete/></button>
-                <button className='Card-icon' onClick={() => navigate(`/editarPedido/${pedido.id}`)}><AiFillEdit/></button>
-                <button className='Card-icon' onClick={() => handleDone()}><MdDone/></button>
-                <button className='Card-icon' onClick={() => navigate(`/vistaPedido/${pedido.id}`)}><AiFillEye/></button>
+                <button title='Eliminar' className='Card-icon' onClick={() => handleDelete()}><MdDelete/></button>
+                <button title='Modificar' className='Card-icon' onClick={() => navigate(`/editarPedido/${pedido.id}`)}><AiFillEdit/></button>
+                <button title='Entregado' className='Card-icon' onClick={() => handleDone()}><MdDone/></button>
+                <button title='Vista detallada' className='Card-icon' onClick={() => navigate(`/vistaPedido/${pedido.id}`)}><AiFillEye/></button>
             </div>
 
             {showDeleteConfirmation && (
             <div>
                 <div className='backdrop-blur-md p-3 absolute inset-0 w-full h-full'></div>
-                <div className='Tarjeta flex flex-wrap w-4/6 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                <div className='Tarjeta flex flex-wrap w-10/12 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                     <p className='w-full text-center'>¿Estas seguro que deseas eliminar este pedido?</p>
-                    <div className='w-full grid grid-cols-2 gap-1'>
-                        <button type='buton' className = 'MainButton mt-2' onClick={handleDeleteConfirm}>Confirmar</button>
-                        <button type='buton' className = 'MainButton mt-2' onClick={handleDeleteCancel}>Cancelar</button>
+                    <div className='w-full flex justify-between mt-5'>
+                        <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDeleteConfirm}>Confirmar</button>
+                        <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDeleteCancel}>Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -126,9 +136,9 @@ export default function PedidoCard({ pedido }) {
                 <div className='backdrop-blur-md p-3 absolute inset-0 w-full h-full'></div>
                 <div className='Tarjeta flex flex-wrap w-4/6 p-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                     <p className='w-full text-center'>Al marcar un pedido como {pedido.done ? '"NO ENTREGADO"' : '"ENTREGADO"'}  se lo pasará al listado de {pedido.done ? 'PEDIDOS' : 'VENTAS'}</p>
-                    <div className='w-full grid grid-cols-2 gap-1'>
-                        <button type='buton' className = 'MainButton mt-2' onClick={handleDoneConfirm}>Confirmar</button>
-                        <button type='buton' className = 'MainButton mt-2' onClick={handleDoneCancel}>Cancelar</button>
+                    <div className='w-full flex justify-between mt-5'>
+                        <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDoneConfirm}>Confirmar</button>
+                        <button type='buton' className = 'MainButton w-24 mt-2' onClick={handleDoneCancel}>Cancelar</button>
                     </div>
                 </div>
             </div>
