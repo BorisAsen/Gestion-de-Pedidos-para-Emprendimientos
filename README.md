@@ -1,5 +1,7 @@
 # Gestión de Pedidos para Emprendimientos
-Software de Gestión de negocios para emprendimientos que funcionan en base a pedidos o encargos y productos, particularizado para Willow (Emprendimiento de marroquinería infantil y urbana).
+Software de Gestión de negocio para emprendimientos que funcionan en base a pedidos o encargos y productos, particularizado para Willow (Emprendimiento de marroquinería infantil y urbana).
+
+![Presentacion](https://github.com/BorisAsen/Gestion-de-Pedidos-para-Emprendimientos/assets/48571306/70f5d74c-6a17-4603-a1a2-906f2e09af96)
 
 La entidad principal sobre la que se desarrolla el sistema son los pedidos, cuya estructura está conformada por uno o más productos, un cliente, tipo de despacho, dirección de entrega, método de pago, costo total del pedido más el envío, fecha y hora de entrega, si está realizado o no, orden de prioridad y demás especificaciones generales.
 
