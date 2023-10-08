@@ -54,7 +54,8 @@ export default function ProductosPage() {
       setSearch(storedSearchValue);
     }
     
-  }, [products]);
+  // }, [products]);
+  }, []);
 
   // Filtrar y ordenar los productos
   const productsFilter = products.slice().sort((a, b) => {
@@ -107,7 +108,7 @@ export default function ProductosPage() {
 
   return (
     <div className= '' >
-      <div className='bg-white py-3.5 px-6 flex items-center justify-between align-middle'>
+      <div className='bg-primary py-3.5 px-6 flex items-center justify-between align-middle'>
         <h1 className='PageTitle'>Listado de Productos</h1>
         <Link to="/nuevoProducto">
           <button className='MainButton'>
@@ -116,20 +117,20 @@ export default function ProductosPage() {
         </Link> 
       </div>
 
-      <div className='bg-tertiary flex justify-between items-center text-white p-2.5 px-6 mb-2'>
+      <div className='bg-secondary flex justify-between items-center text-white p-2.5 px-6 mb-2'>
         <div className='flex items-center'>
             <label className='block'>Productos </label>
             <select
                 name="Datefilter"
                 onChange={handleFilterChange}
                 value={selectedFilter}
-                disabled={search !== ''}
-                className={`p-0.5 ml-2 rounded-md text-black ${search !== '' ? 'bg-tertiary text-gray-100 disabled:cursor-not-allowed' : ''}`}
+                disabled={search}
+                className={`FilterField ${search !== '' ? ' text-red-500 disabled:cursor-not-allowed' : ''}`}
               >
                 <option value={'fecha de creacion'}>Fecha de creacion</option>
                 <option value={'costo'}>Costo</option>
             </select>
-            <button className={`Card-icon p-1.5 ml-2 ${search ? 'bg-tertiary text-primary disabled:cursor-not-allowed disabled:hover:bg-tertiary' : ''}`} disabled = {search} onClick={handleSortOrderChange}><TbArrowsSort/></button>       
+            <button className={`FilterButton p-1.5 ml-2 ${search ? ' bg-slate-300 text-red-400 disabled:cursor-not-allowed disabled:hover:bg-tertiary' : ''}`} disabled = {search} onClick={handleSortOrderChange}><TbArrowsSort/></button>       
             {selectedFilter === "costo" && (
               <span className="ml-2 text-sm">
                 {sortOrder === "asc" ? "Mas barato a mas costoso" : "Mas costoso a mas barato"}
@@ -144,7 +145,7 @@ export default function ProductosPage() {
         
         <div>
           <input
-          className='ml-1.5 p-0.5 px-1.5 rounded-md w-full text-black'
+          className='FilterField p-0.5 px-1.5 w-full'
             type="text"
             value={search}
             onChange={handleSearchChange}

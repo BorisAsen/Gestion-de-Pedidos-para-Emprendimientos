@@ -53,7 +53,7 @@ export default function SalesAmount({ period, value }) {
                 </h2>
                 )}
             </div>
-            <p className="m-auto text-details_3 font-mono text-6xl">{salesAmount.salesAmount}</p>
+            <p className="m-auto text-secondary font-mono text-6xl">{salesAmount.salesAmount}</p>
         </div>
     );
 }

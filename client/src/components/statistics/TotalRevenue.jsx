@@ -177,13 +177,13 @@ export default function TotalRevenue({ period, value }) {
                 )}
             </div>
             <div className="m-3 lg:mr-14 rounded-md justify-center items-center">
-                <div className="mb-6 text-details_3 flex items-center justify-center">
+                <div className="mb-6 text-secondary flex items-center justify-center">
                     <p className="m-auto font-mono text-xl">TOTAL</p>
-                    <p className="m-auto font-mono text-6xl">${revenue ? revenue : '0'}</p>
+                    <p className="m-auto font-mono text-6xl">${revenue ? parseFloat((revenue).toFixed(2)) : '0'}</p>
                 </div>
                 <div className="flex text-orange-400 items-center justify-center">
                     <p className="m-auto font-mono text-xl">NETA</p>
-                    <p className="m-auto font-mono text-6xl">${revenue ? revenue : '0'}</p>
+                    <p className="m-auto font-mono text-6xl">${revenue ? parseFloat((revenue*0.7).toFixed(2)) : '0'}</p>
                 </div>
             </div>
             <div className='m-3 h-80 w-96'>

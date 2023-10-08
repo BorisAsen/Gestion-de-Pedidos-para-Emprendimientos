@@ -56,18 +56,18 @@ export default function RecaudacionYEstadisticas() {
 
   return (
     <div className="">
-      <div className="bg-white py-3.5 px-6 flex items-center justify-between align-middle">
-        <h1 className="PageTitle">Estadísticas</h1>
+      <div className="bg-primary py-3.5 px-6 flex items-center justify-between align-middle">
+        <h1 className="PageTitle">Recaudación y Estadísticas</h1>
       </div>
 
-      <div className="bg-tertiary flex justify-between items-center text-white p-2.5 px-6 mb-2">
+      <div className="bg-secondary flex justify-between items-center text-white p-2.5 px-6 mb-2">
         <div className="flex items-center">
           <label className="block">Período </label>
           <select
             name="Period"
             onChange={(e) => setSelectedPeriod(e.target.value)}
             value={selectedPeriod}
-            className="p-0.5 ml-2 rounded-md text-black w-32"
+            className="FilterField w-32"
           >
             <option value={'month'}>Mensual</option>
             <option value={'year'}>Anual</option>
@@ -81,7 +81,7 @@ export default function RecaudacionYEstadisticas() {
               max={currentMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
               value={selectedMonth}
-              className="block px-1.5 rounded-md w-44 ml-2 text-black"
+              className="FilterField block py-0.5 px-1.5 w-44"
             />
           )}
 
@@ -94,7 +94,7 @@ export default function RecaudacionYEstadisticas() {
               step="1"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="block px-1.5 rounded-md w-24 ml-2 text-black"
+              className="FilterField block py-0.5 px-1.5 w-24"
             />
           )}
         </div>

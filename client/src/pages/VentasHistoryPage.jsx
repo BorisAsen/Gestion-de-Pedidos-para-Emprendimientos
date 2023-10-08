@@ -216,7 +216,7 @@ export default function VentasHistoryPage() {
 
   return (
     <div className= '' >
-      <div className='bg-white py-3.5 px-6 flex items-center justify-between align-middle'>
+      <div className='bg-primary py-3.5 px-6 flex items-center justify-between align-middle'>
         <h1 className='PageTitle'>Historial de ventas completo</h1>
         <Link to="/nuevoPedido">
           <button className='MainButton'>
@@ -225,7 +225,7 @@ export default function VentasHistoryPage() {
         </Link>
       </div>
 
-      <div className='bg-tertiary flex flex-wrap items-center justify-between px-6 mb-2'>
+      <div className='bg-secondary flex flex-wrap items-center justify-between px-6 mb-2'>
         <div className='flex flex-wrap p-1.5 pl-0 items-center justify-center'>
           <div className='flex flex-wrap p-1.5 pl-0 items-center justify-center'>
             <label className='block text-white'>Filtrar por:</label>
@@ -233,7 +233,7 @@ export default function VentasHistoryPage() {
               name="Datefilter"
               onChange={handleFilterChange}
               value={Ventas_FiltrarPor}
-              className="block p-0.5 rounded-md text-black w-32 m-1"
+              className="FilterField w-32 m-1"
             >
               <option value={"mes_y_año"}>Mes y Año</option>
               <option value={"dia"}>Dia específico</option>
@@ -244,7 +244,7 @@ export default function VentasHistoryPage() {
                 type="month"
                 value={Ventas_SelectedMonth}
                 onChange={handleVentas_SelectedMonthChange}
-                className="block px-1.5 rounded-md w-44 m-1"
+                className="FilterField w-44 m-1"
               />
               )}
               {Ventas_FiltrarPor === "dia" && (
@@ -252,7 +252,7 @@ export default function VentasHistoryPage() {
                 type="date"
                 value={Ventas_SelectedDate}
                 onChange={handleVentas_SelectedDateChange}
-                className="block px-1.5 rounded-md w-36 m-1"
+                className="FilterField w-36 m-1"
               />
             )}
           </div>
@@ -263,7 +263,7 @@ export default function VentasHistoryPage() {
                 name="BuscarPor"
                 onChange={handleSearchTypeChange}
                 value={Ventas_BuscarPor}
-                className="block p-0.5 m-1 rounded-md w-36"
+                className="FilterField m-1 w-36"
               >
                 <option value={"producto"}>Producto</option>
                 <option value={"direccion"}>Dirección</option>
@@ -271,7 +271,7 @@ export default function VentasHistoryPage() {
                 <option value={"forma_de_pago"}>Forma de pago</option>
               </select>
               <input
-                className='block p-0.5 px-1.5 rounded-md w-36 m-1'
+                className='FilterField w-36 m-1'
                   type="text"
                   value={Ventas_CampoBusqueda}
                   onChange={handleSearchFieldChange}
@@ -282,7 +282,7 @@ export default function VentasHistoryPage() {
         <div className='flex flex-wrap p-1.5 pl-0 pr-0 items-center justify-center'>
           {/* <button onClick={() => search()} name='searchButton' className='Card-icon p-1.5'><BiSearchAlt/></button>
           <button onClick={() => clean()} className='Card-icon p-1.5 ml-2'><TbEraser/></button> */}
-          <button onClick={handleSortOrderChange} className={`Card-icon p-1.5 ml-2 }`}><TbArrowsSort/></button>
+          <button onClick={handleSortOrderChange} className={`FilterButton p-1.5 ml-2 }`}><TbArrowsSort/></button>
         </div>
       </div>
 

@@ -14,26 +14,51 @@
         ;
     }
 
+    .NavBar-item.active {
+        background-color: #4f46e5; /* Cambia esto al color indigo que prefieras */
+    }
+
     /* NavBar Icons */
     .NavBar-item-icon{
         @apply
         flex items-center justify-center
-        h-10 w-10 p-1 rounded-2xl
-        bg-navBar_Icon  shadow-navBarIcon
+        h-10 w-10
+        mx-0.5
+        
+        /* bg-slate-100  shadow-navBarIcon */
 
-        group-hover:drop-shadow-lg
-        group-hover:scale-110
-        group-hover:bg-indigo-600
-        group-hover:text-white
+        /* group-hover:drop-shadow-lg */
+        group-hover:scale-125
+        /* group-hover:bg-indigo-600 */
+        group-hover:text-secondary
 
-        transition-all duration-150 ease-linear
+        transition-all duration-150 ease-out
+        ;
+    }
+
+    .NavBar-item-image{
+        @apply
+        flex items-center justify-center
+        w-7 h-7 object-cover rounded-full
+        m-1.5 my-2
+        
+
+        group-hover:scale-125
+
+        /* group-hover:text-indigo-600 */
+
+        transition-all duration-150 ease-out
         ;
     }
 
     /* NavBar Tooltips */
     .NavBar-tooltip{
         @apply
-         p-1.5 ml-2
+        ml-1
+         
+
+        group-hover:text-secondary
+        transition-all duration-150 ease-out
         ;
     }
 
@@ -48,7 +73,7 @@
     /* Tarjeta de Tareas */
     .Tarjeta{
         @apply
-        bg-slate-200 rounded-md p-3.5
+        bg-primary rounded-md p-3.5
         shadow-container
         w-auto
         overflow-hidden
@@ -75,9 +100,23 @@
         @apply
         relative flex items-center justify-center
         p-0.5 rounded-md
-        bg-details_3 text-white 
+        bg-slate-500 text-white 
 
-        hover:bg-indigo-600
+        hover:bg-secondary
+
+        transition-all duration-100 ease-linear
+        ;
+    }
+
+
+
+    .Paginator-button{
+        @apply
+        relative flex items-center justify-center
+        p-0.5 rounded-full
+        bg-slate-500 text-white 
+
+        hover:bg-secondary
 
         transition-all duration-100 ease-linear
         ;
@@ -86,10 +125,32 @@
     /* Main Button */
     .MainButton{
         @apply
-        bg-details_2 rounded-md px-2 h-8
+        bg-slate-500 rounded-md px-2 h-8
         text-base text-white
 
-        hover:bg-details_3
+        hover:bg-secondary
+        transition-all duration-100 ease-linear
+        ;
+    }
+
+    .FilterField{
+        @apply
+        bg-primary
+        p-1 ml-2 rounded-md
+        text-text_1
+        ;
+    }
+
+    .FilterButton{
+        @apply
+        relative flex items-center justify-center
+        p-0.5 rounded-md
+        bg-primary text-text_1 
+
+        hover:bg-slate-500
+        hover:text-primary
+        hover:shadow-FilterButton
+
         transition-all duration-100 ease-linear
         ;
     }
@@ -172,7 +233,7 @@
         @apply
         absolute top-1/2
         transform -translate-y-1/2
-        bg-details_2 text-white
+        bg-slate-500 text-white
         rounded-full p-2 focus:outline-none z-10
         ;
     }

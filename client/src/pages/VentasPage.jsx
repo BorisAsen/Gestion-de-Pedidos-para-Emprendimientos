@@ -66,7 +66,7 @@ export default function VentasPage() {
 
   return (
     <div className= '' >
-      <div className='bg-white py-3.5 px-6 flex items-center justify-between align-middle'>
+      <div className='bg-primary py-3.5 px-6 flex items-center justify-between align-middle'>
         <h1 className='PageTitle'>Listado de Ventas</h1>
         <Link to="/nuevoPedido">
           <button className='MainButton'>
@@ -75,14 +75,14 @@ export default function VentasPage() {
         </Link>
       </div>
 
-      <div className='bg-tertiary flex justify-between items-center text-white p-2.5 px-6 mb-2'>
+      <div className='bg-secondary flex justify-between items-center text-white p-2.5 px-6 mb-2'>
         <div className='flex items-center'>
           <label className='block'>Ventas </label>
           <select
             name="Datefilter"
             onChange={handleFilterChange}
             value={selectedFilter_Ventas}
-            className="p-0.5 ml-2 rounded-md text-black w-32"
+            className="FilterField w-32"
           >
             <option value={"today"}>de Hoy</option>
             <option value={"week"}>de la Semana</option>

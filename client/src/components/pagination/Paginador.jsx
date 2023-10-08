@@ -61,7 +61,7 @@ const Paginador = (props) => {
 
     if (items.length === 0) {
         return <div className="flex flex-col items-center justify-center mt-5">
-        <h1 className="font-bold text-white text-center mb-10">No hay {itemName} que mostrar</h1>
+        <h1 className="font-bold text-text_1 text-center mb-10">No hay {itemName} que mostrar</h1>
         <div className="flex items-center justify-center">
           <img className="w-1/3" src={grilloImage} alt="Sin resultados"/>
         </div>
@@ -75,22 +75,24 @@ const Paginador = (props) => {
                         return <ComponentToShow {...props} key={item.id} />;
                     })}
                 </div>
-                <div className='fixed bottom-0 left-navBarCollapsed lg:left-navBarExtended right-0 bg-white flex items-center justify-center h-10 p-3 shadow-Paginador'>
-                    <button
-                        className="Card-icon mr-2"
-                        disabled={currentPage === 1}
-                        onClick={PrevPage}
-                    >
-                        <MdKeyboardArrowLeft className="m-0.5"/>
-                    </button>
-                    <p>Pagina {currentPage}/{numbersOfPages}</p>
-                    <button
-                        className='Card-icon ml-2'
-                        disabled={endIndex >= items.length}
-                        onClick={NextPage}
-                    >
-                        <MdKeyboardArrowRight className="m-0.5"/>
-                    </button>
+                <div className='fixed bottom-3 left-navBarCollapsed lg:left-navBarExtended right-0 flex items-center justify-center h-10'>
+                    <div className="flex items-center justify-center bg-primary p-2.5 rounded-full shadow-Paginador">
+                        <button
+                            className="Paginator-button mr-2"
+                            disabled={currentPage === 1}
+                            onClick={PrevPage}
+                        >
+                            <MdKeyboardArrowLeft className="m-0.5"/>
+                        </button>
+                        <p>Pagina {currentPage}/{numbersOfPages}</p>
+                        <button
+                            className='Paginator-button ml-2'
+                            disabled={endIndex >= items.length}
+                            onClick={NextPage}
+                        >
+                            <MdKeyboardArrowRight className="m-0.5"/>
+                        </button>
+                    </div>
                 </div>
             </div>
     }

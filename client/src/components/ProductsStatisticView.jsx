@@ -77,7 +77,7 @@ const ProductStatisticView = ({ products }) => {
       >
         {products.map((product) => (
           <div key={product.id} className="p-3 pb-12">
-            <div className="relative bg-details_3 rounded-md font-bold text-white text-center p-2">
+            <div className="relative bg-secondary rounded-md font-bold text-white text-center p-2">
               <h3 className="pb-2">{product.productName}</h3>
               <img className="" src={product.imgURL} alt={product.productName} />
               <p className="pt-2 pl-2 text-left">Precio: ${product.price}</p>

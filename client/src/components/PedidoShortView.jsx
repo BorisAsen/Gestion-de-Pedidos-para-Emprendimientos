@@ -80,9 +80,9 @@ export default function PedidoCard({ pedido }) {
     // <SelectedProductView item={item} key={item.product.id}/>
     function renderSelectedProducts() {
         return pedido.items.map ((item) => 
-            <div className='relative bg-details_3 h-max' key={item.product.id}>
+            <div className='relative bg-secondary h-max' key={item.product.id}>
                 <img className='96' src={item.product.imgURL}/>
-                <div className='Cantidad bg-details_2'>{item.quantity}</div>
+                <div className='Cantidad bg-secondary'>{item.quantity}</div>
             </div>
         )
     }
