@@ -15,12 +15,18 @@ import { Link } from "react-router-dom";
 // Importar el Paginador
 import Paginador from "../components/pagination/Paginador"
 
+// Importar el componente para mostrar el loading skeleton de pedido
+import LoadingSkOrderShortView from '../loadingSkeletons/LoadingSkOrderShortView';
+
 export default function VentasPage() {
   // Extraigo del context el arreglo de pedidos vacio y la funcion para cargarlo con los pedidos de la db
   const {pedidos, loadPedidos} = useGlobalContext();
 
   // Estado para el valor del filtro de ventas
   const [selectedFilter_Ventas, setSelectedFilter_Ventas] = useState("today");
+
+  // Estado para controlar la carga de los pedidos
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
   // Se ejecuta al cargar la pagina
   useEffect (() => {
@@ -33,6 +39,11 @@ export default function VentasPage() {
     if (storedValue) {
       setSelectedFilter_Ventas(storedValue);
     }
+
+    // Simular un retraso de 200 milisegundos para la animacion de carga de pedidos
+    const delay = setTimeout(() => {
+      setLoadingOrders(false); // Marca la carga como finalizada
+    }, 200);
   }, [pedidos]);
 
   // Filtrar las ventas por hoy, mañana, semana y mes
@@ -93,8 +104,18 @@ export default function VentasPage() {
           Historial de ventas completo
         </Link>
       </div>
+
+      {loadingOrders ? (
+        // Muestra los elementos de carga mientras se realizan las consultas
+        <div className='p-5 pt-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <LoadingSkOrderShortView key={index} />
+          ))}
+        </div>
+      ) : (
+        <Paginador items={ventasFilter} ComponentToShow={PedidoShortView} propName={"pedido"} itemsPerPage={6} itemName={"Ventas"}/>
+      )}
       
-      <Paginador items={ventasFilter} ComponentToShow={PedidoShortView} propName={"pedido"} itemsPerPage={6} itemName={"Ventas"}/>
     </div>
   )
 }

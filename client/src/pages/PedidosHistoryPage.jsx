@@ -4,7 +4,7 @@ import React from 'react'
 import { useEffect, useState } from "react";
 
 // Importar el componente para mostrar una tarjeta de pedido
-import PedidoRowtView from "../components/PedidoRowView";
+import PedidoRowView from "../components/PedidoRowView";
 
 // Importo el context global
 import { useGlobalContext } from "../context/ContextProvider";
@@ -308,18 +308,16 @@ export default function PedidosHistoryPage() {
         </div>
 
         {loadingOrders ? (
-        // Muestra los elementos de carga mientras se realizan las consultas
-        <div className='p-5 pt-1'>
-          {Array.from({ length: 4 }).map((_, index) => (
-            <LoadingSkOrderRowView key={index} />
-          ))}
-        </div>
-      ) : (
-        <Paginador items={orderedVentas} ComponentToShow={PedidoRowtView} propName={"pedido"} itemsPerPage={15} itemName={"Pedidos"} listView={true}/>
-      )}
+          // Muestra los elementos de carga mientras se realizan las consultas
+          <div className='p-5 pt-1'>
+            {Array.from({ length: 4 }).map((_, index) => (
+              <LoadingSkOrderRowView key={index} />
+            ))}
+          </div>
+        ) : (
+          <Paginador items={orderedVentas} ComponentToShow={PedidoRowView} propName={"pedido"} itemsPerPage={15} itemName={"Pedidos"} listView={true}/>
+        )}
         
-        {/* <Paginador items={orderedVentas} ComponentToShow={PedidoRowtView} propName={"pedido"} itemsPerPage={15} itemName={"Pedidos"} listView={true}/> */}
-
       </div>
     </div>
   )
