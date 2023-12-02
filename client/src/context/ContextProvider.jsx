@@ -35,8 +35,10 @@ import {
 // Importo desde la API las funciones necesarias para manipular los productos
 import { 
     getProductsRequest,
+    getInactiveProductsRequest,
     getProductRequest,
     deleteProductRequest,
+    restoreProductRequest,
     createProductRequest,
     updateProductRequest,
     getProductByProductNameRequest
@@ -244,7 +246,15 @@ export const GlobalContextProvider = ({children}) => {
         // Muestro por consola el arreglo de productos que se encuentra en data
         //console.log(response.data);
     
-        // Guardo el arreglo de productos en la vble products
+        // Guardar el arreglo de productos en la vble products
+        setProducts(response.data);
+    }
+
+    // Función para cargar el arreglo de productos inactivos
+    async function loadInactiveProducts() {
+        const response = await getInactiveProductsRequest();
+        
+        // Guardar el arreglo de productos inactivos en la variable products
         setProducts(response.data);
     }
 
@@ -271,6 +281,18 @@ export const GlobalContextProvider = ({children}) => {
 
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    // Función para restaurar un producto
+    const restoreProduct = async (id) => {
+        try {
+            const response = await restoreProductRequest(id); // Llama a la función de la API para restaurar un producto
+            console.log(response); // Muestra la respuesta en la consola (opcional)
+            // Puedes realizar alguna acción adicional si lo necesitas después de restaurar el producto
+        } catch (error) {
+            console.log(error);
+            // Manejo de errores (puedes lanzar una alerta, mostrar un mensaje, etc.)
         }
     };
 
@@ -397,7 +419,9 @@ export const GlobalContextProvider = ({children}) => {
                 // Productos
                 products,
                 loadProducts,
+                loadInactiveProducts,
                 deleteProduct,
+                restoreProduct,
                 createProduct,
                 getProduct,
                 updateProduct,

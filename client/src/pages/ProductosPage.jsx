@@ -18,9 +18,12 @@ import { TbArrowsSort } from 'react-icons/tb';
 // Importar el Paginador
 import Paginador from "../components/pagination/Paginador"
 
+// Importar el componente para mostrar el loading skeleton de producto
+import LoadingSkProduct from '../loadingSkeletons/LoadingSkProduct';
+
 export default function ProductosPage() {
   // Extraigo del context el arreglo de productos vacio y la funcion para cargarlo con los productos de la db
-  const {products, loadProducts} = useGlobalContext();
+  const {products, loadProducts, loadInactiveProducts} = useGlobalContext();
 
   // Estado para el valor del filtro
   const [selectedFilter, setSelectedFilter] = useState("fecha de creacion");
@@ -31,10 +34,26 @@ export default function ProductosPage() {
   // Estado que recoge la informacion del campo de busqueda
   const [search, setSearch] = useState('');
 
+  // Estado para controlar si se muestran productos inactivos
+  const [showInactiveProducts, setShowInactiveProducts] = useState(
+    localStorage.getItem('showInactiveProducts') === 'true' ? true : false
+  );
+
+  // Estado para controlar la carga de los productos
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
   // Se ejecuta al cargar la pagina
   useEffect (() => {
-    // Carga el arreglo de productos
-    loadProducts();
+    // Cargar el arreglo de productos
+    if (showInactiveProducts) {
+      loadInactiveProducts(); // Carga los productos inactivos
+    } else {
+      loadProducts(); // Carga los productos activos
+    }
+    // Simular un retraso de 200 milisegundos para la animacion de carga de productos
+    const delay = setTimeout(() => {
+      setLoadingProducts(false); // Marca la carga como finalizada
+    }, 200);
 
     // Recuperar el valor del filtro almacenado en localStorage (si existe)
     const storedFilterValue = localStorage.getItem('selectedFilter_Products');
@@ -55,7 +74,7 @@ export default function ProductosPage() {
     }
     
   // }, [products]);
-  }, []);
+  }, [showInactiveProducts]);
 
   // Filtrar y ordenar los productos
   const productsFilter = products.slice().sort((a, b) => {
@@ -96,6 +115,13 @@ export default function ProductosPage() {
     const selectedValue = e.target.value;
     setSearch(selectedValue);
     localStorage.setItem('searchContent_Products', selectedValue); // Guardar el valor del campo de busqueda en localstorage
+  };
+
+  // Handler para el selector de productos activos o inactivos
+  const handleShowInactiveProductsChange = (e) => {
+    const showInactiveProducts = e.target.checked;
+    setShowInactiveProducts(showInactiveProducts);
+    localStorage.setItem('showInactiveProducts', showInactiveProducts); // Guardar el estado del checkbox en localStorage
   };
 
   // Resultado de la busqueda
@@ -153,8 +179,34 @@ export default function ProductosPage() {
           />
         </div>
       </div>
-
-      <Paginador items={productsToShow} ComponentToShow={Producto} propName={"product"} itemsPerPage={6} itemName={"Productos"} />
+      {/* Checkbox para mostrar productos inactivos */}
+      <div className='m-5 my-3 flex items-center'>
+        <label className='block m-0'>
+          Solo productos inactivos:
+        </label>
+        <input
+          type="checkbox"
+          checked={showInactiveProducts}
+          onChange={handleShowInactiveProductsChange}
+          className="ml-2"
+        />
+      </div>
+      {loadingProducts ? (
+        // Muestra los elementos de carga mientras se realizan las consultas
+        <div className='p-5 pt-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <LoadingSkProduct key={index} />
+          ))}
+        </div>
+      ) : (
+        <Paginador
+            items={productsToShow}
+            ComponentToShow={Producto}
+            propName={'product'}
+            itemsPerPage={6}
+            itemName={'Productos'}
+          /> 
+      )}
 
     </div>
   )

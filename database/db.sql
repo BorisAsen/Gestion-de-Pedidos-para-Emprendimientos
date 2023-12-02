@@ -34,7 +34,8 @@ CREATE TABLE products(
     description VARCHAR(700),
     price DOUBLE NOT NULL,
     createdAt DATETIME NOT NULL DEFAULT NOW(),
-    updatedAt DATETIME NOT NULL DEFAULT NOW()
+    updatedAt DATETIME NOT NULL DEFAULT NOW(),
+    active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Tabla de relacion entre Pedidos y Productos

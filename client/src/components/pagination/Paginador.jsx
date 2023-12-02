@@ -60,6 +60,7 @@ const Paginador = (props) => {
       
 
     if (items.length === 0) {
+        // no hay elementos que mostrar
         return <div className="flex flex-col items-center justify-center mt-5">
         <h1 className="font-bold text-text_1 text-center mb-10">No hay {itemName} que mostrar</h1>
         <div className="flex items-center justify-center">
@@ -67,6 +68,7 @@ const Paginador = (props) => {
         </div>
       </div>
     }else{
+        // Si hay elementos que mostrar
         const itemsPaginados = items.slice(startIndex, endIndex);
         return<div className="relative">
                 <div className={`p-5 pt-1 mb-10 grid grid-cols-1 ${!listView ? 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5' : ''} `}>

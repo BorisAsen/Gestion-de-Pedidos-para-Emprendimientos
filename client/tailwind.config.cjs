@@ -47,9 +47,7 @@ module.exports = {
         'SearchResult': 'inset 0 0 0.6em rgba(255, 0, 0, 0.9)',
         'Paginador': '0 0 0.3em rgba(0, 0, 0, 0.5)',
         'FilterButton': '0 0 0.15em rgba(200, 200, 200, 0.7)',
-      }
-
-      
+      },
 
     },
   },

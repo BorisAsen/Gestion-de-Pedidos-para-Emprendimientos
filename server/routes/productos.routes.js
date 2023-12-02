@@ -5,10 +5,12 @@ const router = Router();
 //Importar las funciones del CRUD de productos
 import { 
     getProducts,
+    getInactiveProducts,
     getProduct,
     createProduct,
     updateProduct,
     deleteProduct,
+    restoreProduct,
     getProducts_productName
  } from "../controllers/products.controllers.js";
 import { getProductByProductNameRequest } from "../../client/src/api/productos.api.js";
@@ -17,6 +19,9 @@ import { getProductByProductNameRequest } from "../../client/src/api/productos.a
 
 // Obtener productos de la db para mostrarlos
 router.get('/products', getProducts);
+
+// Obtener productos inactivos de la db
+router.get('/products/inactive', getInactiveProducts);
 
 // Obtener productos mediante coincidencias en el nombre del mismo
 router.get('/products/search', getProducts_productName);
@@ -35,6 +40,9 @@ router.put('/products/:id', updateProduct);
 
 // Eliminar un producto correspondiente a un id
 router.delete('/products/:id', deleteProduct);
+
+// Ruta para restaurar un producto mediante su ID
+router.put('/products/restore/:id', restoreProduct);
 
 
 

@@ -185,17 +185,17 @@ export default function ProductForm() {
             {/* Preview de la imagen */}
             {/* {product.imgURL && <img src={product.imgURL} alt="Preview"/>} */}
             <div className="flex justify-center items-center w-60 my-4 mx-auto h-60 bg-white">
-            {(values.imgURL ? (
-              <Preview_Image file={values.imgURL} url={values.imgURL} />
-            ) : (
-              <img src={defaultImage} alt="Default" />
-            ))}
+              {values.imgURL && values.imgURL !== "DELETE_IMAGE" ? (
+                <Preview_Image file={values.imgURL} url={values.imgURL} />
+              ) : (
+                <img src={defaultImage} alt="Default" />
+              )}
             </div>
             <div className="flex justify-center mb-2">
               <button
                 type="button"
                 onClick={() => {
-                  setFieldValue('imgURL', null);
+                  setFieldValue('imgURL', "DELETE_IMAGE");
                   // También restablece el valor del campo de entrada de archivo
                   document.querySelector("input[type='file']").value = '';
                 }}

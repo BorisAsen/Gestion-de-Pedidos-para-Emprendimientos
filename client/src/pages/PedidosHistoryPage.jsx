@@ -19,6 +19,9 @@ import { BiSearchAlt } from 'react-icons/bi';
 // Importar el Paginador
 import Paginador from "../components/pagination/Paginador"
 
+// Importar el componente para mostrar el loading skeleton de pedido
+import LoadingSkOrderRowView from '../loadingSkeletons/LoadingSkOrderRowView';
+
 export default function PedidosHistoryPage() {
   // Extraigo del context el arreglo de pedidos vacio y la funcion para cargarlo con los pedidos de la db
   const {pedidos, setPedidos, loadAllPedidos, loadMonthYearPedidos, loadDatePedidos} = useGlobalContext();
@@ -34,6 +37,9 @@ export default function PedidosHistoryPage() {
 
   // Estado que recoge la informacion del campo de busqueda
   const [Pedidos_CampoBusqueda, setPedidos_CampoBusqueda] = useState('');
+
+  // Estado para controlar la carga de los pedidos
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
   // Constantes para extraer el dia, mes y año actual con los que
   // se inializaran selectedMonth y selectedDate
@@ -87,6 +93,11 @@ export default function PedidosHistoryPage() {
     if (storedValue_Pedidos_SelectedMonth) {
       setPedidos_SelectedMonth(storedValue_Pedidos_SelectedMonth);
     }
+
+    // Simular un retraso de 200 milisegundos para la animacion de carga de pedidos
+    const delay = setTimeout(() => {
+      setLoadingOrders(false); // Marca la carga como finalizada
+    }, 200);
 
   }, [Pedidos_FiltrarPor, Pedidos_BuscarPor, Pedidos_OrdenarPor, Pedidos_CampoBusqueda, Pedidos_SelectedDate, Pedidos_SelectedMonth]);
 
@@ -295,8 +306,19 @@ export default function PedidosHistoryPage() {
             <span className='PedidoRowViewFieldHeader col-span-1'><b>Total</b></span>
             <span className='PedidoRowViewFieldHeader col-span-1 rounded-br-md rounded-tr-md'><b>Ver</b></span>
         </div>
-        
+
+        {loadingOrders ? (
+        // Muestra los elementos de carga mientras se realizan las consultas
+        <div className='p-5 pt-1'>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <LoadingSkOrderRowView key={index} />
+          ))}
+        </div>
+      ) : (
         <Paginador items={orderedVentas} ComponentToShow={PedidoRowtView} propName={"pedido"} itemsPerPage={15} itemName={"Pedidos"} listView={true}/>
+      )}
+        
+        {/* <Paginador items={orderedVentas} ComponentToShow={PedidoRowtView} propName={"pedido"} itemsPerPage={15} itemName={"Pedidos"} listView={true}/> */}
 
       </div>
     </div>

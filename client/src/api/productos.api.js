@@ -5,6 +5,10 @@ import axios from "axios";
 export const getProductsRequest = async () =>
     await axios.get("http://localhost:4000/products");
 
+// Función para obtener productos inactivos
+export const getInactiveProductsRequest = async () =>
+await axios.get("http://localhost:4000/products/inactive");
+
 // Funcion para traer productos mediante una coincidencia de sus nombres y el termino buscado
 export const getProductByProductNameRequest = async (productName) =>
     await axios.get(`http://localhost:4000/products/search?productName=${productName}`);
@@ -41,9 +45,13 @@ export const updateProductRequest = async (id, updateProduct) => {
     });
 }
 
-
 // Funcion para enviar una peticion delete mediante el id del producto a borrar
 export const deleteProductRequest = async (id) =>
     await axios.delete(`http://localhost:4000/products/${id}`);
+
+// Función para restaurar un producto
+export const restoreProductRequest = async (id) =>
+await axios.put(`http://localhost:4000/products/restore/${id}`);
+    
 
 
