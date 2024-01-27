@@ -244,7 +244,7 @@ export const GlobalContextProvider = ({children}) => {
     async function loadProducts() {
         const response = await getProductsRequest();
         // Muestro por consola el arreglo de productos que se encuentra en data
-        //console.log(response.data);
+        console.log(response.data);
     
         // Guardar el arreglo de productos en la vble products
         setProducts(response.data);

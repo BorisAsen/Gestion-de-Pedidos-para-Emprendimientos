@@ -30,19 +30,19 @@ router.get('/products/search', getProducts_productName);
 // inutilizaria la ruta de busqueda
 
 // Obtener un unico producto correspondiente a un id
-router.get('/products/:id', getProduct);
+router.get('/products/:product_id', getProduct);
 
 // Crear productos
 router.post('/products', createProduct); 
 
 // Modificar un producto mediante un id
-router.put('/products/:id', updateProduct);
+router.put('/products/:product_id', updateProduct);
 
 // Eliminar un producto correspondiente a un id
-router.delete('/products/:id', deleteProduct);
+router.delete('/products/:product_id', deleteProduct);
 
 // Ruta para restaurar un producto mediante su ID
-router.put('/products/restore/:id', restoreProduct);
+router.put('/products/restore/:product_id', restoreProduct);
 
 
 

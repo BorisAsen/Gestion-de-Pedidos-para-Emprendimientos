@@ -31,7 +31,7 @@ export default function ProductCard({ product }) {
     // Truncar el titulo si es que es demasiado largo
     const maxLength = 23;
     let title;
-    product.productName.length <= maxLength ? title = product.productName : (title = product.productName.slice(0, maxLength) + '...');
+    product.product.length <= maxLength ? title = product.product : (title = product.product.slice(0, maxLength) + '...');
 
     // Handler para la confirmacion
     const handleDeleteOrRestore = () => {
@@ -41,10 +41,10 @@ export default function ProductCard({ product }) {
     // Confirmar
     const handleDeleteOrRestoreConfirm = async () => {
         setShowDeleteOrRestoreConfirmation(false);
-        if (product.active) {
-            deleteProduct(product.id);
+        if (product.state = 'active') {
+            deleteProduct(product.product_id);
         } else {
-            restoreProduct(product.id);
+            restoreProduct(product.product_id);
             window.location.reload(); // Recargar la página después de restaurar el producto
         }
     };
@@ -60,18 +60,18 @@ export default function ProductCard({ product }) {
                 <h2 className='text-xl font-bold h-11 leading-none'>{title}</h2>
             </header>
             <div className="flex justify-center items-center w-full mb-3 bg-white">
-                <img className='w-100' src={product.imgURL || defaultImage} alt={title} />
+                <img className='w-100' src={product.img_url || defaultImage} alt={title} />
             </div>
-            {/* <p className='Tarjeta_field'>URL: {product.imgURL}</p> */}
-            {/* <p className='Tarjeta_field'>Public_id: {product.imgPublic_id}</p> */}
+            {/* <p className='Tarjeta_field'>URL: {product.img_url}</p> */}
+            {/* <p className='Tarjeta_field'>Public_id: {product.img_public_id}</p> */}
             <div className='Tarjeta_field bg-white rounded-md h-24 overflow-y-auto whitespace-pre-wrap'>{(product.description)}</div>
             <p className='Tarjeta_field mb-10'>Precio: ${product.price}</p>
             {/* <p className='Tarjeta_field'><span>C: {product.createdAt}</span></p> */}
             {/* <p className='Tarjeta_field'><span>M: {product.updatedAt}</span></p> */}
 
             <footer className='absolute bottom-3 flex flex-wrap gap-x-2'>
-                <button className='Card-icon' onClick={() => handleDeleteOrRestore()}>{product.active ? <MdDelete/> : <MdOutlineRestoreFromTrash/>}</button>
-                <button className='Card-icon' onClick={() => navigate(`/editarProducto/${product.id}`)}><AiFillEdit/></button>
+                <button className='Card-icon' onClick={() => handleDeleteOrRestore()}>{product.state = 'active' ? <MdDelete/> : <MdOutlineRestoreFromTrash/>}</button>
+                <button className='Card-icon' onClick={() => navigate(`/editarProducto/${product.product_id}`)}><AiFillEdit/></button>
             </footer>
 
             {showDeleteOrRestoreConfirmation && (
@@ -83,7 +83,7 @@ export default function ProductCard({ product }) {
                         </p>
                         <div className='w-full flex justify-between'>
                             <button type='button' className='MainButton w-24 mt-2' onClick={handleDeleteOrRestoreConfirm}>
-                                {product.active ? 'Confirmar' : 'Restaurar'}
+                                {product.status = 'active' ? 'Confirmar' : 'Restaurar'}
                             </button>
                             <button type='button' className='MainButton w-24 mt-2' onClick={handleDeleteOrRestoreCancel}>
                                 Cancelar

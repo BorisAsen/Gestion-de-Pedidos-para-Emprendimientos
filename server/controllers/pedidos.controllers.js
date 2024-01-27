@@ -1,7 +1,7 @@
 // Funciones para el CRUD de pedidos
 
 // Importar la conexion a la db
-import { pool } from "../db.js"
+import { pool } from "../dbPostgreSQL.js"
 
 // * Funcion para crear un pedido
 export const createPedido = async (req, res) => {

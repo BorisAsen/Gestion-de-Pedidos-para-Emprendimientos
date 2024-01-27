@@ -1,7 +1,7 @@
 // Importar solo el modulo Router de express, permite crear multiples rutas
 import { Router } from "express";
 // Importar la cte de conexion a la db
-import { pool } from "../db.js";
+import { pool } from "../dbPostgreSQL.js";
 
 // Crear la cte del enrutador a partir del modulo Router
 const router = Router();
